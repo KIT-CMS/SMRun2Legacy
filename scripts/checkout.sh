@@ -18,7 +18,7 @@ git fetch origin
 git checkout v8.0.1
 cd -
 
-# CombineHarvester (current fork of official master for 102X with fixes for BinByBin)
+# CombineHarvester (current master for 102X)
 git clone https://github.com/cms-analysis/CombineHarvester.git CombineHarvester
 
 # SM analysis specific code
