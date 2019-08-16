@@ -19,7 +19,7 @@ git checkout v8.0.1
 cd -
 
 # CombineHarvester (current fork of official master for 102X with fixes for BinByBin)
-git clone https://github.com/KIT-CMS/CombineHarvester.git CombineHarvester
+git clone https://github.com/cms-analysis/CombineHarvester.git CombineHarvester
 
 # SM analysis specific code
 git clone https://github.com/KIT-CMS/SMRun2Legacy.git CombineHarvester/SMRun2Legacy
