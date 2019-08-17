@@ -1,4 +1,4 @@
-#include "CombineHarvester/SMRun2Legacy/interface/HttSystematics_SMRun2.h"
+#include "CombineHarvester/HTTSM2017/interface/HttSystematics_SMRun2.h"
 #include "CombineHarvester/CombineTools/interface/Process.h"
 #include "CombineHarvester/CombineTools/interface/Systematics.h"
 #include "CombineHarvester/CombineTools/interface/Utilities.h"
@@ -103,6 +103,8 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
       lumi_unc = 1.025;
   } else if (era == 2017) {
       lumi_unc = 1.023;
+  } else if (era == 2018) {
+      lumi_unc = 1.023;
   }
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
@@ -140,7 +142,7 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
       .channel({"et"})
       .process({"EMB"})
       .AddSyst(cb, "CMS_eff_trigger_emb_et_$ERA", "lnN", SystMap<>::init(1.02));
-  } else if (era == 2017) {
+  } else if (era == 2017 || era == 2018) {
     cb.cp()
       .channel({"et"})
       .process(mc_processes)
@@ -227,7 +229,7 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
       tauID_uncorr = 1.01;
       ditauID_corr = 1.045;
       ditauID_uncorr = 1.02;
-  } else if (era == 2017) {
+  } else if (era == 2017 || era == 2018) {
       tauID_corr = 1.0135;
       tauID_uncorr = 1.006;
       ditauID_corr = 1.027;
@@ -670,7 +672,7 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
         .process(mc_processes)
         .AddSyst(cb, "CMS_scale_j_RelativeBal", "shape", SystMap<>::init(0.71));
         
-    if (era == 2017) {
+    if (era == 2017 || era == 2018) {
       cb.cp()
 	  .channel({"et", "mt", "tt", "em"})
           .process(mc_processes)
@@ -820,7 +822,7 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
           .channel({"et"})
           .process({"ZL"})
           .AddSyst(cb, "CMS_eFakeTau", "lnN", SystMap<>::init(1.11));
-  } else if (era == 2017) {
+  } else if (era == 2017 || era == 2018) {
       cb.cp()
           .channel({"et"})
           .process({"ZL"})
@@ -841,7 +843,7 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
           .channel({"mt"})
           .process({"ZL"})
           .AddSyst(cb, "CMS_mFakeTau", "lnN", SystMap<>::init(1.192));
-  } else if (era == 2017) {
+  } else if (era == 2017 || era == 2018) {
       cb.cp()
           .channel({"mt"})
           .process({"ZL"})
