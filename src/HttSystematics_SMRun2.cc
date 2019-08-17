@@ -1,4 +1,4 @@
-#include "CombineHarvester/HTTSM2017/interface/HttSystematics_SMRun2.h"
+#include "CombineHarvester/SMRun2Legacy/interface/HttSystematics_SMRun2.h"
 #include "CombineHarvester/CombineTools/interface/Process.h"
 #include "CombineHarvester/CombineTools/interface/Systematics.h"
 #include "CombineHarvester/CombineTools/interface/Utilities.h"
