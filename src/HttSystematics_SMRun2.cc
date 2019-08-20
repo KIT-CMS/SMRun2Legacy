@@ -1129,30 +1129,42 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_norm_stat_$CHANNEL_$BIN_$ERA", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {1},   1.035) //ggh
-	       ({"mt"}, {2},   1.048) //qqh
 	       ({"mt"}, {11},  1.028) //w
 	       ({"mt"}, {12},  1.037) //ztt
 	       ({"mt"}, {13},  1.036) //tt
 	       ({"mt"}, {14},  1.033) //ss
 	       ({"mt"}, {15},  1.028) //zll
 	       ({"mt"}, {16},  1.042) //misc
-	       ({"mt"}, {100}, 1.026) //incl
-	       ({"et"}, {1},   1.052) //ggh
-	       ({"et"}, {2},   1.079) //qqh
+	       ({"mt"}, {300}, 1.026) //incl
 	       ({"et"}, {11},  1.047) //w
 	       ({"et"}, {12},  1.067) //ztt
 	       ({"et"}, {13},  1.059) //tt
 	       ({"et"}, {14},  1.038) //ss
 	       ({"et"}, {15},  1.067) //zll
 	       ({"et"}, {16},  1.076) //misc
-	       ({"et"}, {100}, 1.046) //incl
-	       ({"tt"}, {1},   1.029) //ggh
-	       ({"tt"}, {2},   1.037) //qqh
+	       ({"et"}, {300}, 1.046) //incl
 	       ({"tt"}, {12},  1.035) //ztt
 	       ({"tt"}, {16},  1.020) //misc
 	       ({"tt"}, {17},  1.029) //noniso
-	       ({"tt"}, {100}, 1.029) //incl
+	       ({"tt"}, {300}, 1.029) //incl
+	       );
+  // ggH and qqH categories
+  cb.cp()
+      .channel({"et", "mt", "tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_norm_stat_$CHANNEL_ggH_$ERA", "lnN", SystMap<channel, bin_id>::init
+	       ({"mt"}, {100, 101, 102, 103},  1.035)
+	       ({"et"}, {100, 101, 102, 103},  1.052)
+	       ({"tt"}, {100, 101, 102, 103},  1.029)
+	       );
+
+  cb.cp()
+      .channel({"et", "mt", "tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_norm_stat_$CHANNEL_qqH_$ERA", "lnN", SystMap<channel, bin_id>::init
+	       ({"mt"}, {200, 201, 202, 203},  1.048)
+	       ({"et"}, {200, 201, 202, 203},  1.079)
+	       ({"tt"}, {200, 201, 202, 203},  1.037)
 	       );
 
   // Syst. norm: Bin-correlated
@@ -1161,61 +1173,98 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_norm_syst_$CHANNEL_$ERA", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {1},   1.049) //ggh
-	       ({"mt"}, {2},   1.041) //qqh
+	       ({"mt"}, {100},   1.049) //ggh
+	       ({"mt"}, {101},   1.049) //ggh
+	       ({"mt"}, {102},   1.049) //ggh
+	       ({"mt"}, {103},   1.049) //ggh
+	       ({"mt"}, {200},   1.041) //qqh
+	       ({"mt"}, {201},   1.041) //qqh
+	       ({"mt"}, {202},   1.041) //qqh
+	       ({"mt"}, {203},   1.041) //qqh
 	       ({"mt"}, {11},  1.038) //w
 	       ({"mt"}, {12},  1.069) //ztt
 	       ({"mt"}, {13},  1.037) //tt
 	       ({"mt"}, {14},  1.064) //ss
 	       ({"mt"}, {15},  1.048) //zll
 	       ({"mt"}, {16},  1.064) //misc
-	       ({"mt"}, {100}, 1.042) //incl
-	       ({"et"}, {1},   1.042) //ggh
-	       ({"et"}, {2},   1.040) //qqh
+	       ({"mt"}, {300}, 1.042) //incl
+	       ({"et"}, {100},   1.042) //ggh
+	       ({"et"}, {101},   1.042) //ggh
+	       ({"et"}, {102},   1.042) //ggh
+	       ({"et"}, {103},   1.042) //ggh
+	       ({"et"}, {200},   1.040) //qqh
+	       ({"et"}, {201},   1.040) //qqh
+	       ({"et"}, {202},   1.040) //qqh
+	       ({"et"}, {203},   1.040) //qqh
 	       ({"et"}, {11},  1.037) //w
 	       ({"et"}, {12},  1.062) //ztt
 	       ({"et"}, {13},  1.040) //tt
 	       ({"et"}, {14},  1.045) //ss
 	       ({"et"}, {15},  1.051) //zll
 	       ({"et"}, {16},  1.041) //misc
-	       ({"et"}, {100}, 1.042) //incl
-	       ({"tt"}, {1},   1.068) //ggh
-	       ({"tt"}, {2},   1.067) //qqh
+	       ({"et"}, {300}, 1.042) //incl
+	       ({"tt"}, {100},   1.068) //ggh
+	       ({"tt"}, {101},   1.068) //ggh
+	       ({"tt"}, {102},   1.068) //ggh
+	       ({"tt"}, {103},   1.068) //ggh
+	       ({"tt"}, {200},   1.067) //qqh
+	       ({"tt"}, {201},   1.067) //qqh
+	       ({"tt"}, {202},   1.067) //qqh
+	       ({"tt"}, {203},   1.067) //qqh
 	       ({"tt"}, {12},  1.067) //ztt
 	       ({"tt"}, {16},  1.078) //misc
 	       ({"tt"}, {17},  1.070) //noniso
-	       ({"tt"}, {100}, 1.067) //incl
+	       ({"tt"}, {300}, 1.067) //incl
 	       );
   // correlated between eras
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_norm_syst_$CHANNEL", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {1},   1.049) //ggh
-	       ({"mt"}, {2},   1.041) //qqh
+	       ({"mt"}, {100},   1.049) //ggh
+	       ({"mt"}, {101},   1.049) //ggh
+	       ({"mt"}, {102},   1.049) //ggh
+	       ({"mt"}, {103},   1.049) //ggh
+	       ({"mt"}, {200},   1.041) //qqh
+	       ({"mt"}, {201},   1.041) //qqh
+	       ({"mt"}, {202},   1.041) //qqh
+	       ({"mt"}, {203},   1.041) //qqh
 	       ({"mt"}, {11},  1.038) //w
 	       ({"mt"}, {12},  1.069) //ztt
 	       ({"mt"}, {13},  1.037) //tt
 	       ({"mt"}, {14},  1.064) //ss
 	       ({"mt"}, {15},  1.048) //zll
 	       ({"mt"}, {16},  1.064) //misc
-	       ({"mt"}, {100}, 1.042) //incl
-	       ({"et"}, {1},   1.042) //ggh
-	       ({"et"}, {2},   1.040) //qqh
+	       ({"mt"}, {300}, 1.042) //incl
+	       ({"et"}, {100},   1.042) //ggh
+	       ({"et"}, {101},   1.042) //ggh
+	       ({"et"}, {102},   1.042) //ggh
+	       ({"et"}, {103},   1.042) //ggh
+	       ({"et"}, {200},   1.040) //qqh
+	       ({"et"}, {201},   1.040) //qqh
+	       ({"et"}, {202},   1.040) //qqh
+	       ({"et"}, {203},   1.040) //qqh
 	       ({"et"}, {11},  1.037) //w
 	       ({"et"}, {12},  1.062) //ztt
 	       ({"et"}, {13},  1.040) //tt
 	       ({"et"}, {14},  1.045) //ss
 	       ({"et"}, {15},  1.051) //zll
 	       ({"et"}, {16},  1.041) //misc
-	       ({"et"}, {100}, 1.042) //incl
-	       ({"tt"}, {1},   1.068) //ggh
-	       ({"tt"}, {2},   1.067) //qqh
+	       ({"et"}, {300}, 1.042) //incl
+	       ({"tt"}, {100},   1.068) //ggh
+	       ({"tt"}, {101},   1.068) //ggh
+	       ({"tt"}, {102},   1.068) //ggh
+	       ({"tt"}, {103},   1.068) //ggh
+	       ({"tt"}, {200},   1.067) //qqh
+	       ({"tt"}, {201},   1.067) //qqh
+	       ({"tt"}, {202},   1.067) //qqh
+	       ({"tt"}, {203},   1.067) //qqh
 	       ({"tt"}, {12},  1.067) //ztt
 	       ({"tt"}, {16},  1.078) //misc
 	       ({"tt"}, {17},  1.070) //noniso
-	       ({"tt"}, {100}, 1.067) //incl
+	       ({"tt"}, {300}, 1.067) //incl
 	       );
+
 
   // Syst. norm: Bin-dependent, correlated across years
   // uncorrelated between eras
@@ -1223,60 +1272,87 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_$BIN_$ERA", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {1},   1.028) //ggh
-	       ({"mt"}, {2},   1.028) //qqh
 	       ({"mt"}, {11},  1.018) //w
 	       ({"mt"}, {12},  1.032) //ztt
 	       ({"mt"}, {13},  1.021) //tt
 	       ({"mt"}, {14},  1.014) //ss
 	       ({"mt"}, {15},  1.028) //zll
 	       ({"mt"}, {16},  1.025) //misc
-	       ({"mt"}, {100}, 1.025) //incl
-	       ({"et"}, {1},   1.028) //ggh
-	       ({"et"}, {2},   1.025) //qqh
+	       ({"mt"}, {300}, 1.025) //incl
 	       ({"et"}, {11},  1.014) //w
 	       ({"et"}, {12},  1.028) //ztt
 	       ({"et"}, {13},  1.021) //tt
 	       ({"et"}, {14},  1.014) //ss
 	       ({"et"}, {15},  1.028) //zll
 	       ({"et"}, {16},  1.025) //misc
-	       ({"et"}, {100}, 1.025) //incl
-	       ({"tt"}, {1},   1.021) //ggh
-	       ({"tt"}, {2},   1.021) //qqh
+	       ({"et"}, {300}, 1.025) //incl
 	       ({"tt"}, {12},  1.025) //ztt
 	       ({"tt"}, {16},  1.021) //misc
 	       ({"tt"}, {17},  1.014) //noniso
-	       ({"tt"}, {100}, 1.021) //incl
+	       ({"tt"}, {300}, 1.021) //incl
 	       );
+
+  // ggH and qqH categories
+  cb.cp()
+      .channel({"et", "mt", "tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_ggH_$ERA", "lnN", SystMap<channel, bin_id>::init
+	       ({"mt"}, {100, 101, 102, 103},  1.028)
+	       ({"et"}, {100, 101, 102, 103},  1.028)
+	       ({"tt"}, {100, 101, 102, 103},  1.021)
+	       );
+
+  cb.cp()
+      .channel({"et", "mt", "tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_qqH_$ERA", "lnN", SystMap<channel, bin_id>::init
+	       ({"mt"}, {200, 201, 202, 203},  1.028)
+	       ({"et"}, {200, 201, 202, 203},  1.025)
+	       ({"tt"}, {200, 201, 202, 203},  1.021)
+	       );
+
   // correlated between eras
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_$BIN", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {1},   1.028) //ggh
-	       ({"mt"}, {2},   1.028) //qqh
 	       ({"mt"}, {11},  1.018) //w
 	       ({"mt"}, {12},  1.032) //ztt
 	       ({"mt"}, {13},  1.021) //tt
 	       ({"mt"}, {14},  1.014) //ss
 	       ({"mt"}, {15},  1.028) //zll
 	       ({"mt"}, {16},  1.025) //misc
-	       ({"mt"}, {100}, 1.025) //incl
-	       ({"et"}, {1},   1.028) //ggh
-	       ({"et"}, {2},   1.025) //qqh
+	       ({"mt"}, {300}, 1.025) //incl
 	       ({"et"}, {11},  1.014) //w
 	       ({"et"}, {12},  1.028) //ztt
 	       ({"et"}, {13},  1.021) //tt
 	       ({"et"}, {14},  1.014) //ss
 	       ({"et"}, {15},  1.028) //zll
 	       ({"et"}, {16},  1.025) //misc
-	       ({"et"}, {100}, 1.025) //incl
-	       ({"tt"}, {1},   1.021) //ggh
-	       ({"tt"}, {2},   1.021) //qqh
+	       ({"et"}, {300}, 1.025) //incl
 	       ({"tt"}, {12},  1.025) //ztt
 	       ({"tt"}, {16},  1.021) //misc
 	       ({"tt"}, {17},  1.014) //noniso
-	       ({"tt"}, {100}, 1.021) //incl
+	       ({"tt"}, {300}, 1.021) //incl
+	       );
+
+  // ggH and qqH categories
+  cb.cp()
+      .channel({"et", "mt", "tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_ggH", "lnN", SystMap<channel, bin_id>::init
+	       ({"mt"}, {100, 101, 102, 103},  1.028)
+	       ({"et"}, {100, 101, 102, 103},  1.028)
+	       ({"tt"}, {100, 101, 102, 103},  1.021)
+	       );
+
+  cb.cp()
+      .channel({"et", "mt", "tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_qqH", "lnN", SystMap<channel, bin_id>::init
+	       ({"mt"}, {200, 201, 202, 203},  1.028)
+	       ({"et"}, {200, 201, 202, 203},  1.025)
+	       ({"tt"}, {200, 201, 202, 203},  1.021)
 	       );
 }
 } // namespace ch
