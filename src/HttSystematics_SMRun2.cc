@@ -104,7 +104,7 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
   } else if (era == 2017) {
       lumi_unc = 1.023;
   } else if (era == 2018) {
-      lumi_unc = 1.023;
+      lumi_unc = 1.025;
   }
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
