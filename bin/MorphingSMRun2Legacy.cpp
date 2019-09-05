@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
   string input_folder_tt = "Vienna/";
   string chan = "all";
   string postfix = "-ML";
+  string midfix = "";
   bool regional_jec = true;
   bool ggh_wg1 = true;
   bool auto_rebin = false;
@@ -73,6 +74,7 @@ int main(int argc, char **argv) {
       ("input_folder_mt", po::value<string>(&input_folder_mt)->default_value(input_folder_mt))
       ("input_folder_tt", po::value<string>(&input_folder_tt)->default_value(input_folder_tt))
       ("postfix", po::value<string>(&postfix)->default_value(postfix))
+      ("midfix", po::value<string>(&midfix)->default_value(midfix))
       ("channel", po::value<string>(&chan)->default_value(chan))
       ("auto_rebin", po::value<bool>(&auto_rebin)->default_value(auto_rebin))
       ("rebin_categories", po::value<bool>(&rebin_categories)->default_value(rebin_categories))
@@ -278,10 +280,10 @@ int main(int argc, char **argv) {
   // Extract shapes from input ROOT files
   for (string chn : chns) {
     cb.cp().channel({chn}).backgrounds().ExtractShapes(
-        input_dir[chn] + "htt_" + chn + ".inputs-sm-" + era_tag + postfix + ".root",
+        input_dir[chn] + std::to_string(era) + midfix + chn + "-synced"+postfix+ ".root",
         "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC");
     cb.cp().channel({chn}).process(sig_procs).ExtractShapes(
-        input_dir[chn] + "htt_" + chn + ".inputs-sm-" + era_tag + postfix + ".root",
+        input_dir[chn] + std::to_string(era) + midfix + chn + "-synced"+postfix+ ".root",
         "$BIN/$PROCESS$MASS", "$BIN/$PROCESS$MASS_$SYSTEMATIC");
   }
 
@@ -523,10 +525,8 @@ int main(int argc, char **argv) {
   // Write out datacards. Naming convention important for rest of workflow. We
   // make one directory per chn-cat, one per chn and cmb. In this code we only
   // store the individual datacards for each directory to be combined later.
-  string output_prefix = "output/";
-  ch::CardWriter writer(output_prefix + output_folder + "/$TAG/$MASS/$BIN.txt",
-                        output_prefix + output_folder +
-                            "/$TAG/common/htt_input_" + era_tag + ".root");
+  ch::CardWriter writer(output_folder + "/$TAG/$MASS/$BIN.txt",
+    output_folder +"/$TAG/common/htt_input_" + era_tag + ".root");
 
   // We're not using mass as an identifier - which we need to tell the
   // CardWriter
