@@ -524,7 +524,7 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
       .AddSyst(cb, "CMS_scale_mc_t_3prong_$ERA", "shape", SystMap<>::init(0.5));
 
   // Embedded uncorrelated uncertainty
-
+  if(embedding){
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
@@ -539,7 +539,7 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
       .AddSyst(cb, "CMS_scale_emb_t_3prong_$ERA", "shape", SystMap<>::init(0.5));
-
+  }
   // MC + embedded correlated uncertainty
 
   cb.cp()
@@ -577,7 +577,7 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
       .AddSyst(cb, "CMS_scale_mc_t_3prong", "shape", SystMap<>::init(0.5));
 
   // Embedded uncorrelated uncertainty
-
+  if(embedding){
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
@@ -592,7 +592,7 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
       .AddSyst(cb, "CMS_scale_emb_t_3prong", "shape", SystMap<>::init(0.5));
-
+  }
   // MC + embedded correlated uncertainty
 
   cb.cp()
