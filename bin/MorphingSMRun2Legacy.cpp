@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
   string input_folder_tt = "Vienna/";
   string chan = "all";
   string postfix = "-ML";
+  string midfix = "";
   bool regional_jec = true;
   bool ggh_wg1 = true;
   bool auto_rebin = false;
@@ -53,6 +54,8 @@ int main(int argc, char **argv) {
   bool manual_rebin_for_yields = false;
   bool real_data = false;
   bool jetfakes = true;
+  bool train_ff = true;
+  bool train_emb = true;
   bool embedding = false;
   bool classic_bbb = false;
   bool binomial_bbb = false;
@@ -71,6 +74,7 @@ int main(int argc, char **argv) {
       ("input_folder_mt", po::value<string>(&input_folder_mt)->default_value(input_folder_mt))
       ("input_folder_tt", po::value<string>(&input_folder_tt)->default_value(input_folder_tt))
       ("postfix", po::value<string>(&postfix)->default_value(postfix))
+      ("midfix", po::value<string>(&midfix)->default_value(midfix))
       ("channel", po::value<string>(&chan)->default_value(chan))
       ("auto_rebin", po::value<bool>(&auto_rebin)->default_value(auto_rebin))
       ("rebin_categories", po::value<bool>(&rebin_categories)->default_value(rebin_categories))
@@ -86,19 +90,13 @@ int main(int argc, char **argv) {
       ("gof_category_name", po::value<string>(&gof_category_name)->default_value(gof_category_name))
       ("jetfakes", po::value<bool>(&jetfakes)->default_value(jetfakes))
       ("embedding", po::value<bool>(&embedding)->default_value(embedding))
+      ("train_ff", po::value<bool>(&train_ff)->default_value(train_ff))
+      ("train_emb", po::value<bool>(&train_emb)->default_value(train_emb))
       ("classic_bbb", po::value<bool>(&classic_bbb)->default_value(classic_bbb))
       ("binomial_bbb", po::value<bool>(&binomial_bbb)->default_value(binomial_bbb))
       ("era", po::value<int>(&era)->default_value(era));
   po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
   po::notify(vm);
-
-  // Define the location of the "auxiliaries" directory where we can
-  // source the input files containing the datacard shapes
-  std::map<string, string> input_dir;
-  input_dir["mt"] = base_path + "/" + input_folder_mt + "/";
-  input_dir["et"] = base_path + "/" + input_folder_et + "/";
-  input_dir["tt"] = base_path + "/" + input_folder_tt + "/";
-  input_dir["em"] = base_path + "/" + input_folder_em + "/";
 
   // Define channels
   VString chns;
@@ -161,124 +159,52 @@ int main(int argc, char **argv) {
   // Define categories
   map<string, Categories> cats;
   std::vector<std::string> cats_to_keep; // will be used later for the card writer
-  // STXS stage 0 categories (optimized on ggH and VBF)
-  if(categories == "stxs_stage0"){
-    cats["et"] = {
-        { 1, "et_ggh"},
-        { 2, "et_qqh"},
-        {11, "et_w"},
-        {12, "et_ztt"},
-        {13, "et_tt"},
-        {14, "et_ss"},
-        {15, "et_zll"},
-        {16, "et_misc"},
+  for (auto chn : chns){
+    //define mapping for signal categories if categories is stage0 /1p1
+    if(categories == "stxs_stage0"){
+      cats[chn]={
+        { 1, chn+"_ggh"},
+        { 2, chn+"_qqh"},
     };
-     cats["mt"] = {
-        { 1, "mt_ggh"},
-        { 2, "mt_qqh"},
-        {11, "mt_w"},
-        {12, "mt_ztt"},
-        {13, "mt_tt"},
-        {14, "mt_ss"},
-        {15, "mt_zll"},
-        {16, "mt_misc"},
-    };
-     cats["tt"] = {
-        { 1, "tt_ggh"},
-        { 2, "tt_qqh"},
-        {12, "tt_ztt"},
-        {16, "tt_misc"},
-        {17, "tt_noniso"},
-    };
-     cats["em"] = {
-        { 1, "em_ggh"},
-        { 2, "em_qqh"},
-        {12, "em_ztt"},
-        {13, "em_tt"},
-        {14, "em_ss"},
-        {16, "em_misc"},
-//        {18, "em_st"},
-        {19, "em_db"},
-    };
+    } else if (categories == "stxs_stage1p1") {
+        cats[chn]={
+          {100, chn+"_ggh_100"},
+          {101, chn+"_ggh_101"},
+          {102, chn+"_ggh_102"},
+          {103, chn+"_ggh_103"},
+          {200, chn+"_qqh_200"},
+          {201, chn+"_qqh_201"},
+          {202, chn+"_qqh_202"},
+          {203, chn+"_qqh_203"},
+        };
+    }
+    //define mapping for background categories if categories ist stage0 /1p1
+    //11 :w , 12: ztt, 13: tt, 14: ss, 15: zll, 16: misc, 17:noniso, 18: st?? 19:db, 20:emb, 21: ff
+    if (categories == "stxs_stage0" || categories == "stxs_stage1p1"){
+      cats[chn].push_back({16,chn+"_misc"});
+
+      if(chn=="em") cats[chn].push_back({19, chn+"_db"});
+      if(chn!="tt") cats[chn].push_back({13, chn+"_tt"});
+      if(chn=="mt" || chn=="et") cats[chn].push_back({15, chn+"_zll"});
+
+      if (train_emb) cats[chn].push_back({20, chn+"_emb"});
+      else cats[chn].push_back({12, chn+"_ztt"});
+
+      if (train_ff) {
+        if(chn=="em") cats[chn].push_back({14, chn+"_ss"}); // switch to ff does nothing for em so this is added both times
+        else cats[chn].push_back({21, chn+"_ff"});
+      } else {
+        if(chn=="mt" || chn=="et") cats[chn].push_back({11, chn+"_w"});
+        if(chn=="tt") cats[chn].push_back({17, chn+"_noniso"});
+        else cats[chn].push_back({14, chn+"_ss"});
+      }
+    }
+    else if(categories == "gof") cats[chn] = { {300, gof_category_name.c_str() }};
+    else throw std::runtime_error("Given categorization is not known.");
   }
-  // STXS stage 1 categories (optimized on STXS stage 1 splits of ggH and VBF)
-  else if(categories == "stxs_stage1p1"){
-    cats["et"] = {
-        {100, "et_ggh_100"},
-        {101, "et_ggh_101"},
-        {102, "et_ggh_102"},
-        {103, "et_ggh_103"},
-        {200, "et_qqh_200"},
-        {201, "et_qqh_201"},
-        {202, "et_qqh_202"},
-        {203, "et_qqh_203"},
-        { 11, "et_w"},
-        { 12, "et_ztt"},
-        { 13, "et_tt"},
-        { 14, "et_ss"},
-        { 15, "et_zll"},
-        { 16, "et_misc"},
-    };
-     cats["mt"] = {
-        {100, "mt_ggh_100"},
-        {101, "mt_ggh_101"},
-        {102, "mt_ggh_102"},
-        {103, "mt_ggh_103"},
-        {200, "mt_qqh_200"},
-        {201, "mt_qqh_201"},
-        {202, "mt_qqh_202"},
-        {203, "mt_qqh_203"},
-        { 11, "mt_w"},
-        { 12, "mt_ztt"},
-        { 13, "mt_tt"},
-        { 14, "mt_ss"},
-        { 15, "mt_zll"},
-        { 16, "mt_misc"},
-    };
-     cats["tt"] = {
-        {100, "tt_ggh_100"},
-        {101, "tt_ggh_101"},
-        {102, "tt_ggh_102"},
-        {103, "tt_ggh_103"},
-        {200, "tt_qqh_200"},
-        {201, "tt_qqh_201"},
-        {202, "tt_qqh_202"},
-        {203, "tt_qqh_203"},
-        { 12, "tt_ztt"},
-        { 16, "tt_misc"},
-        { 17, "tt_noniso"},
-    };
-     cats["em"] = {
-        {100, "em_ggh_100"},
-        {101, "em_ggh_101"},
-        {102, "em_ggh_102"},
-        {103, "em_ggh_103"},
-        {200, "em_qqh_200"},
-        {201, "em_qqh_201"},
-        {202, "em_qqh_202"},
-        {203, "em_qqh_203"},
-        { 12, "em_ztt"},
-        { 13, "em_tt"},
-        { 14, "em_ss"},
-        { 16, "em_misc"},
-        { 19, "em_db"},
-    };
+  for (auto chn : chns){
+    for (auto tuple: cats[chn]) cout << tuple.first << ": " << tuple.second << endl;
   }
-  else if(categories == "gof"){
-    cats["et"] = {
-        {300, gof_category_name.c_str() },
-    };
-    cats["mt"] = {
-        {300, gof_category_name.c_str() },
-    };
-    cats["tt"] = {
-        {300, gof_category_name.c_str() },
-    };
-    cats["em"] = {
-        {300, gof_category_name.c_str() },
-    };
-  }
-  else throw std::runtime_error("Given categorization is not known.");
 
   // Specify signal processes and masses
   vector<string> sig_procs;
@@ -344,13 +270,20 @@ int main(int argc, char **argv) {
   // Add systematics
   ch::AddSMRun2Systematics(cb, jetfakes, embedding, regional_jec, ggh_wg1, era);
 
+  // Define the location of the "auxiliaries" directory where we can
+  // source the input files containing the datacard shapes
+  std::map<string, string> input_dir;
+  input_dir["mt"] = base_path + "/" + input_folder_mt + "/";
+  input_dir["et"] = base_path + "/" + input_folder_et + "/";
+  input_dir["tt"] = base_path + "/" + input_folder_tt + "/";
+  input_dir["em"] = base_path + "/" + input_folder_em + "/";
   // Extract shapes from input ROOT files
   for (string chn : chns) {
     cb.cp().channel({chn}).backgrounds().ExtractShapes(
-        input_dir[chn] + "htt_" + chn + ".inputs-sm-" + era_tag + postfix + ".root",
+        input_dir[chn] + std::to_string(era) + midfix + chn + "-synced"+postfix+ ".root",
         "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC");
     cb.cp().channel({chn}).process(sig_procs).ExtractShapes(
-        input_dir[chn] + "htt_" + chn + ".inputs-sm-" + era_tag + postfix + ".root",
+        input_dir[chn] + std::to_string(era) + midfix + chn + "-synced"+postfix+ ".root",
         "$BIN/$PROCESS$MASS", "$BIN/$PROCESS$MASS_$SYSTEMATIC");
   }
 
@@ -592,10 +525,8 @@ int main(int argc, char **argv) {
   // Write out datacards. Naming convention important for rest of workflow. We
   // make one directory per chn-cat, one per chn and cmb. In this code we only
   // store the individual datacards for each directory to be combined later.
-  string output_prefix = "output/";
-  ch::CardWriter writer(output_prefix + output_folder + "/$TAG/$MASS/$BIN.txt",
-                        output_prefix + output_folder +
-                            "/$TAG/common/htt_input_" + era_tag + ".root");
+  ch::CardWriter writer(output_folder + "/$TAG/$MASS/$BIN.txt",
+    output_folder +"/$TAG/common/htt_input_" + era_tag + ".root");
 
   // We're not using mass as an identifier - which we need to tell the
   // CardWriter
