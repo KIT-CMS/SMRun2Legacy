@@ -839,46 +839,24 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
                SystMap<>::init(1.00));
 
   // Electron fakes
-  if (era == 2016) {
-      cb.cp()
-          .channel({"et"})
-          .process({"ZL"})
-          .AddSyst(cb, "CMS_eFakeTau_$ERA", "lnN", SystMap<>::init(1.11)); //unsplitted 1.155
-      cb.cp()
-          .channel({"et"})
-          .process({"ZL"})
-          .AddSyst(cb, "CMS_eFakeTau", "lnN", SystMap<>::init(1.11));
-  } else if (era == 2017 || era == 2018) {
-      cb.cp()
-          .channel({"et"})
-          .process({"ZL"})
-          .AddSyst(cb, "CMS_eFakeTau_$ERA", "lnN", SystMap<>::init(1.113)); //unsplitted 1.16
-      cb.cp()
-          .channel({"et"})
-          .process({"ZL"})
-          .AddSyst(cb, "CMS_eFakeTau", "lnN", SystMap<>::init(1.113));
-  }
+  cb.cp()
+      .channel({"et"})
+      .process({"ZL"})
+      .AddSyst(cb, "CMS_eFakeTau_$ERA", "lnN", SystMap<>::init(1.106)); //unsplit 1.15
+  cb.cp()
+      .channel({"et"})
+      .process({"ZL"})
+      .AddSyst(cb, "CMS_eFakeTau", "lnN", SystMap<>::init(1.106));
 
   // Muon fakes
-  if (era == 2016) {
-      cb.cp()
-          .channel({"mt"})
-          .process({"ZL"})
-          .AddSyst(cb, "CMS_mFakeTau_$ERA", "lnN", SystMap<>::init(1.192)); //unsplitted 1.272
-      cb.cp()
-          .channel({"mt"})
-          .process({"ZL"})
-          .AddSyst(cb, "CMS_mFakeTau", "lnN", SystMap<>::init(1.192));
-  } else if (era == 2017 || era == 2018) {
-      cb.cp()
-          .channel({"mt"})
-          .process({"ZL"})
-          .AddSyst(cb, "CMS_mFakeTau_$ERA", "lnN", SystMap<>::init(1.184)); //unsplitted 1.26
-      cb.cp()
-          .channel({"mt"})
-          .process({"ZL"})
-          .AddSyst(cb, "CMS_mFakeTau", "lnN", SystMap<>::init(1.184));
-  }
+  cb.cp()
+      .channel({"mt"})
+      .process({"ZL"})
+      .AddSyst(cb, "CMS_mFakeTau_$ERA", "lnN", SystMap<>::init(1.177)); //unsplit 1.25
+  cb.cp()
+      .channel({"mt"})
+      .process({"ZL"})
+      .AddSyst(cb, "CMS_mFakeTau", "lnN", SystMap<>::init(1.177));
 
   // ##########################################################################
   // Uncertainty: Jet to tau fakes
