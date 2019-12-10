@@ -122,7 +122,7 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(mc_processes)
-      .AddSyst(cb, "CMS_prefiring_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_prefiring", "shape", SystMap<>::init(1.00));
   }
 
   // ##########################################################################
