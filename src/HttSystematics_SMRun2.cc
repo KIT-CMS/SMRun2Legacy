@@ -221,7 +221,7 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
   // ##########################################################################
 
   std::string tauIDptbins[5] = {"30-35", "35-40", "40-500", "500-1000", "1000-inf"};
-  std::string tauIDdmbins[5] = {"0", "1", "10", "11"};
+  std::string tauIDdmbins[4] = {"0", "1", "10", "11"};
 
   // Common component acting on MC
   
