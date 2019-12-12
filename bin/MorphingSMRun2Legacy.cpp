@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
     bkgs = JoinStr({bkgs,{"ggHWW125", "qqHWW125"}});
     bkgs_em = JoinStr({bkgs_em,{"ggHWW125", "qqHWW125"}});
   }
-     
+
 
   if(embedding){
     bkgs.erase(std::remove(bkgs.begin(), bkgs.end(), "ZTT"), bkgs.end());
@@ -166,14 +166,14 @@ int main(int argc, char **argv) {
         { 2, chn+"_qqh"},
     };
     } else if (categories == "stxs_stage1p1") {
-        cats[chn]={ 
-          {101, chn+"_ggh_PTHGT200"},
-          {102, chn+"_ggh_0J"},
-          {104, chn+"_ggh_1J_PTH0to120"},
-          {105, chn+"_ggh_1J_PTH120to200"},
-          {106, chn+"_ggh_2J"},
-          {200, chn+"_qqh_PTHGT200"},
-          {201, chn+"_qqh_2J"},
+        cats[chn]={
+          {100, chn+"_ggh_0J"},
+          {101, chn+"_ggh_1J_PTH0to120"},
+          {102, chn+"_ggh_1J_PTH120to200"},
+          {103, chn+"_ggh_2J"},
+          {104, chn+"_ggh_PTHGT200"},
+          {200, chn+"_qqh_2J"},
+          {201, chn+"_qqh_PTHGT200"},
           {202, chn+"_vbftopo_highmjj"},
           {203, chn+"_vbftopo_lowmjj"},
         };
