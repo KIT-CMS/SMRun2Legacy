@@ -149,8 +149,7 @@ int main(int argc, char **argv) {
   }
   if (chan.find("mt") != std::string::npos || chan.find("et") != std::string::npos || chan.find("tt") != std::string::npos) {
     std::cout << "For et,mt,tt channels : \n";
-    for (unsigned int i=0; i < bkgs.size(); i++) std::cout << bkgs[i] << std::endl;
-  }
+    for (unsigned int i=0; i < bkgs.size(); i++) std::cout << bkgs[i] << std::endl;}
   bkg_procs["et"] = bkgs;
   bkg_procs["mt"] = bkgs;
   bkg_procs["tt"] = bkgs;
@@ -167,17 +166,19 @@ int main(int argc, char **argv) {
         { 2, chn+"_qqh"},
     };
     } else if (categories == "stxs_stage1p1") {
-        cats[chn]={
-          {100, chn+"_ggh_100"},
-          {101, chn+"_ggh_101"},
-          {102, chn+"_ggh_102"},
-          {103, chn+"_ggh_103"},
-          {200, chn+"_qqh_200"},
-          {201, chn+"_qqh_201"},
-          {202, chn+"_qqh_202"},
-          {203, chn+"_qqh_203"},
+        cats[chn]={ 
+          {101, chn+"_ggh_PTHGT200"},
+          {102, chn+"_ggh_0J"},
+          {104, chn+"_ggh_1J_PTH0to120"},
+          {105, chn+"_ggh_1J_PTH120to200"},
+          {106, chn+"_ggh_2J"},
+          {200, chn+"_qqh_PTHGT200"},
+          {201, chn+"_qqh_2J"},
+          {202, chn+"_vbftopo_highmjj"},
+          {203, chn+"_vbftopo_lowmjj"},
         };
     }
+
     //define mapping for background categories if categories ist stage0 /1p1
     //11 :w , 12: ztt, 13: tt, 14: ss, 15: zll, 16: misc, 17:noniso, 18: st?? 19:db, 20:emb, 21: ff
     if (categories == "stxs_stage0" || categories == "stxs_stage1p1"){
