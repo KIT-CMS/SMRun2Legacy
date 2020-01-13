@@ -861,21 +861,13 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
   cb.cp()
       .channel({"et"})
       .process({"ZL"})
-      .AddSyst(cb, "CMS_eFakeTau_$ERA", "lnN", SystMap<>::init(1.106)); //unsplit 1.15
-  cb.cp()
-      .channel({"et"})
-      .process({"ZL"})
-      .AddSyst(cb, "CMS_eFakeTau", "lnN", SystMap<>::init(1.106));
+      .AddSyst(cb, "CMS_eFakeTau_$ERA", "lnN", SystMap<>::init(1.15));
 
   // Muon fakes
   cb.cp()
       .channel({"mt"})
       .process({"ZL"})
-      .AddSyst(cb, "CMS_mFakeTau_$ERA", "lnN", SystMap<>::init(1.177)); //unsplit 1.25
-  cb.cp()
-      .channel({"mt"})
-      .process({"ZL"})
-      .AddSyst(cb, "CMS_mFakeTau", "lnN", SystMap<>::init(1.177));
+      .AddSyst(cb, "CMS_mFakeTau_$ERA", "lnN", SystMap<>::init(1.25));
 
   // ##########################################################################
   // Uncertainty: Jet to tau fakes
