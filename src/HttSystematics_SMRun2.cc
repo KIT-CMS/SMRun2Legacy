@@ -813,10 +813,17 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
   // - FIXME: References?
   // ##########################################################################
 
-  cb.cp()
-      .channel({"et", "mt", "tt", "em"})
-      .process({"ZTT", "ZL", "ZJ"})
-      .AddSyst(cb, "CMS_htt_dyShape_$ERA", "shape", SystMap<>::init(0.10));
+  if (era == 2016) {
+      cb.cp()
+          .channel({"et", "mt", "tt", "em"})
+          .process({"ZTT", "ZL", "ZJ"})
+          .AddSyst(cb, "CMS_htt_dyShape_$ERA", "shape", SystMap<>::init(0.10));
+  } else {
+      cb.cp()
+          .channel({"et", "mt", "tt", "em"})
+          .process({"ZTT", "ZL", "ZJ"})
+          .AddSyst(cb, "CMS_htt_dyShape", "shape", SystMap<>::init(0.10));
+  }
 
   // ##########################################################################
   // Uncertainty: TT shape reweighting
