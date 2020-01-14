@@ -56,6 +56,7 @@ int main(int argc, char **argv) {
   bool jetfakes = true;
   bool train_ff = true;
   bool train_emb = true;
+  bool train_stage0 = false;
   bool embedding = false;
   bool classic_bbb = false;
   bool binomial_bbb = false;
@@ -92,6 +93,7 @@ int main(int argc, char **argv) {
       ("embedding", po::value<bool>(&embedding)->default_value(embedding))
       ("train_ff", po::value<bool>(&train_ff)->default_value(train_ff))
       ("train_emb", po::value<bool>(&train_emb)->default_value(train_emb))
+      ("train_stage0", po::value<bool>(&train_stage0)->default_value(train_stage0))
       ("classic_bbb", po::value<bool>(&classic_bbb)->default_value(classic_bbb))
       ("binomial_bbb", po::value<bool>(&binomial_bbb)->default_value(binomial_bbb))
       ("era", po::value<int>(&era)->default_value(era));
@@ -170,17 +172,31 @@ int main(int argc, char **argv) {
       { 1, chn+"_xxh"},
     };
     } else if (categories == "stxs_stage1p1") {
-        cats[chn]={
-          {100, chn+"_ggh_0J"},
-          {101, chn+"_ggh_1J_PTH0to120"},
-          {102, chn+"_ggh_1J_PTH120to200"},
-          {103, chn+"_ggh_2J"},
-          {104, chn+"_ggh_PTHGT200"},
-          {200, chn+"_qqh_2J"},
-          {201, chn+"_qqh_PTHGT200"},
-          {202, chn+"_vbftopo_highmjj"},
-          {203, chn+"_vbftopo_lowmjj"},
-        };
+        if(train_stage0){
+          cats[chn]={
+            {100, chn+"_ggh_100"},
+            {101, chn+"_ggh_101"},
+            {102, chn+"_ggh_102"},
+            {103, chn+"_ggh_103"},
+            {200, chn+"_qqh_200"},
+            {201, chn+"_qqh_201"},
+            {202, chn+"_qqh_202"},
+            {203, chn+"_qqh_203"},
+          };
+        }
+        else {
+          cats[chn]={
+            {100, chn+"_ggh_0J"},
+            {101, chn+"_ggh_1J_PTH0to120"},
+            {102, chn+"_ggh_1J_PTH120to200"},
+            {103, chn+"_ggh_2J"},
+            {104, chn+"_ggh_PTHGT200"},
+            {200, chn+"_qqh_2J"},
+            {201, chn+"_qqh_PTHGT200"},
+            {202, chn+"_vbftopo_highmjj"},
+            {203, chn+"_vbftopo_lowmjj"},
+          };
+        }
     }
 
     //define mapping for background categories if categories ist stage0 /1p1
