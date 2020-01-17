@@ -1150,6 +1150,8 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
 	       ({"mt"}, {14},  1.033) //ss
 	       ({"mt"}, {15},  1.028) //zll
 	       ({"mt"}, {16},  1.042) //misc
+	       ({"mt"}, {20},  1.037) //emb
+	       ({"mt"}, {21},  1.033) //ff
 	       ({"mt"}, {300}, 1.026) //incl
 	       ({"et"}, {11},  1.047) //w
 	       ({"et"}, {12},  1.067) //ztt
@@ -1157,10 +1159,14 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
 	       ({"et"}, {14},  1.038) //ss
 	       ({"et"}, {15},  1.067) //zll
 	       ({"et"}, {16},  1.076) //misc
+	       ({"et"}, {20},  1.067) //emb
+	       ({"et"}, {21},  1.047) //ff
 	       ({"et"}, {300}, 1.046) //incl
 	       ({"tt"}, {12},  1.035) //ztt
 	       ({"tt"}, {16},  1.020) //misc
 	       ({"tt"}, {17},  1.029) //noniso
+	       ({"tt"}, {20},  1.035) //emb
+	       ({"tt"}, {21},  1.029) //ff
 	       ({"tt"}, {300}, 1.029) //incl
 	       );
   // ggH and qqH categories
@@ -1168,9 +1174,9 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_norm_stat_$CHANNEL_ggH_$ERA", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {100, 101, 102, 103},  1.035)
-	       ({"et"}, {100, 101, 102, 103},  1.052)
-	       ({"tt"}, {100, 101, 102, 103},  1.029)
+	       ({"mt"}, {100, 101, 102, 103, 104},  1.035)
+	       ({"et"}, {100, 101, 102, 103, 104},  1.052)
+	       ({"tt"}, {100, 101, 102, 103, 104},  1.029)
 	       );
 
   cb.cp()
@@ -1192,6 +1198,7 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
 	       ({"mt"}, {101},   1.049) //ggh
 	       ({"mt"}, {102},   1.049) //ggh
 	       ({"mt"}, {103},   1.049) //ggh
+	       ({"mt"}, {104},   1.049) //ggh
 	       ({"mt"}, {200},   1.041) //qqh
 	       ({"mt"}, {201},   1.041) //qqh
 	       ({"mt"}, {202},   1.041) //qqh
@@ -1202,11 +1209,14 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
 	       ({"mt"}, {14},  1.064) //ss
 	       ({"mt"}, {15},  1.048) //zll
 	       ({"mt"}, {16},  1.064) //misc
+	       ({"mt"}, {20},  1.069) //emb
+	       ({"mt"}, {21},  1.045) //ff
 	       ({"mt"}, {300}, 1.042) //incl
 	       ({"et"}, {100},   1.042) //ggh
 	       ({"et"}, {101},   1.042) //ggh
 	       ({"et"}, {102},   1.042) //ggh
 	       ({"et"}, {103},   1.042) //ggh
+	       ({"et"}, {104},   1.042) //ggh
 	       ({"et"}, {200},   1.040) //qqh
 	       ({"et"}, {201},   1.040) //qqh
 	       ({"et"}, {202},   1.040) //qqh
@@ -1217,11 +1227,14 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
 	       ({"et"}, {14},  1.045) //ss
 	       ({"et"}, {15},  1.051) //zll
 	       ({"et"}, {16},  1.041) //misc
+	       ({"et"}, {20},  1.062) //ztt
+	       ({"et"}, {21},  1.040) //ff
 	       ({"et"}, {300}, 1.042) //incl
 	       ({"tt"}, {100},   1.068) //ggh
 	       ({"tt"}, {101},   1.068) //ggh
 	       ({"tt"}, {102},   1.068) //ggh
 	       ({"tt"}, {103},   1.068) //ggh
+	       ({"tt"}, {104},   1.068) //ggh
 	       ({"tt"}, {200},   1.067) //qqh
 	       ({"tt"}, {201},   1.067) //qqh
 	       ({"tt"}, {202},   1.067) //qqh
@@ -1229,6 +1242,8 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
 	       ({"tt"}, {12},  1.067) //ztt
 	       ({"tt"}, {16},  1.078) //misc
 	       ({"tt"}, {17},  1.070) //noniso
+	       ({"tt"}, {20},  1.067) //emb
+	       ({"tt"}, {21},  1.070) //ff
 	       ({"tt"}, {300}, 1.067) //incl
 	       );
   // correlated between eras
@@ -1240,6 +1255,7 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
 	       ({"mt"}, {101},   1.049) //ggh
 	       ({"mt"}, {102},   1.049) //ggh
 	       ({"mt"}, {103},   1.049) //ggh
+	       ({"mt"}, {104},   1.049) //ggh
 	       ({"mt"}, {200},   1.041) //qqh
 	       ({"mt"}, {201},   1.041) //qqh
 	       ({"mt"}, {202},   1.041) //qqh
@@ -1250,11 +1266,14 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
 	       ({"mt"}, {14},  1.064) //ss
 	       ({"mt"}, {15},  1.048) //zll
 	       ({"mt"}, {16},  1.064) //misc
+	       ({"mt"}, {20},  1.069) //emb
+	       ({"mt"}, {21},  1.045) //ff
 	       ({"mt"}, {300}, 1.042) //incl
 	       ({"et"}, {100},   1.042) //ggh
 	       ({"et"}, {101},   1.042) //ggh
 	       ({"et"}, {102},   1.042) //ggh
 	       ({"et"}, {103},   1.042) //ggh
+	       ({"et"}, {104},   1.042) //ggh
 	       ({"et"}, {200},   1.040) //qqh
 	       ({"et"}, {201},   1.040) //qqh
 	       ({"et"}, {202},   1.040) //qqh
@@ -1265,11 +1284,14 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
 	       ({"et"}, {14},  1.045) //ss
 	       ({"et"}, {15},  1.051) //zll
 	       ({"et"}, {16},  1.041) //misc
+	       ({"et"}, {20},  1.062) //emb
+	       ({"et"}, {21},  1.040) //ff
 	       ({"et"}, {300}, 1.042) //incl
 	       ({"tt"}, {100},   1.068) //ggh
 	       ({"tt"}, {101},   1.068) //ggh
 	       ({"tt"}, {102},   1.068) //ggh
 	       ({"tt"}, {103},   1.068) //ggh
+	       ({"tt"}, {104},   1.068) //ggh
 	       ({"tt"}, {200},   1.067) //qqh
 	       ({"tt"}, {201},   1.067) //qqh
 	       ({"tt"}, {202},   1.067) //qqh
@@ -1277,6 +1299,8 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
 	       ({"tt"}, {12},  1.067) //ztt
 	       ({"tt"}, {16},  1.078) //misc
 	       ({"tt"}, {17},  1.070) //noniso
+	       ({"tt"}, {20},  1.067) //emb
+	       ({"tt"}, {21},  1.070) //ff
 	       ({"tt"}, {300}, 1.067) //incl
 	       );
 
@@ -1293,6 +1317,8 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
 	       ({"mt"}, {14},  1.014) //ss
 	       ({"mt"}, {15},  1.028) //zll
 	       ({"mt"}, {16},  1.025) //misc
+	       ({"mt"}, {20},  1.032) //emb
+	       ({"mt"}, {21},  1.017) //ss
 	       ({"mt"}, {300}, 1.025) //incl
 	       ({"et"}, {11},  1.014) //w
 	       ({"et"}, {12},  1.028) //ztt
@@ -1300,10 +1326,14 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
 	       ({"et"}, {14},  1.014) //ss
 	       ({"et"}, {15},  1.028) //zll
 	       ({"et"}, {16},  1.025) //misc
+	       ({"et"}, {20},  1.028) //emb
+	       ({"et"}, {21},  1.016) //ff
 	       ({"et"}, {300}, 1.025) //incl
 	       ({"tt"}, {12},  1.025) //ztt
 	       ({"tt"}, {16},  1.021) //misc
 	       ({"tt"}, {17},  1.014) //noniso
+	       ({"tt"}, {20},  1.025) //emb
+	       ({"tt"}, {21},  1.014) //ff
 	       ({"tt"}, {300}, 1.021) //incl
 	       );
 
@@ -1312,9 +1342,9 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_ggH_$ERA", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {100, 101, 102, 103},  1.028)
-	       ({"et"}, {100, 101, 102, 103},  1.028)
-	       ({"tt"}, {100, 101, 102, 103},  1.021)
+	       ({"mt"}, {100, 101, 102, 103, 104},  1.028)
+	       ({"et"}, {100, 101, 102, 103, 104},  1.028)
+	       ({"tt"}, {100, 101, 102, 103, 104},  1.021)
 	       );
 
   cb.cp()
@@ -1337,6 +1367,8 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
 	       ({"mt"}, {14},  1.014) //ss
 	       ({"mt"}, {15},  1.028) //zll
 	       ({"mt"}, {16},  1.025) //misc
+	       ({"mt"}, {20},  1.032) //emb
+	       ({"mt"}, {21},  1.017) //ff
 	       ({"mt"}, {300}, 1.025) //incl
 	       ({"et"}, {11},  1.014) //w
 	       ({"et"}, {12},  1.028) //ztt
@@ -1344,10 +1376,14 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
 	       ({"et"}, {14},  1.014) //ss
 	       ({"et"}, {15},  1.028) //zll
 	       ({"et"}, {16},  1.025) //misc
+	       ({"et"}, {20},  1.028) //emb
+	       ({"et"}, {21},  1.016) //ff
 	       ({"et"}, {300}, 1.025) //incl
 	       ({"tt"}, {12},  1.025) //ztt
 	       ({"tt"}, {16},  1.021) //misc
 	       ({"tt"}, {17},  1.014) //noniso
+	       ({"tt"}, {20},  1.025) //emb
+	       ({"tt"}, {21},  1.014) //ff
 	       ({"tt"}, {300}, 1.021) //incl
 	       );
 
@@ -1356,9 +1392,9 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_ggH", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {100, 101, 102, 103},  1.028)
-	       ({"et"}, {100, 101, 102, 103},  1.028)
-	       ({"tt"}, {100, 101, 102, 103},  1.021)
+	       ({"mt"}, {100, 101, 102, 103, 104},  1.028)
+	       ({"et"}, {100, 101, 102, 103, 104},  1.028)
+	       ({"tt"}, {100, 101, 102, 103, 104},  1.021)
 	       );
 
   cb.cp()
