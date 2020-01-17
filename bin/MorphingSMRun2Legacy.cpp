@@ -49,6 +49,7 @@ int main(int argc, char **argv) {
   string midfix = "";
   bool regional_jec = true;
   bool ggh_wg1 = true;
+  bool qqh_wg1 = true;
   bool auto_rebin = false;
   bool rebin_categories = true;
   bool manual_rebin_for_yields = false;
@@ -81,6 +82,7 @@ int main(int argc, char **argv) {
       ("manual_rebin_for_yields", po::value<bool>(&manual_rebin_for_yields)->default_value(manual_rebin_for_yields))
       ("regional_jec", po::value<bool>(&regional_jec)->default_value(regional_jec))
       ("ggh_wg1", po::value<bool>(&ggh_wg1)->default_value(ggh_wg1))
+      ("qqh_wg1", po::value<bool>(&qqh_wg1)->default_value(qqh_wg1))
       ("real_data", po::value<bool>(&real_data)->default_value(real_data))
       ("verbose", po::value<bool>(&verbose)->default_value(verbose))
       ("remove_empty_categories", po::value<bool>(&remove_empty_categories)->default_value(remove_empty_categories))
@@ -269,7 +271,7 @@ int main(int argc, char **argv) {
   }
 
   // Add systematics
-  ch::AddSMRun2Systematics(cb, jetfakes, embedding, regional_jec, ggh_wg1, era);
+  ch::AddSMRun2Systematics(cb, jetfakes, embedding, regional_jec, ggh_wg1, qqh_wg1, era);
 
   // Define the location of the "auxiliaries" directory where we can
   // source the input files containing the datacard shapes
