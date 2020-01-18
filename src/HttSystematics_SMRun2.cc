@@ -1259,7 +1259,6 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
       .AddSyst(cb, "CMS_ff_norm_syst_$CHANNEL", "lnN", SystMap<channel, bin_id>::init
 	       ({"mt"}, {1},     1.049) //ggh
 	       ({"mt"}, {100},   1.049) //ggh
-	       ({"mt"}, {100},   1.049) //ggh
 	       ({"mt"}, {101},   1.049) //ggh
 	       ({"mt"}, {102},   1.049) //ggh
 	       ({"mt"}, {103},   1.049) //ggh
