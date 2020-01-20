@@ -18,7 +18,7 @@ using ch::syst::process;
 using ch::syst::bin;
 using ch::JoinStr;
 
-void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, bool regional_jec, bool ggh_wg1, int era) {
+  void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, bool regional_jec, bool ggh_wg1, bool qqh_wg1, int era) {
 
   // ##########################################################################
   // Define groups of processes
@@ -864,11 +864,23 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
   cb.cp()
       .channel({"em"})
       .process({"QCD"})
-      .AddSyst(cb, "CMS_htt_qcd_1jet_shape_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_htt_qcd_1jet_rate_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp()
       .channel({"em"})
       .process({"QCD"})
-      .AddSyst(cb, "CMS_htt_qcd_iso", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_htt_qcd_1jet_shape_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+     .channel({"em"})
+     .process({"QCD"})
+     .AddSyst(cb, "CMS_htt_qcd_2jet_rate_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+     .channel({"em"})
+     .process({"QCD"})
+     .AddSyst(cb, "CMS_htt_qcd_2jet_shape_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+     .channel({"em"})
+     .process({"QCD"})
+     .AddSyst(cb, "CMS_htt_qcd_iso", "shape", SystMap<>::init(1.00));
 
   // ##########################################################################
   // Uncertainty: Drell-Yan LO->NLO reweighting
@@ -995,10 +1007,12 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
      .process(JoinStr({signals_ggH,signals_ggHToWW}))
       .AddSyst(cb, "QCDScale_ggH", "lnN", SystMap<>::init(1.039));
   }
+  if (!qqh_wg1) {
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
      .process(JoinStr({signals_qqH,signals_qqHToWW}))
       .AddSyst(cb, "QCDScale_qqH", "lnN", SystMap<>::init(1.005));
+  }
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process({"ZH125"})
@@ -1077,7 +1091,53 @@ void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, b
      .process({signals_ggHToWW})
       .AddSyst(cb, "QCDScale_ggHWW", "lnN", SystMap<>::init(1.039));
   }
-
+ // VBF WG1 uncertainty scheme
+ if (qqh_wg1) {
+   cb.cp()
+     .channel({"et", "mt", "tt", "em"})
+     .process({signals_qqH})
+     .AddSyst(cb, "THU_qqH_TOT", "shape", SystMap<>::init(1.00));
+   cb.cp()
+     .channel({"et", "mt", "tt", "em"})
+     .process({signals_qqH})
+     .AddSyst(cb, "THU_qqH_PTH200", "shape", SystMap<>::init(1.00));
+   cb.cp()
+     .channel({"et", "mt", "tt", "em"})
+     .process({signals_qqH})
+     .AddSyst(cb, "THU_qqH_Mjj60", "shape", SystMap<>::init(1.00));
+   cb.cp()
+     .channel({"et", "mt", "tt", "em"})
+     .process({signals_qqH})
+     .AddSyst(cb, "THU_qqH_Mjj120", "shape", SystMap<>::init(1.00));
+   cb.cp()
+     .channel({"et", "mt", "tt", "em"})
+     .process({signals_qqH})
+     .AddSyst(cb, "THU_qqH_Mjj350", "shape", SystMap<>::init(1.00));
+   cb.cp()
+     .channel({"et", "mt", "tt", "em"})
+     .process({signals_qqH})
+     .AddSyst(cb, "THU_qqH_Mjj700", "shape", SystMap<>::init(1.00));
+   cb.cp()
+     .channel({"et", "mt", "tt", "em"})
+     .process({signals_qqH})
+     .AddSyst(cb, "THU_qqH_Mjj1000", "shape", SystMap<>::init(1.00));
+   cb.cp()
+     .channel({"et", "mt", "tt", "em"})
+     .process({signals_qqH})
+     .AddSyst(cb, "THU_qqH_Mjj1500", "shape", SystMap<>::init(1.00));
+   cb.cp()
+     .channel({"et", "mt", "tt", "em"})
+     .process({signals_qqH})
+     .AddSyst(cb, "THU_qqH_25", "shape", SystMap<>::init(1.00));
+   cb.cp()
+     .channel({"et", "mt", "tt", "em"})
+     .process({signals_qqH})
+     .AddSyst(cb, "THU_qqH_JET01", "shape", SystMap<>::init(1.00));
+   cb.cp()
+     .channel({"et", "mt", "tt", "em"})
+      .process({signals_qqHToWW})
+     .AddSyst(cb, "QCDScale_qqH", "lnN", SystMap<>::init(1.005));
+  }
   // ##########################################################################
   // Uncertainty: Embedded events
   // References:
