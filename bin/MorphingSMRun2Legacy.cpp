@@ -185,7 +185,7 @@ int main(int argc, char **argv) {
 
     //define mapping for background categories if categories ist stage0 /1p1
     //11 :w , 12: ztt, 13: tt, 14: ss, 15: zll, 16: misc, 17:noniso, 18: st?? 19:db, 20:emb, 21: ff
-    if (categories == "stxs_stage0" || categories == "stxs_stage1p1"| | categories=="inclusive"){
+    if (categories == "stxs_stage0" || categories == "stxs_stage1p1" || categories=="inclusive"){
       cats[chn].push_back({16,chn+"_misc"});
 
       if(chn=="em") cats[chn].push_back({19, chn+"_db"});
