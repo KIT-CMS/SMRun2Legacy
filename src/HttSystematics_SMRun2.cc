@@ -543,7 +543,7 @@ using ch::JoinStr;
   // Uncertainty: Tau energy scale
   // References:
   // Notes:
-  // - Tau energy scale is splitted by decay mode.
+  // - Tau energy scale is split by decay mode.
   // - FIXME: References?
   // ##########################################################################
 
@@ -920,17 +920,39 @@ using ch::JoinStr;
   // - FIXME: References?
   // ##########################################################################
 
-  // ZL energy scale splitted by decay mode
+  // ZL energy scale split by decay mode
   cb.cp()
-      .channel({"et", "mt"})
+      .channel({"mt"})
       .process({"ZL"})
       .AddSyst(cb, "CMS_ZLShape_$CHANNEL_1prong_$ERA", "shape",
                SystMap<>::init(1.00));
 
   cb.cp()
-      .channel({"et", "mt"})
+      .channel({"mt"})
       .process({"ZL"})
       .AddSyst(cb, "CMS_ZLShape_$CHANNEL_1prong1pizero_$ERA", "shape",
+               SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"et"})
+      .process({"ZL"})
+      .AddSyst(cb, "CMS_ZLShape_$CHANNEL_1prong_barrel_$ERA", "shape",
+               SystMap<>::init(1.00));
+
+  cb.cp()
+      .channel({"et"})
+      .process({"ZL"})
+      .AddSyst(cb, "CMS_ZLShape_$CHANNEL_1prong1pizero_barrel_$ERA", "shape",
+               SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"et"})
+      .process({"ZL"})
+      .AddSyst(cb, "CMS_ZLShape_$CHANNEL_1prong_endcap_$ERA", "shape",
+               SystMap<>::init(1.00));
+
+  cb.cp()
+      .channel({"et"})
+      .process({"ZL"})
+      .AddSyst(cb, "CMS_ZLShape_$CHANNEL_1prong1pizero_endcap_$ERA", "shape",
                SystMap<>::init(1.00));
 
   // Electron fakes
@@ -967,7 +989,7 @@ using ch::JoinStr;
   // - FIXME: WG1 scheme currently NOT applied to ggHWW -> on purpose?
   // - FIXME: Add TopMassTreatment from HIG-16043 uncertainty model
   // - FIXME: Compare to HIG-16043 uncertainty model:
-  //           - PDF uncertainties splitted by category?
+  //           - PDF uncertainties split by category?
   //           - QCDUnc uncertainties?
   //           - UEPS uncertainties?
   // - FIXME: Check VH QCD scale uncertainty
