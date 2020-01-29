@@ -416,7 +416,7 @@ int main(int argc, char **argv) {
     // Rebin background categories
     for (auto b : cb.cp().bin_set()) {
       TString bstr = b;
-      if (bstr.Contains("ggh") || bstr.Contains("qqh") || bstr.Contains("vbftopo")) continue;
+      if (bstr.Contains("ggh") || bstr.Contains("qqh") || bstr.Contains("vbftopo") || bstr.Contains("xxh")) continue;
       std::cout << "[INFO] Rebin background bin " << b << "\n";
       auto shape = cb.cp().bin({b}).backgrounds().GetShape();
       auto min = shape.GetBinLowEdge(1);
