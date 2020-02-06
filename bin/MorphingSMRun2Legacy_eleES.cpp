@@ -28,8 +28,17 @@
 
 using namespace std;
 using boost::starts_with;
+using ch::syst::SystMap;
+using ch::syst::SystMapAsymm;
+using ch::syst::era;
+using ch::syst::channel;
+using ch::syst::bin_id;
+using ch::syst::process;
+using ch::JoinStr;
+using namespace ch;
 namespace po = boost::program_options;
 
+bool debug=false;
 void dout() {
     if (debug) std::cout << std::endl;
 }
@@ -85,7 +94,7 @@ int main(int argc, char **argv) {
   po::options_description config("configuration");
   config.add_options()
       ("base_path", po::value<string>(&base_path)->default_value(base_path))
-      ("input_folder_ee", po::value<string>(&input_folder_em)->default_value(input_folder_em))
+      ("input_folder_ee", po::value<string>(&input_folder_ee)->default_value(input_folder_ee))
       ("postfix", po::value<string>(&postfix)->default_value(postfix))
       ("midfix", po::value<string>(&midfix)->default_value(midfix))
       ("auto_rebin", po::value<bool>(&auto_rebin)->default_value(auto_rebin))
@@ -124,7 +133,7 @@ int main(int argc, char **argv) {
 
   std::cout << "[INFO] Considerung the following processes:\n";
   std::cout << "For ee channel : \n";
-  for (unsigned int i=0; i < bkgs_em.size(); i++) std::cout << bkgs_em[i] << std::endl;
+  for (unsigned int i=0; i < bkgs.size(); i++) std::cout << bkgs[i] << std::endl;
   bkg_procs["ee"] = bkgs;
 
   // Define categories
@@ -164,7 +173,7 @@ int main(int argc, char **argv) {
 
   // Add systematics
   float lumi_unc = 1.025;
-  if (year == 2017) lumi_unc = 1.023;
+  if (era == 2017) lumi_unc = 1.023;
   cb.cp().process({"ZL", "TTL", "VVL", "W"}).AddSyst(cb, "lumi", "lnN", SystMap<>::init(lumi_unc));
   cb.cp().process({"EMB"}).AddSyst(cb, "norm", "lnN", SystMap<>::init(1.04));
   
@@ -267,7 +276,7 @@ int main(int argc, char **argv) {
   
   dout("First we generate a set of bin names:");
   RooWorkspace ws("htt", "htt");
-  string demo_file = output_dir + "htt_mssm_demo.root";
+  string demo_file = "htt_mssm_demo.root";
   TFile demo(demo_file.c_str(), "RECREATE");
   bool do_morphing = true;
   if (do_morphing)
@@ -296,8 +305,8 @@ int main(int argc, char **argv) {
   dout("cb.PrintAll():");
   cb.PrintAll();
 
-  string foldercmb = output_dir + "cmb";
-  boost::filesystem::create_directories(foldercmb);
+  //string foldercmb = output_dir + "cmb";
+  //boost::filesystem::create_directories(foldercmb);
 
   // Write out datacards. Naming convention important for rest of workflow. We
   // make one directory per chn-cat, one per chn and cmb. In this code we only
