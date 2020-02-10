@@ -768,7 +768,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(mc_processes)
-      .AddSyst(cb, "CMS_reso_j", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_reso_j_$ERA", "shape", SystMap<>::init(1.00));
 
   // ##########################################################################
   // Uncertainty: MET energy scale and Recoil
