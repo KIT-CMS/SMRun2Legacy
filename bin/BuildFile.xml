@@ -1,5 +1,5 @@
 <bin file="MorphingSMRun2Legacy.cpp" name="MorphingSMRun2Legacy"></bin>
-<bin file="MorphingSMRun2Legacy_eleES.cpp" name="MorphingSMRun2Legacy_eleES"></bin>
+<bin file="MorphingSMRun2Legacy_tauES.cpp" name="MorphingSMRun2Legacy_tauES"></bin>
 <use name="root"/>
 <use name="rootmath"/>
 <use name="roofit"/>

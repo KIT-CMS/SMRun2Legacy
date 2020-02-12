@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
   // Define program options
   string output_folder = "sm_run2";
   string base_path = string(getenv("CMSSW_BASE")) + "/src/CombineHarvester/SMRun2Legacy/shapes";
-  string input_folder_ee = "Vienna/";
+  string input_folder_mt = "Vienna/";
   string postfix = "-ML";
   string midfix = "";
   bool regional_jec = true;
@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
   po::options_description config("configuration");
   config.add_options()
       ("base_path", po::value<string>(&base_path)->default_value(base_path))
-      ("input_folder_ee", po::value<string>(&input_folder_ee)->default_value(input_folder_ee))
+      ("input_folder_mt", po::value<string>(&input_folder_mt)->default_value(input_folder_mt))
       ("postfix", po::value<string>(&postfix)->default_value(postfix))
       ("midfix", po::value<string>(&midfix)->default_value(midfix))
       ("auto_rebin", po::value<bool>(&auto_rebin)->default_value(auto_rebin))
@@ -119,22 +119,22 @@ int main(int argc, char **argv) {
   po::notify(vm);
   
   // Prepering the combine run
-  RooRealVar elees("elees", "elees", -1.5, -3.0, 0.0);
-  vector<string> energy_scales {"-3.0","-2.5","-2.0", "-1.8", "-1.6", "-1.4", "-1.2", "-1.0", "-0.9", "-0.8", "-0.7", "-0.6", "-0.5", "-0.4", "-0.3", "-0.2", "-0.1", "0.0"};
-
+  RooRealVar taues("taues", "taues", -1.5, -3.0, 0.0);
+  vector<string> energy_scales {"-2,4","-2.2","-2.0", "-1.8", "-1.6", "-1.4", "-1.2", "-1.0", "-0.8", "-0.6", "-0.4", "-0.2", "0.0","0.2","0.4","0.6","0.8","1.0","1.2","1.4","1.6"};
   // Define channels
   VString chns;
-  chns.push_back("ee");
+  chns.push_back("mt");
 
   // Define background processes
   map<string, VString> bkg_procs;
   VString bkgs;
-  bkgs = {"W", "ZL", "QCD", "TTL", "VVL"};
+
+  bkgs = {"ZL", "TTL", "VVL","jetFakes"};
 
   std::cout << "[INFO] Considerung the following processes:\n";
-  std::cout << "For ee channel : \n";
+  std::cout << "For mt channel : \n";
   for (unsigned int i=0; i < bkgs.size(); i++) std::cout << bkgs[i] << std::endl;
-  bkg_procs["ee"] = bkgs;
+  bkg_procs["mt"] = bkgs;
 
   // Define categories
   map<string, Categories> cats;
@@ -172,16 +172,98 @@ int main(int argc, char **argv) {
   //auto signal = Set2Vec(cb.cp().signals().SetFromProcs(std::mem_fn(&Process::process)));
 
   // Add systematics
+
+  // MC uncertainties:
+  // lumi
   float lumi_unc = 1.025;
   if (era == 2017) lumi_unc = 1.023;
-  cb.cp().process({"ZL", "TTL", "VVL", "W"}).AddSyst(cb, "lumi", "lnN", SystMap<>::init(lumi_unc));
-  cb.cp().process({"EMB"}).AddSyst(cb, "norm", "lnN", SystMap<>::init(1.04));
-  
+  cb.cp()
+      .process({"ZL", "TTL", "VVL"})
+      .AddSyst(cb, "lumi", "lnN", SystMap<>::init(lumi_unc));
+  cb.cp()
+      .process({"EMB"})
+      .AddSyst(cb, "embnorm", "lnN", SystMap<>::init(1.04));
+  // VV
+  cb.cp()
+      .process({"VVL"})
+      .AddSyst(cb, "vvlXsec", "lnN", SystMap<>::init(1.05));
+  // Z
+  cb.cp()
+      .process({"ZL"})
+      .AddSyst(cb, "zlXsec", "lnN", SystMap<>::init(1.04));
+  // TT
+  cb.cp()
+      .process({"TTL"})
+      .AddSyst(cb, "ttlXsec", "lnN", SystMap<>::init(1.06));
+  // Muon fakes
+  cb.cp()
+      .channel({"mt"})
+      .process({"ZL","TTL"})
+      .AddSyst(cb, "CMS_mFakeTau_$ERA", "lnN", SystMap<>::init(1.25));
+  // Embedding Uncertainties
 
+  // Embedded Tau ID in 5 pt bins
+  std::string tauIDptbins[5] = {"30-35", "35-40", "40-500", "500-1000", "1000-inf"};
+  for (auto tauIDbin : tauIDptbins){
+    cb.cp()
+        .process({"EMB"})
+        .AddSyst(cb, "CMS_eff_emb_t_"+tauIDbin+"_$ERA", "shape", SystMap<>::init(1));
+  }
+  cb.cp()
+      .process({"EMB"})
+      .AddSyst(cb, "emb_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.1));
+  // Muon ID
+  cb.cp()
+      .process({"ZL", "TTL", "VVL","EMB"})
+      .AddSyst(cb, "CMS_eff_m", "lnN", SystMap<>::init(1.02));
+    // TTbar contamination 
+  cb.cp()
+    .process({"EMB"})
+    .AddSyst(cb, "emb_ttbar_$ERA", "shape", SystMap<>::init(1.00));
+  // hadronic tau track efficiency 
+  cb.cp()
+    .process({"EMB"})
+    .AddSyst(cb, "CMS_3ProngEff_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+    .process({"EMB"})
+    .AddSyst(cb, "CMS_1ProngPi0Eff_$ERA", "shape", SystMap<>::init(1.00));
+  // Jet Fake Stuff
+// QCD shape stat.
+  cb.cp()
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_qcd_njet0_$CHANNEL_stat_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_qcd_njet1_$CHANNEL_stat_$ERA", "shape", SystMap<>::init(1.00));
+
+  // W shape stat.
+  cb.cp()
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_w_njet0_$CHANNEL_stat_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_w_njet1_$CHANNEL_stat_$ERA", "shape", SystMap<>::init(1.00));
+
+  // TT shape stat.
+  cb.cp()
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_tt_njet1_stat_$ERA", "shape", SystMap<>::init(1.00));
+
+  // Shape syst. of different contributions (QCD/W/tt)
+  // uncorrelated between eras
+  cb.cp()
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_qcd_syst_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_w_syst_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_tt_syst_$ERA", "shape", SystMap<>::init(1.00));
   // Define the location of the "auxiliaries" directory where we can
   // source the input files containing the datacard shapes
   std::map<string, string> input_dir;
-  input_dir["ee"] = base_path + "/" + input_folder_ee + "/";
+  input_dir["mt"] = base_path + "/" + input_folder_mt + "/";
   // Extract shapes from input ROOT files
   for (string chn : chns) {
     cb.cp().channel({chn}).backgrounds().ExtractShapes(
@@ -266,7 +348,7 @@ int main(int argc, char **argv) {
                    .SetBinomialP(0.022)
                    .SetBinomialN(1000.0)
                    .SetFixNorm(false);
-    bbb.AddBinomialBinByBin(cb.cp().channel({"ee"}).process({"EMB"}), cb);
+    bbb.AddBinomialBinByBin(cb.cp().channel({"mt"}).process({"EMB"}), cb);
   }
 
   // This function modifies every entry to have a standardised bin name of
@@ -288,13 +370,13 @@ int main(int argc, char **argv) {
           for (auto p : procs)
           {
               // ws, cb, std::string const& bin, std::string const& process, RooAbsReal& mass_var, std::string norm_postfix, bool allow_morph, bool verbose, bool force_template_limit, TFile * file) {
-              ch::BuildRooMorphing(ws, cb, b, p, elees, "norm", true, true, false, NULL);
+              ch::BuildRooMorphing(ws, cb, b, p, taues, "norm", true, true, false, NULL);
               // ch::BuildRooMorphing(ws, cb, b, p, faketaues, "norm", true, true, true, NULL);
           }
       }
   }
 
-  ws.var("elees")->setVal(-1.5);
+  ws.var("taues")->setVal(1.0);
   // ws.var("CMS_th1x_htt_et_2_13TeV")->setVal(0.0);
 
   demo.Close();
