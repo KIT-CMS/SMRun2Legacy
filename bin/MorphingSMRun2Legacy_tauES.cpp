@@ -399,7 +399,7 @@ int main(int argc, char **argv) {
   // We're not using mass as an identifier - which we need to tell the
   // CardWriter
   // otherwise it will see "*" as the mass value for every object and skip it
-  //    writer.SetWildcardMasses({});
+  writer.SetWildcardMasses({});
 
   // Set verbosity
   if (verbose)
