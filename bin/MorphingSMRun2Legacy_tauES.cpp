@@ -120,7 +120,7 @@ int main(int argc, char **argv) {
   
   // Prepering the combine run
   RooRealVar taues("taues", "taues", -1.5, -3.0, 0.0);
-  vector<string> energy_scales {"-2,4","-2.2","-2.0", "-1.8", "-1.6", "-1.4", "-1.2", "-1.0", "-0.8", "-0.6", "-0.4", "-0.2", "0.0","0.2","0.4","0.6","0.8","1.0","1.2","1.4","1.6"};
+  vector<string> energy_scales {"-2.4","-2.2","-2.0", "-1.8", "-1.6", "-1.4", "-1.2", "-1.0", "-0.8", "-0.6", "-0.4", "-0.2", "0.0","0.2","0.4","0.6","0.8","1.0","1.2","1.4","1.6"};
   // Define channels
   VString chns;
   chns.push_back("mt");
@@ -217,9 +217,9 @@ int main(int argc, char **argv) {
       .process({"ZL", "TTL", "VVL","EMB"})
       .AddSyst(cb, "CMS_eff_m", "lnN", SystMap<>::init(1.02));
     // TTbar contamination 
-  cb.cp()
-    .process({"EMB"})
-    .AddSyst(cb, "emb_ttbar_$ERA", "shape", SystMap<>::init(1.00));
+  // cb.cp()
+  //   .process({"EMB"})
+  //   .AddSyst(cb, "emb_ttbar_$ERA", "shape", SystMap<>::init(1.00));
   // hadronic tau track efficiency 
   cb.cp()
     .process({"EMB"})
@@ -253,7 +253,7 @@ int main(int argc, char **argv) {
   // uncorrelated between eras
   cb.cp()
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_qcd_syst_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_ff_qcd_mt_syst_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp()
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_w_syst_$ERA", "shape", SystMap<>::init(1.00));
@@ -341,6 +341,8 @@ int main(int argc, char **argv) {
                    .SetFixNorm(false);
     bbb.MergeBinErrors(cb.cp().backgrounds());
     bbb.AddBinByBin(cb.cp().backgrounds(), cb);
+    bbb.MergeBinErrors(cb.cp().signals());
+    bbb.AddBinByBin(cb.cp().signals(), cb);
   }
   if (binomial_bbb) {
     auto bbb = ch::BinomialBinByBinFactory()
