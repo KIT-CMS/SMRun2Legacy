@@ -135,31 +135,31 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(mc_processes)
-      .AddSyst(cb, "lumi_$ERA", "lnN", SystMap<>::init(lumi_unc));
+      .AddSyst(cb, "lumi_13TeV_$ERA", "lnN", SystMap<>::init(lumi_unc));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(mc_processes)
-      .AddSyst(cb, "lumi_xy_factorization", "lnN", SystMap<>::init(lumi_xy_fact));
+      .AddSyst(cb, "lumi_13TeV_XY", "lnN", SystMap<>::init(lumi_xy_fact));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(mc_processes)
-      .AddSyst(cb, "lumi_length_scl", "lnN", SystMap<>::init(lumi_len_scale));
+      .AddSyst(cb, "lumi_13TeV_LS", "lnN", SystMap<>::init(lumi_len_scale));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(mc_processes)
-      .AddSyst(cb, "lumi_beam_beam_defl", "lnN", SystMap<>::init(lumi_beam_beam));
+      .AddSyst(cb, "lumi_13TeV_BBD", "lnN", SystMap<>::init(lumi_beam_beam));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(mc_processes)
-      .AddSyst(cb, "lumi_dynamic_beta", "lnN", SystMap<>::init(lumi_dyn_beta));
+      .AddSyst(cb, "lumi_13TeV_DB", "lnN", SystMap<>::init(lumi_dyn_beta));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(mc_processes)
-      .AddSyst(cb, "lumi_beam_curr_calib", "lnN", SystMap<>::init(lumi_beam_curr));
+      .AddSyst(cb, "lumi_13TeV_BCC", "lnN", SystMap<>::init(lumi_beam_curr));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(mc_processes)
-      .AddSyst(cb, "lumi_ghosts", "lnN", SystMap<>::init(lumi_ghost));
+      .AddSyst(cb, "lumi_13TeV_GS", "lnN", SystMap<>::init(lumi_ghost));
 
   // ##########################################################################
   // Uncertainty: Prefiring
@@ -318,37 +318,37 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "em"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_emb_e", "lnN", SystMap<>::init(1.017));
+      .AddSyst(cb, "CMS_eff_e_emb", "lnN", SystMap<>::init(1.017));
 
   // Muon ID
   cb.cp()
       .channel({"mt", "em"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_emb_m", "lnN", SystMap<>::init(1.017));
+      .AddSyst(cb, "CMS_eff_m_emb", "lnN", SystMap<>::init(1.017));
 
   // Tau ID: et and mt with 1 real tau
   for (auto tauIDbin : tauIDptbins){
     cb.cp()
         .channel({"et", "mt"})
         .process({"EMB"})
-        .AddSyst(cb, "CMS_eff_emb_t_"+tauIDbin+"_$ERA", "shape", SystMap<>::init(0.866));
+        .AddSyst(cb, "CMS_eff_t_emb_"+tauIDbin+"_$ERA", "shape", SystMap<>::init(0.866));
   }
   cb.cp()
       .channel({"et", "mt"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_emb_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.005));
+      .AddSyst(cb, "CMS_eff_t_emb_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.005));
 
   // Tau ID: tt with 2 real taus
   for (auto tauIDbin : tauIDdmbins){
     cb.cp()
         .channel({"tt"})
         .process({"EMB"})
-        .AddSyst(cb, "CMS_eff_emb_t_dm"+tauIDbin+"_$ERA", "shape", SystMap<>::init(0.866));
+        .AddSyst(cb, "CMS_eff_t_emb_dm"+tauIDbin+"_$ERA", "shape", SystMap<>::init(0.866));
   }
   cb.cp()
       .channel({"tt"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_emb_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.007));
+      .AddSyst(cb, "CMS_eff_t_emb_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.007));
 
 
   // Common NP acting on EMB
@@ -514,13 +514,13 @@ using ch::JoinStr;
   cb.cp()
       .channel({"em", "et"})
       .process(mc_processes)
-      .AddSyst(cb, "CMS_scale_mc_e", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_scale_e", "shape", SystMap<>::init(1.00));
       //.AddSyst(cb, "CMS_scale_mc_e", "shape", SystMap<>::init(0.71));
 
   cb.cp()
       .channel({"em", "et"})
       .process(mc_processes)
-      .AddSyst(cb, "CMS_reso_mc_e", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_res_e", "shape", SystMap<>::init(1.00));
       //.AddSyst(cb, "CMS_scale_mc_e", "shape", SystMap<>::init(0.71));
       
   // Embedded uncorrelated uncertainty
@@ -528,7 +528,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"em", "et"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_scale_emb_e", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_scale_e_emb", "shape", SystMap<>::init(1.00));
       //.AddSyst(cb, "CMS_scale_emb_e", "shape", SystMap<>::init(0.71));
 
   // MC + embedded correlated uncertainty
@@ -578,22 +578,22 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_emb_t_1prong_$ERA", "shape", SystMap<>::init(0.61));
+      .AddSyst(cb, "CMS_scale_t_emb_1prong_$ERA", "shape", SystMap<>::init(0.61));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_emb_t_1prong1pizero_$ERA", "shape", SystMap<>::init(0.61));
+      .AddSyst(cb, "CMS_scale_t_emb_1prong1pizero_$ERA", "shape", SystMap<>::init(0.61));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_emb_t_3prong_$ERA", "shape", SystMap<>::init(0.61));
+      .AddSyst(cb, "CMS_scale_t_emb_3prong_$ERA", "shape", SystMap<>::init(0.61));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_emb_t_3prong1pizero_$ERA", "shape", SystMap<>::init(0.61));
+      .AddSyst(cb, "CMS_scale_t_emb_3prong1pizero_$ERA", "shape", SystMap<>::init(0.61));
   // Common component acting on EMB
 
   cb.cp()
@@ -647,22 +647,22 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_emb_t_1prong", "shape", SystMap<>::init(0.61));
+      .AddSyst(cb, "CMS_scale_t_emb_1prong", "shape", SystMap<>::init(0.61));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_emb_t_1prong1pizero", "shape", SystMap<>::init(0.61));
+      .AddSyst(cb, "CMS_scale_t_emb_1prong1pizero", "shape", SystMap<>::init(0.61));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_emb_t_3prong", "shape", SystMap<>::init(0.61));
+      .AddSyst(cb, "CMS_scale_t_emb_3prong", "shape", SystMap<>::init(0.61));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_emb_t_3prong1pizero", "shape", SystMap<>::init(0.61));
+      .AddSyst(cb, "CMS_scale_t_emb_3prong1pizero", "shape", SystMap<>::init(0.61));
   }
   // Common component acting on EMB
 
@@ -768,7 +768,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(mc_processes)
-      .AddSyst(cb, "CMS_reso_j_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_res_j_$ERA", "shape", SystMap<>::init(1.00));
 
   // ##########################################################################
   // Uncertainty: MET energy scale and Recoil
@@ -790,7 +790,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
      .process(JoinStr({signals, signals_ggHToWW, signals_qqHToWW,{"ZTT", "ZL", "ZJ", "W"}}))
-      .AddSyst(cb, "CMS_htt_boson_reso_met_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_htt_boson_res_met_$ERA", "shape", SystMap<>::init(1.00));
   }
   else {
   cb.cp()
@@ -800,7 +800,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
      .process(JoinStr({signals_ggH, signals_qqH, {"WH125", "ZH125"}, signals_ggHToWW, signals_qqHToWW,{"ZTT", "ZL", "ZJ", "W"}}))
-      .AddSyst(cb, "CMS_htt_boson_reso_met_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_htt_boson_res_met_$ERA", "shape", SystMap<>::init(1.00));
   }
 
   // ##########################################################################
@@ -959,13 +959,13 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et"})
       .process({"ZL"})
-      .AddSyst(cb, "CMS_eFakeTau_$ERA", "lnN", SystMap<>::init(1.15));
+      .AddSyst(cb, "CMS_fake_e_$ERA", "lnN", SystMap<>::init(1.15));
 
   // Muon fakes
   cb.cp()
       .channel({"mt"})
       .process({"ZL"})
-      .AddSyst(cb, "CMS_mFakeTau_$ERA", "lnN", SystMap<>::init(1.25));
+      .AddSyst(cb, "CMS_fake_m_$ERA", "lnN", SystMap<>::init(1.25));
 
   // ##########################################################################
   // Uncertainty: Jet to tau fakes
@@ -978,7 +978,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"W", "TTJ", "ZJ", "VVJ"})
-      .AddSyst(cb, "CMS_htt_jetToTauFake_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_htt_fake_j_$ERA", "shape", SystMap<>::init(1.00));
 
   // ##########################################################################
   // Uncertainty: Theory uncertainties
@@ -1056,7 +1056,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
      .process(JoinStr({signals_qqH,signals_qqHToWW}))
-      .AddSyst(cb, "pdf_Higgs_qq", "lnN", SystMap<>::init(1.021));
+      .AddSyst(cb, "pdf_Higgs_qqbar", "lnN", SystMap<>::init(1.021));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process({"ZH125"})
