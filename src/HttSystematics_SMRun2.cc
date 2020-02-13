@@ -548,143 +548,73 @@ using ch::JoinStr;
   // ##########################################################################
 
 
-  //// per ERA
   // Common component acting on MC
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process(JoinStr({signals, {"ZTT", "TTT", "TTL", "VVT", "VVL", "jetFakes"}}))
-      .AddSyst(cb, "CMS_scale_t_1prong_$ERA", "shape", SystMap<>::init(0.71));
+      .AddSyst(cb, "CMS_scale_t_1prong_$ERA", "shape", SystMap<>::init(1.0));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process(JoinStr({signals, {"ZTT", "TTT", "TTL", "VVT", "VVL", "jetFakes"}}))
       .AddSyst(cb, "CMS_scale_t_1prong1pizero_$ERA", "shape",
-               SystMap<>::init(0.71));
+               SystMap<>::init(1.0));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process(JoinStr({signals, {"ZTT", "TTT", "TTL", "VVT", "VVL", "jetFakes"}}))
-      .AddSyst(cb, "CMS_scale_t_3prong_$ERA", "shape", SystMap<>::init(0.71));
+      .AddSyst(cb, "CMS_scale_t_3prong_$ERA", "shape", SystMap<>::init(1.0));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process(JoinStr({signals, {"ZTT", "TTT", "TTL", "VVT", "VVL", "jetFakes"}}))
       .AddSyst(cb, "CMS_scale_t_3prong1pizero_$ERA", "shape",
-               SystMap<>::init(0.71));
+               SystMap<>::init(1.0));
 
   // Component for EMB only
   if(embedding){
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_t_emb_1prong_$ERA", "shape", SystMap<>::init(0.61));
+      .AddSyst(cb, "CMS_scale_t_emb_1prong_$ERA", "shape", SystMap<>::init(0.866));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_t_emb_1prong1pizero_$ERA", "shape", SystMap<>::init(0.61));
+      .AddSyst(cb, "CMS_scale_t_emb_1prong1pizero_$ERA", "shape", SystMap<>::init(0.866));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_t_emb_3prong_$ERA", "shape", SystMap<>::init(0.61));
+      .AddSyst(cb, "CMS_scale_t_emb_3prong_$ERA", "shape", SystMap<>::init(0.866));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_t_emb_3prong1pizero_$ERA", "shape", SystMap<>::init(0.61));
-  // Common component acting on EMB
-
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process({"EMB"})
-      .AddSyst(cb, "CMS_scale_t_1prong_$ERA", "shape", SystMap<>::init(0.355));
-
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process({"EMB"})
-      .AddSyst(cb, "CMS_scale_t_1prong1pizero_$ERA", "shape", SystMap<>::init(0.355));
-
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process({"EMB"})
-      .AddSyst(cb, "CMS_scale_t_3prong_$ERA", "shape", SystMap<>::init(0.355));
-
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process({"EMB"})
-      .AddSyst(cb, "CMS_scale_t_3prong1pizero_$ERA", "shape", SystMap<>::init(0.355));
-  }
-
-  //// correlated part between ERAs
-  // Common component acting on MC
-
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process(JoinStr({signals, {"ZTT", "TTT", "TTL", "VVT", "VVL", "jetFakes"}}))
-      .AddSyst(cb, "CMS_scale_t_1prong", "shape", SystMap<>::init(0.71));
-
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process(JoinStr({signals, {"ZTT", "TTT", "TTL", "VVT", "VVL", "jetFakes"}}))
-      .AddSyst(cb, "CMS_scale_t_1prong1pizero", "shape",
-               SystMap<>::init(0.71));
-
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process(JoinStr({signals, {"ZTT", "TTT", "TTL", "VVT", "VVL", "jetFakes"}}))
-      .AddSyst(cb, "CMS_scale_t_3prong", "shape", SystMap<>::init(0.71));
-
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process(JoinStr({signals, {"ZTT", "TTT", "TTL", "VVT", "VVL", "jetFakes"}}))
-      .AddSyst(cb, "CMS_scale_t_3prong1pizero", "shape",
-               SystMap<>::init(0.71));
-
-  // Component for EMB only
-  if(embedding){
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_t_emb_1prong", "shape", SystMap<>::init(0.61));
-
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_t_emb_1prong1pizero", "shape", SystMap<>::init(0.61));
-
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_t_emb_3prong", "shape", SystMap<>::init(0.61));
-
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process({"EMB", "jetFakes"})
-      .AddSyst(cb, "CMS_scale_t_emb_3prong1pizero", "shape", SystMap<>::init(0.61));
+      .AddSyst(cb, "CMS_scale_t_emb_3prong1pizero_$ERA", "shape", SystMap<>::init(0.866));
   }
   // Common component acting on EMB
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_scale_t_1prong", "shape", SystMap<>::init(0.355));
+      .AddSyst(cb, "CMS_scale_t_1prong_$ERA", "shape", SystMap<>::init(0.5));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_scale_t_1prong1pizero", "shape", SystMap<>::init(0.355));
+      .AddSyst(cb, "CMS_scale_t_1prong1pizero_$ERA", "shape", SystMap<>::init(0.5));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_scale_t_3prong", "shape", SystMap<>::init(0.355));
+      .AddSyst(cb, "CMS_scale_t_3prong_$ERA", "shape", SystMap<>::init(0.5));
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_scale_t_3prong1pizero", "shape", SystMap<>::init(0.355));
+      .AddSyst(cb, "CMS_scale_t_3prong1pizero_$ERA", "shape", SystMap<>::init(0.5));
 
   // ##########################################################################
   // Uncertainty: Jet energy scale
