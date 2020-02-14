@@ -217,7 +217,7 @@ int main(int argc, char **argv) {
   }
   cb.cp()
       .process({"EMB"})
-      .AddSyst(cb, "emb_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.1));
+      .AddSyst(cb, "emb_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.01));
   // Muon ID
   cb.cp()
       .process({"ZL", "TTL", "VVL","EMB"})
@@ -345,9 +345,9 @@ int main(int argc, char **argv) {
                    .SetAddThreshold(0.0)
                    .SetMergeThreshold(0.5)
                    .SetFixNorm(false);
-    bbb.MergeBinErrors(cb.cp().backgrounds());
+    //bbb.MergeBinErrors(cb.cp().backgrounds());
     bbb.AddBinByBin(cb.cp().backgrounds(), cb);
-    bbb.MergeBinErrors(cb.cp().signals());
+    //bbb.MergeBinErrors(cb.cp().signals());
     bbb.AddBinByBin(cb.cp().signals(), cb);
   }
   if (binomial_bbb) {
