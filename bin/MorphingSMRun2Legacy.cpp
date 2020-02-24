@@ -527,9 +527,20 @@ int main(int argc, char **argv) {
     bbb.AddBinByBin(cb.cp().backgrounds(), cb);
   }
   if (binomial_bbb) {
+    // Used for statistical fluctuation in embedded weights in em channel
+    auto gen_mean = 0.0;
+    if (era==2016){
+      gen_mean = 0.017;
+    }
+    else if (era==2017){
+      gen_mean = 0.014;
+    }
+    else if (era==2018){
+      gen_mean = 0.019;
+    }
     auto bbb = ch::BinomialBinByBinFactory()
                    .SetPattern("CMS_$ANALYSIS_$CHANNEL_$BIN_$ERA_$PROCESS_binomial_bin_$#")
-                   .SetBinomialP(0.022)
+                   .SetBinomialP(gen_mean)
                    .SetBinomialN(1000.0)
                    .SetFixNorm(false);
     bbb.AddBinomialBinByBin(cb.cp().channel({"em"}).process({"EMB"}), cb);
