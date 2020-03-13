@@ -118,8 +118,8 @@ int main(int argc, char **argv) {
   // Define background processes
   map<string, VString> bkg_procs;
   VString bkgs, bkgs_em;
-  bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125"};
-  bkgs_em = {"W", "ZTT", "TTT","VVT", "QCD", "ZL", "TTL", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125"};
+  bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"};
+  bkgs_em = {"W", "ZTT", "TTT","VVT", "QCD", "ZL", "TTL", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"};
 
 
   if(embedding){

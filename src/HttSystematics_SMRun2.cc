@@ -87,6 +87,7 @@ using ch::JoinStr;
               signals,
               signals_ggHToWW,
               signals_qqHToWW,
+              {"WHWW125", "ZHWW125"},
               {"ZTT", "TT", "TTT", "TTL", "TTJ", "W", "ZJ", "ZL", "VV", "VVT", "VVL", "VVJ", "ST"}
               });
   // ##########################################################################
@@ -715,21 +716,21 @@ using ch::JoinStr;
   if (era != 2016) {
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process(JoinStr({signals, signals_ggHToWW, signals_qqHToWW, {"ZTT", "ZL", "ZJ", "W"}}))
+      .process(JoinStr({signals, signals_ggHToWW, signals_qqHToWW, {"WHWW125", "ZHWW125"}, {"ZTT", "ZL", "ZJ", "W"}}))
       .AddSyst(cb, "CMS_htt_boson_scale_met", "shape", SystMap<>::init(1.00));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-     .process(JoinStr({signals, signals_ggHToWW, signals_qqHToWW,{"ZTT", "ZL", "ZJ", "W"}}))
+      .process(JoinStr({signals, signals_ggHToWW, signals_qqHToWW, {"WHWW125", "ZHWW125"}, {"ZTT", "ZL", "ZJ", "W"}}))
       .AddSyst(cb, "CMS_htt_boson_res_met", "shape", SystMap<>::init(1.00));
   }
   else {
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process(JoinStr({signals_ggH, signals_qqH, {"WH125", "ZH125"}, signals_ggHToWW, signals_qqHToWW, {"ZTT", "ZL", "ZJ", "W"}}))
+      .process(JoinStr({signals_ggH, signals_qqH, {"WH125", "ZH125"}, signals_ggHToWW, signals_qqHToWW, {"WHWW125", "ZHWW125"}, {"ZTT", "ZL", "ZJ", "W"}}))
       .AddSyst(cb, "CMS_htt_boson_scale_met_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-     .process(JoinStr({signals_ggH, signals_qqH, {"WH125", "ZH125"}, signals_ggHToWW, signals_qqHToWW,{"ZTT", "ZL", "ZJ", "W"}}))
+      .process(JoinStr({signals_ggH, signals_qqH, {"WH125", "ZH125"}, signals_ggHToWW, signals_qqHToWW, {"WHWW125", "ZHWW125"}, {"ZTT", "ZL", "ZJ", "W"}}))
       .AddSyst(cb, "CMS_htt_boson_res_met_$ERA", "shape", SystMap<>::init(1.00));
   }
 
@@ -942,15 +943,15 @@ using ch::JoinStr;
   // Uncertainty on branching ratio for HWW at 125 GeV
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-     .process(JoinStr({signals_ggHToWW,signals_qqHToWW}))
+     .process(JoinStr({signals_ggHToWW,signals_qqHToWW,{"WHWW125", "ZHWW125"}}))
      .AddSyst(cb, "BR_hww_THU", "lnN", SystMap<>::init(1.0099));   
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-     .process(JoinStr({signals_ggHToWW,signals_qqHToWW}))
+     .process(JoinStr({signals_ggHToWW,signals_qqHToWW,{"WHWW125", "ZHWW125"}}))
      .AddSyst(cb, "BR_hww_PU_mq", "lnN", SystMap<>::init(1.0099));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-     .process(JoinStr({signals_ggHToWW,signals_qqHToWW}))
+     .process(JoinStr({signals_ggHToWW,signals_qqHToWW,{"WHWW125", "ZHWW125"}}))
      .AddSyst(cb, "BR_hww_PU_alphas", "lnN", SystMap<>::init(1.0066));
   // QCD scale
   if (!ggh_wg1) {
@@ -967,11 +968,11 @@ using ch::JoinStr;
   }
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process({"ZH125"})
+      .process({"ZH125", "ZHWW125"})
       .AddSyst(cb, "QCDScale_VH", "lnN", SystMap<>::init(1.009));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process({"WH125"})
+      .process({"WH125", "WHWW125"})
       .AddSyst(cb, "QCDScale_VH", "lnN", SystMap<>::init(1.008));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
@@ -989,11 +990,11 @@ using ch::JoinStr;
       .AddSyst(cb, "pdf_Higgs_qqbar", "lnN", SystMap<>::init(1.021));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process({"ZH125"})
+      .process({"ZH125", "ZHWW125"})
       .AddSyst(cb, "pdf_Higgs_VH", "lnN", SystMap<>::init(1.013));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process({"WH125"})
+      .process({"WH125", "WHWW125"})
       .AddSyst(cb, "pdf_Higgs_VH", "lnN", SystMap<>::init(1.018));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
