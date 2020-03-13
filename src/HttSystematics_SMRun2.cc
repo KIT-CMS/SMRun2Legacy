@@ -1143,27 +1143,27 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_qcd_njet0_$CHANNEL_stat_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_ff_qcd_njet0_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_qcd_njet1_$CHANNEL_stat_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_ff_qcd_njet1_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
 
   // W shape stat.
   cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_w_njet0_$CHANNEL_stat_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_ff_w_njet0_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_w_njet1_$CHANNEL_stat_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_ff_w_njet1_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
 
   // TT shape stat.
   cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_tt_stat_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_ff_tt_njet0_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
 
 
   // MC subtraction uncertainty
@@ -1171,15 +1171,15 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_w_mc_$ERA", "shape", SystMap<>::init(1.0));
+      .AddSyst(cb, "CMS_ff_w_mc_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_qcd_mc_$ERA", "shape", SystMap<>::init(1.0));
+      .AddSyst(cb, "CMS_ff_qcd_mc_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
   cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_frac_w_$ERA", "shape", SystMap<>::init(1.0));
+      .AddSyst(cb, "CMS_ff_frac_w_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
 
       
   // Shape syst. of different contributions (QCD/W/tt)
@@ -1187,98 +1187,97 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_qcd_$CHANNEL_syst_$ERA", "shape", SystMap<>::init(0.71));
+      .AddSyst(cb, "CMS_ff_qcd_mvis_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
   cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_w_syst_$ERA", "shape", SystMap<>::init(0.71));
+      .AddSyst(cb, "CMS_ff_qcd_muiso_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+  cb.cp()
+      .channel({"tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_qcd_tau2_pt_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+  cb.cp()
+      .channel({"tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_w_syst_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+  cb.cp()
+      .channel({"tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_tt_syst_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
   cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_tt_syst_$ERA", "shape", SystMap<>::init(0.71));
-  // correlated between eras
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_qcd_$CHANNEL_syst", "shape", SystMap<>::init(0.71));
+      .AddSyst(cb, "CMS_ff_tt_morphed_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
   cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_w_syst", "shape", SystMap<>::init(0.71));
+      .AddSyst(cb, "CMS_ff_w_lepPt_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
   cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_tt_syst", "shape", SystMap<>::init(0.71));
-
+      .AddSyst(cb, "CMS_ff_w_mt_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+      
   // Shape syst. in tautau due to using QCD FF also for W / tt
   // uncorrelated between eras
   cb.cp()
       .channel({"tt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_w_$CHANNEL_syst_$ERA", "shape", SystMap<>::init(0.71));
+      .AddSyst(cb, "CMS_ff_w_$CHANNEL_syst_$ERA", "shape", SystMap<>::init(1.0));
   cb.cp()
       .channel({"tt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_tt_$CHANNEL_syst_$ERA", "shape", SystMap<>::init(0.71));
-  // correlated between eras
-  cb.cp()
-      .channel({"tt"})
-      .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_w_$CHANNEL_syst", "shape", SystMap<>::init(0.71));
-  cb.cp()
-      .channel({"tt"})
-      .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_tt_$CHANNEL_syst", "shape", SystMap<>::init(0.71));
+      .AddSyst(cb, "CMS_ff_tt_$CHANNEL_syst_$ERA", "shape", SystMap<>::init(1.0));
 
   //below: jetFakes norm uncertainties. Current values are for 2016, which are probably a good approx. for 2017. To be updated.
+
 
   // Stat. norm (uncorrelated across years)
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_norm_stat_$CHANNEL_$BIN_$ERA", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {11},  1.028) //w
-	       ({"mt"}, {12},  1.037) //ztt
-	       ({"mt"}, {13},  1.036) //tt
-	       ({"mt"}, {14},  1.033) //ss
-	       ({"mt"}, {15},  1.028) //zll
-	       ({"mt"}, {16},  1.042) //misc
-	       ({"mt"}, {20},  1.037) //emb
-	       ({"mt"}, {21},  1.033) //ff
-	       ({"mt"}, {300}, 1.026) //incl
-	       ({"et"}, {11},  1.047) //w
-	       ({"et"}, {12},  1.067) //ztt
-	       ({"et"}, {13},  1.059) //tt
-	       ({"et"}, {14},  1.038) //ss
-	       ({"et"}, {15},  1.067) //zll
-	       ({"et"}, {16},  1.076) //misc
-	       ({"et"}, {20},  1.067) //emb
-	       ({"et"}, {21},  1.047) //ff
-	       ({"et"}, {300}, 1.046) //incl
-	       ({"tt"}, {12},  1.035) //ztt
-	       ({"tt"}, {16},  1.020) //misc
-	       ({"tt"}, {17},  1.029) //noniso
-	       ({"tt"}, {20},  1.035) //emb
-	       ({"tt"}, {21},  1.029) //ff
-	       ({"tt"}, {300}, 1.029) //incl
+	       ({"mt"}, {11},  1.04) //w
+	       ({"mt"}, {12},  1.052) //ztt
+	       ({"mt"}, {13},  1.051) //tt
+	       ({"mt"}, {14},  1.047) //ss
+	       ({"mt"}, {15},  1.04) //zll
+	       ({"mt"}, {16},  1.059) //misc
+	       ({"mt"}, {20},  1.052) //emb
+	       ({"mt"}, {21},  1.047) //ff
+	       ({"mt"}, {300}, 1.037) //incl
+	       ({"et"}, {11},  1.066) //w
+	       ({"et"}, {12},  1.095) //ztt
+	       ({"et"}, {13},  1.083) //tt
+	       ({"et"}, {14},  1.054) //ss
+	       ({"et"}, {15},  1.095) //zll
+	       ({"et"}, {16},  1.107) //misc
+	       ({"et"}, {20},  1.095) //emb
+	       ({"et"}, {21},  1.066) //ff
+	       ({"et"}, {300}, 1.065) //incl
+	       ({"tt"}, {12},  1.049) //ztt
+	       ({"tt"}, {16},  1.028) //misc
+	       ({"tt"}, {17},  1.041) //noniso
+	       ({"tt"}, {20},  1.049) //emb
+	       ({"tt"}, {21},  1.041) //ff
+	       ({"tt"}, {300}, 1.041) //incl
 	       );
   // ggH and qqH categories
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_norm_stat_$CHANNEL_ggH_$ERA", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {1, 100, 101, 102, 103, 104},  1.035)
-	       ({"et"}, {1, 100, 101, 102, 103, 104},  1.052)
-	       ({"tt"}, {1, 100, 101, 102, 103, 104},  1.029)
+	       ({"mt"}, {1, 100, 101, 102, 103, 104},  1.049)
+	       ({"et"}, {1, 100, 101, 102, 103, 104},  1.074)
+	       ({"tt"}, {1, 100, 101, 102, 103, 104},  1.041)
 	       );
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_norm_stat_$CHANNEL_qqH_$ERA", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {2, 200, 201, 202, 203},  1.048)
-	       ({"et"}, {2, 200, 201, 202, 203},  1.079)
-	       ({"tt"}, {2, 200, 201, 202, 203},  1.037)
+	       ({"mt"}, {2, 200, 201, 202, 203},  1.068)
+	       ({"et"}, {2, 200, 201, 202, 203},  1.112)
+	       ({"tt"}, {2, 200, 201, 202, 203},  1.052)
 	       );
 
   // Syst. norm: Bin-correlated
@@ -1287,128 +1286,64 @@ using ch::JoinStr;
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_norm_syst_$CHANNEL_$ERA", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {1},     1.049) //ggh
-	       ({"mt"}, {100},   1.049) //ggh
-	       ({"mt"}, {101},   1.049) //ggh
-	       ({"mt"}, {102},   1.049) //ggh
-	       ({"mt"}, {103},   1.049) //ggh
-	       ({"mt"}, {104},   1.049) //ggh
-	       ({"mt"}, {2},     1.041) //qqh
-	       ({"mt"}, {200},   1.041) //qqh
-	       ({"mt"}, {201},   1.041) //qqh
-	       ({"mt"}, {202},   1.041) //qqh
-	       ({"mt"}, {203},   1.041) //qqh
-	       ({"mt"}, {11},  1.038) //w
-	       ({"mt"}, {12},  1.069) //ztt
-	       ({"mt"}, {13},  1.037) //tt
-	       ({"mt"}, {14},  1.064) //ss
-	       ({"mt"}, {15},  1.048) //zll
-	       ({"mt"}, {16},  1.064) //misc
-	       ({"mt"}, {20},  1.069) //emb
-	       ({"mt"}, {21},  1.045) //ff
-	       ({"mt"}, {300}, 1.042) //incl
-	       ({"et"}, {1},     1.042) //ggh
-	       ({"et"}, {100},   1.042) //ggh
-	       ({"et"}, {101},   1.042) //ggh
-	       ({"et"}, {102},   1.042) //ggh
-	       ({"et"}, {103},   1.042) //ggh
-	       ({"et"}, {104},   1.042) //ggh
-	       ({"et"}, {2},     1.040) //qqh
-	       ({"et"}, {200},   1.040) //qqh
-	       ({"et"}, {201},   1.040) //qqh
-	       ({"et"}, {202},   1.040) //qqh
-	       ({"et"}, {203},   1.040) //qqh
-	       ({"et"}, {11},  1.037) //w
-	       ({"et"}, {12},  1.062) //ztt
-	       ({"et"}, {13},  1.040) //tt
-	       ({"et"}, {14},  1.045) //ss
-	       ({"et"}, {15},  1.051) //zll
-	       ({"et"}, {16},  1.041) //misc
-	       ({"et"}, {20},  1.062) //ztt
-	       ({"et"}, {21},  1.040) //ff
-	       ({"et"}, {300}, 1.042) //incl
-	       ({"tt"}, {1},     1.068) //ggh
-	       ({"tt"}, {100},   1.068) //ggh
-	       ({"tt"}, {101},   1.068) //ggh
-	       ({"tt"}, {102},   1.068) //ggh
-	       ({"tt"}, {103},   1.068) //ggh
-	       ({"tt"}, {104},   1.068) //ggh
-	       ({"tt"}, {2},     1.067) //qqh
-	       ({"tt"}, {200},   1.067) //qqh
-	       ({"tt"}, {201},   1.067) //qqh
-	       ({"tt"}, {202},   1.067) //qqh
-	       ({"tt"}, {203},   1.067) //qqh
-	       ({"tt"}, {12},  1.067) //ztt
-	       ({"tt"}, {16},  1.078) //misc
-	       ({"tt"}, {17},  1.070) //noniso
-	       ({"tt"}, {20},  1.067) //emb
-	       ({"tt"}, {21},  1.070) //ff
-	       ({"tt"}, {300}, 1.067) //incl
+	       ({"mt"}, {1},     1.069) //ggh
+	       ({"mt"}, {100},   1.069) //ggh
+	       ({"mt"}, {101},   1.069) //ggh
+	       ({"mt"}, {102},   1.069) //ggh
+	       ({"mt"}, {103},   1.069) //ggh
+	       ({"mt"}, {104},   1.069) //ggh
+	       ({"mt"}, {2},     1.058) //qqh
+	       ({"mt"}, {200},   1.058) //qqh
+	       ({"mt"}, {201},   1.058) //qqh
+	       ({"mt"}, {202},   1.058) //qqh
+	       ({"mt"}, {203},   1.058) //qqh
+	       ({"mt"}, {11},  1.054) //w
+	       ({"mt"}, {12},  1.098) //ztt
+	       ({"mt"}, {13},  1.052) //tt
+	       ({"mt"}, {14},  1.091) //ss
+	       ({"mt"}, {15},  1.068) //zll
+	       ({"mt"}, {16},  1.091) //misc
+	       ({"mt"}, {20},  1.098) //emb
+	       ({"mt"}, {21},  1.064) //ff
+	       ({"mt"}, {300}, 1.059) //incl
+	       ({"et"}, {1},     1.059) //ggh
+	       ({"et"}, {100},   1.059) //ggh
+	       ({"et"}, {101},   1.059) //ggh
+	       ({"et"}, {102},   1.059) //ggh
+	       ({"et"}, {103},   1.059) //ggh
+	       ({"et"}, {104},   1.059) //ggh
+	       ({"et"}, {2},     1.057) //qqh
+	       ({"et"}, {200},   1.057) //qqh
+	       ({"et"}, {201},   1.057) //qqh
+	       ({"et"}, {202},   1.057) //qqh
+	       ({"et"}, {203},   1.057) //qqh
+	       ({"et"}, {11},  1.052) //w
+	       ({"et"}, {12},  1.088) //ztt
+	       ({"et"}, {13},  1.057) //tt
+	       ({"et"}, {14},  1.064) //ss
+	       ({"et"}, {15},  1.072) //zll
+	       ({"et"}, {16},  1.058) //misc
+	       ({"et"}, {20},  1.088) //ztt
+	       ({"et"}, {21},  1.057) //ff
+	       ({"et"}, {300}, 1.059) //incl
+	       ({"tt"}, {1},     1.096) //ggh
+	       ({"tt"}, {100},   1.096) //ggh
+	       ({"tt"}, {101},   1.096) //ggh
+	       ({"tt"}, {102},   1.096) //ggh
+	       ({"tt"}, {103},   1.096) //ggh
+	       ({"tt"}, {104},   1.096) //ggh
+	       ({"tt"}, {2},     1.095) //qqh
+	       ({"tt"}, {200},   1.095) //qqh
+	       ({"tt"}, {201},   1.095) //qqh
+	       ({"tt"}, {202},   1.095) //qqh
+	       ({"tt"}, {203},   1.095) //qqh
+	       ({"tt"}, {12},  1.095) //ztt
+	       ({"tt"}, {16},  1.11) //misc
+	       ({"tt"}, {17},  1.099) //noniso
+	       ({"tt"}, {20},  1.095) //emb
+	       ({"tt"}, {21},  1.099) //ff
+	       ({"tt"}, {300}, 1.095) //incl
 	       );
-  // correlated between eras
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_norm_syst_$CHANNEL", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {1},     1.049) //ggh
-	       ({"mt"}, {100},   1.049) //ggh
-	       ({"mt"}, {101},   1.049) //ggh
-	       ({"mt"}, {102},   1.049) //ggh
-	       ({"mt"}, {103},   1.049) //ggh
-	       ({"mt"}, {104},   1.049) //ggh
-	       ({"mt"}, {2},     1.041) //qqh
-	       ({"mt"}, {200},   1.041) //qqh
-	       ({"mt"}, {201},   1.041) //qqh
-	       ({"mt"}, {202},   1.041) //qqh
-	       ({"mt"}, {203},   1.041) //qqh
-	       ({"mt"}, {11},  1.038) //w
-	       ({"mt"}, {12},  1.069) //ztt
-	       ({"mt"}, {13},  1.037) //tt
-	       ({"mt"}, {14},  1.064) //ss
-	       ({"mt"}, {15},  1.048) //zll
-	       ({"mt"}, {16},  1.064) //misc
-	       ({"mt"}, {20},  1.069) //emb
-	       ({"mt"}, {21},  1.045) //ff
-	       ({"mt"}, {300}, 1.042) //incl
-	       ({"et"}, {1},     1.042) //ggh
-	       ({"et"}, {100},   1.042) //ggh
-	       ({"et"}, {101},   1.042) //ggh
-	       ({"et"}, {102},   1.042) //ggh
-	       ({"et"}, {103},   1.042) //ggh
-	       ({"et"}, {104},   1.042) //ggh
-	       ({"et"}, {2},     1.040) //qqh
-	       ({"et"}, {200},   1.040) //qqh
-	       ({"et"}, {201},   1.040) //qqh
-	       ({"et"}, {202},   1.040) //qqh
-	       ({"et"}, {203},   1.040) //qqh
-	       ({"et"}, {11},  1.037) //w
-	       ({"et"}, {12},  1.062) //ztt
-	       ({"et"}, {13},  1.040) //tt
-	       ({"et"}, {14},  1.045) //ss
-	       ({"et"}, {15},  1.051) //zll
-	       ({"et"}, {16},  1.041) //misc
-	       ({"et"}, {20},  1.062) //emb
-	       ({"et"}, {21},  1.040) //ff
-	       ({"et"}, {300}, 1.042) //incl
-	       ({"tt"}, {1},     1.068) //ggh
-	       ({"tt"}, {100},   1.068) //ggh
-	       ({"tt"}, {101},   1.068) //ggh
-	       ({"tt"}, {102},   1.068) //ggh
-	       ({"tt"}, {103},   1.068) //ggh
-	       ({"tt"}, {104},   1.068) //ggh
-	       ({"tt"}, {2},     1.067) //qqh
-	       ({"tt"}, {200},   1.067) //qqh
-	       ({"tt"}, {201},   1.067) //qqh
-	       ({"tt"}, {202},   1.067) //qqh
-	       ({"tt"}, {203},   1.067) //qqh
-	       ({"tt"}, {12},  1.067) //ztt
-	       ({"tt"}, {16},  1.078) //misc
-	       ({"tt"}, {17},  1.070) //noniso
-	       ({"tt"}, {20},  1.067) //emb
-	       ({"tt"}, {21},  1.070) //ff
-	       ({"tt"}, {300}, 1.067) //incl
-	       );
-
 
   // Syst. norm: Bin-dependent, correlated across years
   // uncorrelated between eras
@@ -1416,30 +1351,30 @@ using ch::JoinStr;
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_$BIN_$ERA", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {11},  1.018) //w
-	       ({"mt"}, {12},  1.032) //ztt
-	       ({"mt"}, {13},  1.021) //tt
-	       ({"mt"}, {14},  1.014) //ss
-	       ({"mt"}, {15},  1.028) //zll
-	       ({"mt"}, {16},  1.025) //misc
-	       ({"mt"}, {20},  1.032) //emb
-	       ({"mt"}, {21},  1.017) //ss
-	       ({"mt"}, {300}, 1.025) //incl
-	       ({"et"}, {11},  1.014) //w
-	       ({"et"}, {12},  1.028) //ztt
-	       ({"et"}, {13},  1.021) //tt
-	       ({"et"}, {14},  1.014) //ss
-	       ({"et"}, {15},  1.028) //zll
-	       ({"et"}, {16},  1.025) //misc
-	       ({"et"}, {20},  1.028) //emb
-	       ({"et"}, {21},  1.016) //ff
-	       ({"et"}, {300}, 1.025) //incl
-	       ({"tt"}, {12},  1.025) //ztt
-	       ({"tt"}, {16},  1.021) //misc
-	       ({"tt"}, {17},  1.014) //noniso
-	       ({"tt"}, {20},  1.025) //emb
-	       ({"tt"}, {21},  1.014) //ff
-	       ({"tt"}, {300}, 1.021) //incl
+	       ({"mt"}, {11},  1.025) //w
+	       ({"mt"}, {12},  1.045) //ztt
+	       ({"mt"}, {13},  1.03) //tt
+	       ({"mt"}, {14},  1.02) //ss
+	       ({"mt"}, {15},  1.04) //zll
+	       ({"mt"}, {16},  1.035) //misc
+	       ({"mt"}, {20},  1.045) //emb
+	       ({"mt"}, {21},  1.024) //ss
+	       ({"mt"}, {300}, 1.035) //incl
+	       ({"et"}, {11},  1.02) //w
+	       ({"et"}, {12},  1.04) //ztt
+	       ({"et"}, {13},  1.03) //tt
+	       ({"et"}, {14},  1.02) //ss
+	       ({"et"}, {15},  1.04) //zll
+	       ({"et"}, {16},  1.035) //misc
+	       ({"et"}, {20},  1.04) //emb
+	       ({"et"}, {21},  1.023) //ff
+	       ({"et"}, {300}, 1.035) //incl
+	       ({"tt"}, {12},  1.035) //ztt
+	       ({"tt"}, {16},  1.03) //misc
+	       ({"tt"}, {17},  1.02) //noniso
+	       ({"tt"}, {20},  1.035) //emb
+	       ({"tt"}, {21},  1.02) //ff
+	       ({"tt"}, {300}, 1.03) //incl
 	       );
 
   // ggH and qqH categories
@@ -1447,68 +1382,20 @@ using ch::JoinStr;
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_ggH_$ERA", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {1, 100, 101, 102, 103, 104},  1.028)
-	       ({"et"}, {1, 100, 101, 102, 103, 104},  1.028)
-	       ({"tt"}, {1, 100, 101, 102, 103, 104},  1.021)
+	       ({"mt"}, {1, 100, 101, 102, 103, 104},  1.04)
+	       ({"et"}, {1, 100, 101, 102, 103, 104},  1.04)
+	       ({"tt"}, {1, 100, 101, 102, 103, 104},  1.03)
 	       );
 
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_qqH_$ERA", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {2, 200, 201, 202, 203},  1.028)
-	       ({"et"}, {2, 200, 201, 202, 203},  1.025)
-	       ({"tt"}, {2, 200, 201, 202, 203},  1.021)
+	       ({"mt"}, {2, 200, 201, 202, 203},  1.04)
+	       ({"et"}, {2, 200, 201, 202, 203},  1.035)
+	       ({"tt"}, {2, 200, 201, 202, 203},  1.03)
 	       );
 
-  // correlated between eras
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_$BIN", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {11},  1.018) //w
-	       ({"mt"}, {12},  1.032) //ztt
-	       ({"mt"}, {13},  1.021) //tt
-	       ({"mt"}, {14},  1.014) //ss
-	       ({"mt"}, {15},  1.028) //zll
-	       ({"mt"}, {16},  1.025) //misc
-	       ({"mt"}, {20},  1.032) //emb
-	       ({"mt"}, {21},  1.017) //ff
-	       ({"mt"}, {300}, 1.025) //incl
-	       ({"et"}, {11},  1.014) //w
-	       ({"et"}, {12},  1.028) //ztt
-	       ({"et"}, {13},  1.021) //tt
-	       ({"et"}, {14},  1.014) //ss
-	       ({"et"}, {15},  1.028) //zll
-	       ({"et"}, {16},  1.025) //misc
-	       ({"et"}, {20},  1.028) //emb
-	       ({"et"}, {21},  1.016) //ff
-	       ({"et"}, {300}, 1.025) //incl
-	       ({"tt"}, {12},  1.025) //ztt
-	       ({"tt"}, {16},  1.021) //misc
-	       ({"tt"}, {17},  1.014) //noniso
-	       ({"tt"}, {20},  1.025) //emb
-	       ({"tt"}, {21},  1.014) //ff
-	       ({"tt"}, {300}, 1.021) //incl
-	       );
 
-  // ggH and qqH categories
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_ggH", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {1, 100, 101, 102, 103, 104},  1.028)
-	       ({"et"}, {1, 100, 101, 102, 103, 104},  1.028)
-	       ({"tt"}, {1, 100, 101, 102, 103, 104},  1.021)
-	       );
-
-  cb.cp()
-      .channel({"et", "mt", "tt"})
-      .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_qqH", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {2, 200, 201, 202, 203},  1.028)
-	       ({"et"}, {2, 200, 201, 202, 203},  1.025)
-	       ({"tt"}, {2, 200, 201, 202, 203},  1.021)
-	       );
 }
 } // namespace ch
