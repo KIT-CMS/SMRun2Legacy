@@ -713,24 +713,13 @@ using ch::JoinStr;
       .channel({"et", "mt", "tt", "em"})
       .process({"ZTT", "TT", "TTT", "TTL", "TTJ", "W", "ZJ", "ZL", "VV", "VVT", "VVL", "VVJ", "ST"})  //Z and W processes are only included due to the EWK fraction. Make sure that there is no contribution to the shift from the DY or Wjets samples.
       .AddSyst(cb, "CMS_scale_met_unclustered", "shape", SystMap<>::init(1.00));
-  if (era != 2016) {
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(JoinStr({signals, signals_ggHToWW, signals_qqHToWW, {"WHWW125", "ZHWW125"}, {"ZTT", "ZL", "ZJ", "W"}}))
-      .AddSyst(cb, "CMS_htt_boson_scale_met", "shape", SystMap<>::init(1.00));
-  cb.cp()
-      .channel({"et", "mt", "tt", "em"})
-      .process(JoinStr({signals, signals_ggHToWW, signals_qqHToWW, {"WHWW125", "ZHWW125"}, {"ZTT", "ZL", "ZJ", "W"}}))
-      .AddSyst(cb, "CMS_htt_boson_res_met", "shape", SystMap<>::init(1.00));
-  }
-  else {
-  cb.cp()
-      .channel({"et", "mt", "tt", "em"})
-      .process(JoinStr({signals_ggH, signals_qqH, {"WH125", "ZH125"}, signals_ggHToWW, signals_qqHToWW, {"WHWW125", "ZHWW125"}, {"ZTT", "ZL", "ZJ", "W"}}))
       .AddSyst(cb, "CMS_htt_boson_scale_met_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process(JoinStr({signals_ggH, signals_qqH, {"WH125", "ZH125"}, signals_ggHToWW, signals_qqHToWW, {"WHWW125", "ZHWW125"}, {"ZTT", "ZL", "ZJ", "W"}}))
+      .process(JoinStr({signals, signals_ggHToWW, signals_qqHToWW, {"WHWW125", "ZHWW125"}, {"ZTT", "ZL", "ZJ", "W"}}))
       .AddSyst(cb, "CMS_htt_boson_res_met_$ERA", "shape", SystMap<>::init(1.00));
   }
 
