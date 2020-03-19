@@ -1178,13 +1178,25 @@ using ch::JoinStr;
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_qcd_mvis_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
   cb.cp()
+      .channel({"et", "mt", "tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_corr_qcd_mvis_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+  cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_qcd_muiso_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
   cb.cp()
+      .channel({"et", "mt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_corr_qcd_muiso_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+  cb.cp()
       .channel({"tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_qcd_tau2_pt_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+  cb.cp()
+      .channel({"tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_corr_qcd_tau2_pt_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
   cb.cp()
       .channel({"tt"})
       .process({"jetFakes"})
@@ -1200,6 +1212,10 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_corr_tt_syst_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+  cb.cp()
+      .channel({"et", "mt"})
+      .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_tt_sf_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
   cb.cp()
       .channel({"et", "mt"})
@@ -1208,8 +1224,16 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_corr_w_lepPt_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+  cb.cp()
+      .channel({"et", "mt"})
+      .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_w_mt_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
-      
+  cb.cp()
+      .channel({"et", "mt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_corr_w_mt_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+            
 
   //below: jetFakes norm uncertainties. Current values are for 2016, which are probably a good approx. for 2017. To be updated.
 
