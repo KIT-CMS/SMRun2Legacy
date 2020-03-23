@@ -161,8 +161,10 @@ int main(int argc, char **argv) {
     //define mapping for signal categories if categories is stage0 /1p1
     if(categories == "stxs_stage0"){
       cats[chn]={
-        { 1, chn+"_ggh"},
-        { 2, chn+"_qqh"},
+        //{ 1, chn+"_ggh"},
+        //{ 2, chn+"_qqh"},
+        //use 2D category instead:
+        { 1, chn+"_xxh"},
     };
     } else if (categories == "inclusive"){
     cats[chn]={
