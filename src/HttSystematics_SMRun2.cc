@@ -756,7 +756,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process({"ZTT", "ZL", "ZJ"})
-      .AddSyst(cb, "CMS_htt_zjXsec", "lnN", SystMap<>::init(1.04));
+      .AddSyst(cb, "CMS_htt_zjXsec", "lnN", SystMap<>::init(1.02));
 
   // QCD
   cb.cp()
