@@ -271,6 +271,12 @@ using ch::JoinStr;
   // - FIXME: References?
   // ##########################################################################
 
+  // 3% in Tau ID SF with different anti-l fake WP
+  cb.cp()
+      .channel({"mt", "tt"})
+      .process(JoinStr({signals, {"EMB", "ZTT", "TTT", "TTL", "VVT", "VVL"}}))
+      .AddSyst(cb, "CMS_eff_t_wp_$ERA", "lnN", SystMap<>::init(1.03));
+
   std::string tauIDptbins[5] = {"30-35", "35-40", "40-500", "500-1000", "1000-inf"};
   std::string tauIDdmbins[4] = {"0", "1", "10", "11"};
 
