@@ -1170,6 +1170,12 @@ using ch::JoinStr;
       .channel({"et", "mt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_w_njet1_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"et", "mt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_w_njet2_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
+
+
 
   // TT shape stat.
   cb.cp()
@@ -1177,7 +1183,11 @@ using ch::JoinStr;
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_tt_njet0_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
 
-
+  cb.cp()
+      .channel({"et", "mt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_tt_njet1_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
+  
   // MC subtraction uncertainty
   // uncorrelated between eras
   cb.cp()
