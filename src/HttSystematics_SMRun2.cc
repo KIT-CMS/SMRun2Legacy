@@ -893,16 +893,53 @@ using ch::JoinStr;
                SystMap<>::init(1.00));
 
   // Electron fakes
+  //cb.cp()
+  //    .channel({"et"})
+  //    .process({"ZL"})
+  //    .AddSyst(cb, "CMS_fake_e_$ERA", "lnN", SystMap<>::init(1.15));
+
   cb.cp()
       .channel({"et"})
       .process({"ZL"})
-      .AddSyst(cb, "CMS_fake_e_$ERA", "lnN", SystMap<>::init(1.15));
+      .AddSyst(cb, "CMS_fake_e_BA_$ERA", "shape",
+               SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"et"})
+      .process({"ZL"})
+      .AddSyst(cb, "CMS_fake_e_EC_$ERA", "shape",
+               SystMap<>::init(1.00));
 
   // Muon fakes
+  //cb.cp()
+  //    .channel({"mt"})
+  //    .process({"ZL"})
+  //    .AddSyst(cb, "CMS_fake_m_$ERA", "lnN", SystMap<>::init(1.25));
+
   cb.cp()
       .channel({"mt"})
       .process({"ZL"})
-      .AddSyst(cb, "CMS_fake_m_$ERA", "lnN", SystMap<>::init(1.25));
+      .AddSyst(cb, "CMS_fake_m_WH1_$ERA", "shape",
+               SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"mt"})
+      .process({"ZL"})
+      .AddSyst(cb, "CMS_fake_m_WH2_$ERA", "shape",
+               SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"mt"})
+      .process({"ZL"})
+      .AddSyst(cb, "CMS_fake_m_WH3_$ERA", "shape",
+               SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"mt"})
+      .process({"ZL"})
+      .AddSyst(cb, "CMS_fake_m_WH4_$ERA", "shape",
+               SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"mt"})
+      .process({"ZL"})
+      .AddSyst(cb, "CMS_fake_m_WH5_$ERA", "shape",
+               SystMap<>::init(1.00));
 
   // ##########################################################################
   // Uncertainty: Jet to tau fakes
