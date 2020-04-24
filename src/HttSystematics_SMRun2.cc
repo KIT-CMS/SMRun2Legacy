@@ -183,35 +183,23 @@ using ch::JoinStr;
   // - FIXME: References?
   // ##########################################################################
 
-  if (era == 2016) {
-    cb.cp()
-      .channel({"et"})
-      .process(mc_processes)
-      .AddSyst(cb, "CMS_eff_trigger_et_$ERA", "lnN", SystMap<>::init(1.02));
-    // 100% uncorrelated for embedded
-    cb.cp()
-      .channel({"et"})
-      .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_trigger_emb_et_$ERA", "lnN", SystMap<>::init(1.02));
-  } else if (era == 2017 || era == 2018) {
-    cb.cp()
-      .channel({"et"})
-      .process(mc_processes)
-      .AddSyst(cb, "CMS_eff_trigger_et_$ERA", "shape", SystMap<>::init(1.00));
-    cb.cp()
-      .channel({"et"})
-      .process(mc_processes)
-      .AddSyst(cb, "CMS_eff_xtrigger_et_$ERA", "shape", SystMap<>::init(1.00));
-    // 100% uncorrelated for embedded
-    cb.cp()
-      .channel({"et"})
-      .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_trigger_emb_et_$ERA", "shape", SystMap<>::init(1.00));
-    cb.cp()
-      .channel({"et"})
-      .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_xtrigger_emb_et_$ERA", "shape", SystMap<>::init(1.00));
-  }
+  cb.cp()
+    .channel({"et"})
+    .process(mc_processes)
+    .AddSyst(cb, "CMS_eff_trigger_et_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+    .channel({"et"})
+    .process(mc_processes)
+    .AddSyst(cb, "CMS_eff_xtrigger_l_et_$ERA", "shape", SystMap<>::init(1.00));
+  // 100% uncorrelated for embedded
+  cb.cp()
+    .channel({"et"})
+    .process({"EMB"})
+    .AddSyst(cb, "CMS_eff_trigger_emb_et_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+    .channel({"et"})
+    .process({"EMB"})
+    .AddSyst(cb, "CMS_eff_xtrigger_l_et_emb_$ERA", "shape", SystMap<>::init(1.00));
 
   cb.cp()
       .channel({"mt"})
@@ -220,17 +208,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"mt"})
       .process(mc_processes)
-      .AddSyst(cb, "CMS_eff_xtrigger_mt_$ERA", "shape", SystMap<>::init(1.00));
-
-  cb.cp()
-      .channel({"tt"})
-      .process(mc_processes)
-      .AddSyst(cb, "CMS_eff_trigger_tt_$ERA", "lnN", SystMap<>::init(1.0707));
-      
-  cb.cp()
-      .channel({"tt"})
-      .process(mc_processes)
-      .AddSyst(cb, "CMS_eff_trigger_tt", "lnN", SystMap<>::init(1.0707));
+      .AddSyst(cb, "CMS_eff_xtrigger_l_mt_$ERA", "shape", SystMap<>::init(1.00));
 
   cb.cp()
       .channel({"em"})
@@ -245,22 +223,51 @@ using ch::JoinStr;
   cb.cp()
       .channel({"mt"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_xtrigger_emb_mt_$ERA", "shape", SystMap<>::init(1.00));
-
-  cb.cp()
-      .channel({"tt"})
-      .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_trigger_emb_tt_$ERA", "lnN", SystMap<>::init(1.0707));
-
-  cb.cp()
-      .channel({"tt"})
-      .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_trigger_emb_tt", "lnN", SystMap<>::init(1.0707));
+      .AddSyst(cb, "CMS_eff_xtrigger_l_mt_emb_$ERA", "shape", SystMap<>::init(1.00));
 
   cb.cp()
       .channel({"em"})
       .process({"EMB"})
       .AddSyst(cb, "CMS_eff_trigger_emb_em_$ERA", "lnN", SystMap<>::init(1.02));
+
+  // Tau trigger efficiencies implemented as shape uncertainties in all channels.
+  std::string tauTriggerdmbins[4] = {"0", "1", "10", "11"};
+  for (auto tauTriggerbin: tauTriggerdmbins)
+  {
+      // mt cross trigger
+      cb.cp()
+          .channel({"mt", "et"})
+          .process(mc_processes)
+          .AddSyst(cb, "CMS_eff_xtrigger_t_$CHANNEL_dm"+tauTriggerbin+"_$ERA", "shape", SystMap<>::init(1.00));
+          
+      cb.cp()
+          .channel({"mt", "et"})
+          .process({"EMB"})
+          .AddSyst(cb, "CMS_eff_xtrigger_t_$CHANNEL_emb_dm"+tauTriggerbin+"_$ERA", "shape", SystMap<>::init(0.866));
+
+      // Correlated component acting on Embedded
+      cb.cp()
+          .channel({"mt", "et"})
+          .process({"EMB"})
+          .AddSyst(cb, "CMS_eff_xtrigger_t_$CHANNEL_dm"+tauTriggerbin+"_$ERA", "shape", SystMap<>::init(0.5));
+
+      // di-tau trigger
+      cb.cp()
+          .channel({"tt"})
+          .process(mc_processes)
+          .AddSyst(cb, "CMS_eff_trigger_tt_dm"+tauTriggerbin+"_$ERA", "shape", SystMap<>::init(1.00));
+          
+      cb.cp()
+          .channel({"tt"})
+          .process({"EMB"})
+          .AddSyst(cb, "CMS_eff_trigger_emb_tt_dm"+tauTriggerbin+"_$ERA", "shape", SystMap<>::init(0.866));
+
+      // Correlated component acting on Embedded
+      cb.cp()
+          .channel({"tt"})
+          .process({"EMB"})
+          .AddSyst(cb, "CMS_eff_trigger_tt_dm"+tauTriggerbin+"_$ERA", "shape", SystMap<>::init(0.5));
+  }
 
   // ##########################################################################
   // Uncertainty: Electron, muon and tau ID efficiency
