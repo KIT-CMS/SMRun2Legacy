@@ -199,7 +199,7 @@ using ch::JoinStr;
   cb.cp()
     .channel({"et"})
     .process({"EMB"})
-    .AddSyst(cb, "CMS_eff_xtrigger_l_et_emb_$ERA", "shape", SystMap<>::init(1.00));
+    .AddSyst(cb, "CMS_eff_xtrigger_l_emb_et_$ERA", "shape", SystMap<>::init(1.00));
 
   cb.cp()
       .channel({"mt"})
@@ -223,7 +223,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"mt"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_xtrigger_l_mt_emb_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_eff_xtrigger_l_emb_mt_$ERA", "shape", SystMap<>::init(1.00));
 
   cb.cp()
       .channel({"em"})
@@ -243,7 +243,7 @@ using ch::JoinStr;
       cb.cp()
           .channel({"mt", "et"})
           .process({"EMB"})
-          .AddSyst(cb, "CMS_eff_xtrigger_t_$CHANNEL_emb_dm"+tauTriggerbin+"_$ERA", "shape", SystMap<>::init(0.866));
+          .AddSyst(cb, "CMS_eff_xtrigger_t_emb_$CHANNEL_dm"+tauTriggerbin+"_$ERA", "shape", SystMap<>::init(0.866));
 
       // Correlated component acting on Embedded
       cb.cp()
