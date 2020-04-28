@@ -119,6 +119,7 @@ int main(int argc, char **argv) {
   map<string, VString> bkg_procs;
   VString bkgs, bkgs_em;
   bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"};
+  //bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH125", "ZH125", "ggHWW125", "qqHWW125", "WHWW125"};
   bkgs_em = {"W", "ZTT", "TTT","VVT", "QCD", "ZL", "TTL", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"};
 
 
@@ -185,15 +186,22 @@ int main(int argc, char **argv) {
         }
         else {
           cats[chn]={
-            {100, chn+"_ggh_0J"},
-            {101, chn+"_ggh_1J_PTH0to120"},
-            {102, chn+"_ggh_1J_PTH120to200"},
-            {103, chn+"_ggh_2J"},
-            {104, chn+"_ggh_PTHGT200"},
+            {100, chn+"_ggh_0J_PTH_0_10"},
+            {101, chn+"_ggh_0J_PTH_GT10"},
+            {102, chn+"_ggh_1J_PTH0to60"},
+            {103, chn+"_ggh_1J_PTH60to120"},
+            {104, chn+"_ggh_1J_PTH120to200"},
+            {105, chn+"_ggh_2J_PTH0to60"},
+            {106, chn+"_ggh_2J_PTH60to120"},
+            {107, chn+"_ggh_2J_PTH120to200"},
+            {108, chn+"_ggh_PTHGT200"},
+            {109, chn+"_ggh_vbftopo"},
             {200, chn+"_qqh_2J"},
             {201, chn+"_qqh_PTHGT200"},
-            {202, chn+"_vbftopo_highmjj"},
-            {203, chn+"_vbftopo_lowmjj"},
+            //{202, chn+"_vbftopo_highmjj"},
+            //{203, chn+"_vbftopo_lowmjj"},
+            {202, chn+"_qqh_vbftopo_highmjj"},
+            {203, chn+"_qqh_vbftopo_lowmjj"},
           };
         }
     }
