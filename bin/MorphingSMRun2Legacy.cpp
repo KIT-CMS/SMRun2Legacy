@@ -427,7 +427,17 @@ int main(int argc, char **argv) {
       std::cout << "[INFO] Rebin background bin " << b << "\n";
       auto shape = cb.cp().bin({b}).backgrounds().GetShape();
       auto min = shape.GetBinLowEdge(1);
-      cb.cp().bin({b}).VariableRebin({min, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0});
+      if(bstr.Contains("em") && bstr.Contains("misc")) cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 1.0});
+      else if(bstr.Contains("em_emb")){
+        if(categories == "stxs_stage1p1") cb.cp().bin({b}).VariableRebin({min, 0.45, 1.0});
+        else cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 1.0});
+      }
+      else if(bstr.Contains("et") && bstr.Contains("zll") && categories == "stxs_stage1p1") cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 1.0});
+      else if(bstr.Contains("mt") && bstr.Contains("emb")){
+        if(categories == "stxs_stage1p1") cb.cp().bin({b}).VariableRebin({min, 0.4, 0.45, 0.5, 0.6, 1.0});
+        else cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 1.0});
+      }
+      else cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 0.7, 1.0});
     }
     // Rebin ggh stage 1.1 categories
     for (auto b : cb.cp().bin_set()) {
@@ -476,7 +486,7 @@ int main(int argc, char **argv) {
 
   // Perform auto-rebinning
   if (auto_rebin) {
-    const auto threshold = 1.0;
+    const auto threshold = 10.0;
     for (auto b : cb.cp().bin_set()) {
       std::cout << "[INFO] Rebin bin " << b << "\n";
       // Get shape of this category with sum of backgrounds
