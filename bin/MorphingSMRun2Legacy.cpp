@@ -102,6 +102,11 @@ int main(int argc, char **argv) {
   po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
   po::notify(vm);
 
+  // Guarding our hacks here
+  if(era != 2018 || chan != "mt") {
+      throw std::runtime_error("This is not supposed to work with this hacked version.");
+  }
+
   // Define channels
   VString chns;
   if (chan.find("mt") != std::string::npos)
@@ -118,7 +123,7 @@ int main(int argc, char **argv) {
   // Define background processes
   map<string, VString> bkg_procs;
   VString bkgs, bkgs_em;
-  bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"};
+  bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL"};
   bkgs_em = {"W", "ZTT", "TTT","VVT", "QCD", "ZL", "TTL", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"};
 
 
@@ -217,6 +222,9 @@ int main(int argc, char **argv) {
         else cats[chn].push_back({14, chn+"_ss"});
       }
     }
+    else if (categories == "mlnll") {
+        cats[chn] = {{11, "mt_0jet"}, {12, "mt_1jet"}, {13, "mt_2jet"}};
+    }
     else if(categories == "gof") cats[chn] = { {300, gof_category_name.c_str() }};
     else throw std::runtime_error("Given categorization is not known.");
   }
@@ -286,7 +294,7 @@ int main(int argc, char **argv) {
   }
 
   // Add systematics
-  ch::AddSMRun2Systematics(cb, jetfakes, embedding, regional_jec, ggh_wg1, qqh_wg1, era);
+  //ch::AddSMRun2Systematics(cb, jetfakes, embedding, regional_jec, ggh_wg1, qqh_wg1, era);
 
   // Define the location of the "auxiliaries" directory where we can
   // source the input files containing the datacard shapes
@@ -298,10 +306,10 @@ int main(int argc, char **argv) {
   // Extract shapes from input ROOT files
   for (string chn : chns) {
     cb.cp().channel({chn}).backgrounds().ExtractShapes(
-        input_dir[chn] + std::to_string(era) + midfix + chn + "-synced"+postfix+ ".root",
+        input_dir[chn] + "shapes_ch.root",
         "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC");
     cb.cp().channel({chn}).process(sig_procs).ExtractShapes(
-        input_dir[chn] + std::to_string(era) + midfix + chn + "-synced"+postfix+ ".root",
+        input_dir[chn] + "shapes_ch.root",
         "$BIN/$PROCESS$MASS", "$BIN/$PROCESS$MASS_$SYSTEMATIC");
   }
 
