@@ -223,7 +223,7 @@ int main(int argc, char **argv) {
       }
     }
     else if (categories == "mlnll") {
-        cats[chn] = {{11, "mt_0jet"}, {12, "mt_1jet"}, {13, "mt_2jet"}};
+        cats[chn] = {{0, "mt_htt"}, {1, "mt_ztt"}, {2, "mt_w"}};
     }
     else if(categories == "gof") cats[chn] = { {300, gof_category_name.c_str() }};
     else throw std::runtime_error("Given categorization is not known.");
