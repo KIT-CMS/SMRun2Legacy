@@ -459,6 +459,8 @@ using ch::JoinStr;
   //    .process(JoinStr({mc_processes, {"EMB"}}))
   //    .AddSyst(cb, "CMS_scale_e", "shape", SystMap<>::init(0.71));
 
+  */
+
 
   // ##########################################################################
   // Uncertainty: Tau energy scale
@@ -492,6 +494,8 @@ using ch::JoinStr;
       .process(JoinStr({signals, {"ZTT", "TTT", "TTL", "VVT", "VVL", "jetFakes"}}))
       .AddSyst(cb, "CMS_scale_t_3prong1pizero_$ERA", "shape",
                SystMap<>::init(1.0));
+
+  /*
 
   // Component for EMB only
   if(embedding){
@@ -536,6 +540,7 @@ using ch::JoinStr;
       .channel({"et", "mt", "tt"})
       .process({"EMB"})
       .AddSyst(cb, "CMS_scale_t_3prong1pizero_$ERA", "shape", SystMap<>::init(0.5));
+  */
 
   // ##########################################################################
   // Uncertainty: Jet energy scale
@@ -621,6 +626,8 @@ using ch::JoinStr;
       .process(mc_processes)
       .AddSyst(cb, "CMS_res_j_$ERA", "shape", SystMap<>::init(1.00));
 
+  /*
+
   // ##########################################################################
   // Uncertainty: MET energy scale and Recoil
   // References:
@@ -641,6 +648,7 @@ using ch::JoinStr;
       .channel({"et", "mt", "tt", "em"})
       .process(JoinStr({signals, signals_ggHToWW, signals_qqHToWW, {"WHWW125", "ZHWW125"}, {"ZTT", "ZL", "ZJ", "W"}}))
       .AddSyst(cb, "CMS_htt_boson_res_met_$ERA", "shape", SystMap<>::init(1.00));
+  */
 
   // ##########################################################################
   // Uncertainty: Background normalizations
@@ -677,6 +685,14 @@ using ch::JoinStr;
       .channel({"et", "mt", "tt", "em"})
       .process({"ZTT", "ZL", "ZJ"})
       .AddSyst(cb, "CMS_htt_zjXsec", "lnN", SystMap<>::init(1.02));
+
+  // QCD
+  cb.cp()
+     .channel({"mt"})
+     .process({"QCD"})
+     .AddSyst(cb, "CMS_htt_qcd", "shape", SystMap<>::init(1.05));
+
+  /*
 
   // QCD
   cb.cp()
