@@ -162,6 +162,8 @@ using ch::JoinStr;
       .process(mc_processes)
       .AddSyst(cb, "lumi_13TeV_GS", "lnN", SystMap<>::init(lumi_ghost));
 
+  /*
+
   // ##########################################################################
   // Uncertainty: Prefiring
   // References:
@@ -401,88 +403,6 @@ using ch::JoinStr;
       .process({"W", "ZJ", "TTJ", "VVJ"})
       .AddSyst(cb, "CMS_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.02));
 
-
-  // repeat tt channel for correlated part between 2016 and 2017
-  
-  // MC uncorrelated uncertainty
-  // Tau ID: et and mt with 1 real tau
-  /*cb.cp()
-      .channel({"et", "mt"})
-      .process(mc_processes)
-      .AddSyst(cb, "CMS_eff_mc_t", "lnN", SystMap<>::init(tauID_corr));
-
-  cb.cp()
-      .channel({"et", "mt"})
-      .process(mc_processes)
-      .AddSyst(cb, "CMS_eff_mc_t_$CHANNEL", "lnN", SystMap<>::init(tauID_uncorr));
-
-  // Tau ID: tt with 2 real taus
-  cb.cp()
-      .channel({"tt"})
-      .process(mc_processes)
-      .AddSyst(cb, "CMS_eff_mc_t", "lnN", SystMap<>::init(ditauID_corr));
-
-  cb.cp()
-      .channel({"tt"})
-      .process(mc_processes)
-      .AddSyst(cb, "CMS_eff_mc_t_$CHANNEL", "lnN", SystMap<>::init(ditauID_uncorr));
-
-  // Embedded uncorrelated uncertainty
-  // Tau ID: et and mt with 1 real tau
-  cb.cp()
-      .channel({"et", "mt"})
-      .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_emb_t", "lnN", SystMap<>::init(tauID_corr));
-
-  cb.cp()
-      .channel({"et", "mt"})
-      .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_emb_t_$CHANNEL", "lnN", SystMap<>::init(tauID_uncorr));
-
-  // Tau ID: tt with 2 real taus
-  cb.cp()
-      .channel({"tt"})
-      .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_emb_t", "lnN", SystMap<>::init(ditauID_corr));
-
-  cb.cp()
-      .channel({"tt"})
-      .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_emb_t_$CHANNEL", "lnN", SystMap<>::init(ditauID_uncorr));
-
-  // MC + embedded correlated uncertainty
-  // Tau ID: et and mt with 1 real tau
-  cb.cp()
-      .channel({"et", "mt"})
-      .process(JoinStr({mc_processes, {"EMB"}}))
-      .AddSyst(cb, "CMS_eff_t", "lnN", SystMap<>::init(tauID_corr));
-
-  cb.cp()
-      .channel({"et", "mt"})
-      .process(JoinStr({mc_processes, {"EMB"}}))
-      .AddSyst(cb, "CMS_eff_t_$CHANNEL", "lnN", SystMap<>::init(tauID_uncorr));
-
-  // Tau ID: tt with 2 real taus
-  cb.cp()
-      .channel({"tt"})
-      .process(JoinStr({mc_processes, {"EMB"}}))
-      .AddSyst(cb, "CMS_eff_t", "lnN", SystMap<>::init(ditauID_corr));
-
-  cb.cp()
-      .channel({"tt"})
-      .process(JoinStr({mc_processes, {"EMB"}}))
-      .AddSyst(cb, "CMS_eff_t_$CHANNEL", "lnN", SystMap<>::init(ditauID_uncorr));
-
-  // Tau ID: tt with 1 real taus and 1 jet fake
-  cb.cp()
-      .channel({"tt"})
-      .process({"W", "ZJ", "TTJ", "VVJ"})
-      .AddSyst(cb, "CMS_eff_t", "lnN", SystMap<>::init(1.06));
-
-  cb.cp()
-      .channel({"tt"})
-      .process({"W", "ZJ", "TTJ", "VVJ"})
-      .AddSyst(cb, "CMS_eff_t_$CHANNEL", "lnN", SystMap<>::init(1.02));*/
 
   // ##########################################################################
   // Uncertainty: b-tag and mistag efficiency
@@ -898,6 +818,7 @@ using ch::JoinStr;
       .channel({"et", "mt", "tt"})
       .process({"W", "TTJ", "ZJ", "VVJ"})
       .AddSyst(cb, "CMS_htt_fake_j_$ERA", "shape", SystMap<>::init(1.00));
+  */
 
   // ##########################################################################
   // Uncertainty: Theory uncertainties
@@ -1032,6 +953,7 @@ using ch::JoinStr;
      .process({signals_ggHToWW})
       .AddSyst(cb, "QCDScale_ggHWW", "lnN", SystMap<>::init(1.039));
   }
+
  // VBF WG1 uncertainty scheme
  if (qqh_wg1) {
    cb.cp()
@@ -1079,6 +1001,8 @@ using ch::JoinStr;
       .process({signals_qqHToWW})
      .AddSyst(cb, "QCDScale_qqH", "lnN", SystMap<>::init(1.005));
   }
+
+  /*
   // ##########################################################################
   // Uncertainty: Embedded events
   // References:
@@ -1482,5 +1406,6 @@ using ch::JoinStr;
 	       ({"et"}, {2, 200, 201, 202, 203},  1.025)
 	       ({"tt"}, {2, 200, 201, 202, 203},  1.021)
 	       );
+  */
 }
 } // namespace ch

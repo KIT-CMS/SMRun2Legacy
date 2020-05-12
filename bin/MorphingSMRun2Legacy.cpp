@@ -294,7 +294,7 @@ int main(int argc, char **argv) {
   }
 
   // Add systematics
-  //ch::AddSMRun2Systematics(cb, jetfakes, embedding, regional_jec, ggh_wg1, qqh_wg1, era);
+  ch::AddSMRun2Systematics(cb, jetfakes, embedding, regional_jec, ggh_wg1, qqh_wg1, era);
 
   // Define the location of the "auxiliaries" directory where we can
   // source the input files containing the datacard shapes
