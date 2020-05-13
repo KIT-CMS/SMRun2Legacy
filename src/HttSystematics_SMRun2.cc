@@ -690,7 +690,7 @@ using ch::JoinStr;
   cb.cp()
      .channel({"mt"})
      .process({"QCD"})
-     .AddSyst(cb, "CMS_htt_qcd", "shape", SystMap<>::init(1.05));
+     .AddSyst(cb, "CMS_htt_qcd", "lnN", SystMap<>::init(1.05));
 
   /*
 

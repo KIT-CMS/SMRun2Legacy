@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
   bool ggh_wg1 = true;
   bool qqh_wg1 = true;
   bool auto_rebin = false;
-  bool rebin_categories = true;
+  bool rebin_categories = false;
   bool manual_rebin_for_yields = false;
   bool real_data = false;
   bool jetfakes = true;
@@ -344,6 +344,8 @@ int main(int argc, char **argv) {
     return false;
   });
 
+  /*
+  // Turning shape systematics into lnNs
   int count_lnN = 0;
   int count_all = 0;
   cb.cp().ForEachSyst([&count_lnN, &count_all](ch::Systematic *s) {
@@ -379,6 +381,7 @@ int main(int argc, char **argv) {
     }
   });
   std::cout << "[WARNING] Turned " << count_lnN << " of " << count_all << " checked systematics into lnN:" << std::endl;
+  */
 
   // Replacing observation with the sum of the backgrounds (Asimov data)
   // useful to be able to check this, so don't do the replacement
