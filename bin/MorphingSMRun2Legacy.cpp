@@ -433,7 +433,7 @@ int main(int argc, char **argv) {
       auto min = shape.GetBinLowEdge(1);
       if(bstr.Contains("em") && bstr.Contains("misc")) cb.cp().bin({b}).VariableRebin({min, 0.4, 1.0});
       else if(bstr.Contains("em_emb")){
-        if(categories == "stxs_stage1p1") cb.cp().bin({b}).VariableRebin({min, 0.35, 1.0});
+        if(categories == "stxs_stage1p1") cb.cp().bin({b}).VariableRebin({min, 0.3, 1.0});
         else cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 1.0});
       }
       else if(bstr.Contains("et") && bstr.Contains("misc")) cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 1.0});
