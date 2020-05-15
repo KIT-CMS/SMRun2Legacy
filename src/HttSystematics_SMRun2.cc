@@ -32,7 +32,10 @@ using ch::JoinStr;
       "ggH",
       // STXS stage 1.1
       "ggH_GG2H_FWDH",
-      "ggH_GG2H_PTH_GT200",
+      "ggH_GG2H_PTH_200_300",
+      "ggH_GG2H_PTH_300_450",
+      "ggH_GG2H_PTH_450_650",
+      "ggH_GG2H_PTH_GT650",
       "ggH_GG2H_0J_PTH_0_10",
       "ggH_GG2H_0J_PTH_GT10",
       "ggH_GG2H_1J_PTH_0_60",
@@ -709,10 +712,25 @@ using ch::JoinStr;
   }
 
   // JER
+  if (era != 2017){
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(mc_processes)
       .AddSyst(cb, "CMS_res_j_$ERA", "shape", SystMap<>::init(1.00));
+  }else{
+  std::vector<std::string> filtered_processes2;
+  for (auto element : mc_processes){
+      if (element!="ggH_GG2H_0J_PTH_0_10") filtered_processes2.push_back(element);
+  }
+  cb.cp()
+      .channel({"et", "mt", "em"})
+      .process(mc_processes)
+      .AddSyst(cb, "CMS_res_j_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"tt"})
+      .process(filtered_processes2)
+      .AddSyst(cb, "CMS_res_j_$ERA", "shape", SystMap<>::init(1.00));
+  }
 
   // ##########################################################################
   // Uncertainty: MET energy scale and Recoil
@@ -1358,9 +1376,9 @@ using ch::JoinStr;
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_norm_stat_$CHANNEL_ggH_$ERA", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {1, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109},  1.049)
-	       ({"et"}, {1, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109},  1.074)
-	       ({"tt"}, {1, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109},  1.041)
+	       ({"mt"}, {1, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110},  1.049)
+	       ({"et"}, {1, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110},  1.074)
+	       ({"tt"}, {1, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110},  1.041)
 	       );
 
   cb.cp()
@@ -1389,6 +1407,7 @@ using ch::JoinStr;
                ({"mt"}, {107},   1.069) //ggh
                ({"mt"}, {108},   1.069) //ggh
                ({"mt"}, {109},   1.069) //ggh
+               ({"mt"}, {110},   1.069) //ggh
 	       ({"mt"}, {2},     1.058) //qqh
 	       ({"mt"}, {200},   1.058) //qqh
 	       ({"mt"}, {201},   1.058) //qqh
@@ -1414,6 +1433,7 @@ using ch::JoinStr;
                ({"et"}, {107},   1.059) //ggh
                ({"et"}, {108},   1.059) //ggh
                ({"et"}, {109},   1.059) //ggh
+               ({"et"}, {110},   1.059) //ggh
 	       ({"et"}, {2},     1.057) //qqh
 	       ({"et"}, {200},   1.057) //qqh
 	       ({"et"}, {201},   1.057) //qqh
@@ -1439,6 +1459,7 @@ using ch::JoinStr;
                ({"tt"}, {107},   1.096) //ggh
                ({"tt"}, {108},   1.096) //ggh
                ({"tt"}, {109},   1.096) //ggh
+               ({"tt"}, {110},   1.096) //ggh
 	       ({"tt"}, {2},     1.095) //qqh
 	       ({"tt"}, {200},   1.095) //qqh
 	       ({"tt"}, {201},   1.095) //qqh
@@ -1489,9 +1510,9 @@ using ch::JoinStr;
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
       .AddSyst(cb, "CMS_ff_sub_syst_$CHANNEL_ggH_$ERA", "lnN", SystMap<channel, bin_id>::init
-	       ({"mt"}, {1, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109},  1.04)
-	       ({"et"}, {1, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109},  1.04)
-	       ({"tt"}, {1, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109},  1.03)
+	       ({"mt"}, {1, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110},  1.04)
+	       ({"et"}, {1, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110},  1.04)
+	       ({"tt"}, {1, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110},  1.03)
 	       );
 
   cb.cp()

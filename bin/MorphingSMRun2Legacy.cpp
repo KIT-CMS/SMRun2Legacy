@@ -194,8 +194,9 @@ int main(int argc, char **argv) {
             {105, chn+"_ggh_2J_PTH0to60"},
             {106, chn+"_ggh_2J_PTH60to120"},
             {107, chn+"_ggh_2J_PTH120to200"},
-            {108, chn+"_ggh_PTHGT200"},
-            {109, chn+"_ggh_vbftopo"},
+            {108, chn+"_ggh_PTH_200_300"},
+            {109, chn+"_ggh_PTHGT300"},
+            {110, chn+"_ggh_vbftopo"},
             {200, chn+"_qqh_2J"},
             {201, chn+"_qqh_PTHGT200"},
             //{202, chn+"_vbftopo_highmjj"},
@@ -246,7 +247,10 @@ int main(int argc, char **argv) {
   else if(stxs_signals == "stxs_stage1p1") sig_procs = {
       // ggH
       "ggH_GG2H_FWDH",
-      "ggH_GG2H_PTH_GT200",
+      "ggH_GG2H_PTH_200_300",
+      "ggH_GG2H_PTH_300_450",
+      "ggH_GG2H_PTH_450_650",
+      "ggH_GG2H_PTH_GT650",
       "ggH_GG2H_0J_PTH_0_10",
       "ggH_GG2H_0J_PTH_GT10",
       "ggH_GG2H_1J_PTH_0_60",
@@ -511,6 +515,7 @@ int main(int argc, char **argv) {
       if (binning.size() == 1){ // catching case, if the total yield of the histogram is smaller then threshold.
         binning.insert(binning.begin(), shape.GetBinLowEdge(1));
       }
+      binning.at(0)=shape.GetBinLowEdge(1); // in case that yield of lowest bin is smaller than threshold merge it with second lowest
       cb.cp().bin({b}).VariableRebin(binning);
     }
     // Remove categories with too little events, if specified
