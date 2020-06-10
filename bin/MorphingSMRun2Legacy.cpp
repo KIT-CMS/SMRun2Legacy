@@ -353,7 +353,7 @@ int main(int argc, char **argv) {
   int count_lnN = 0;
   int count_all = 0;
   cb.cp().ForEachSyst([&count_lnN, &count_all](ch::Systematic *s) {
-    if (TString(s->name()).Contains("scale")||TString(s->name()).Contains("CMS_htt_boson_reso_met")){
+    if (TString(s->name()).Contains("scale")||TString(s->name()).Contains("CMS_htt_boson_reso_met")||TString(s->name()).Contains("res_j")||TString(s->name()).Contains("res_e")){
       count_all++;
       double err_u = 0.0;
       double err_d = 0.0;
