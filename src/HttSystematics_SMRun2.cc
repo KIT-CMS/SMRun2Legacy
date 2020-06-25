@@ -1209,15 +1209,27 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_w_njet0_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_ff_w_lowdR_njet0_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_w_njet1_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_ff_w_lowdR_njet1_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp()
       .channel({"et", "mt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_w_njet2_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_ff_w_lowdR_njet2_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"et", "mt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_w_highdR_njet0_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"et", "mt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_w_highdR_njet1_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"et", "mt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_w_highdR_njet2_morphed_stat_$CHANNEL_$ERA", "shape", SystMap<>::init(1.00));
 
 
 
