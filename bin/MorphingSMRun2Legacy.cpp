@@ -118,8 +118,9 @@ int main(int argc, char **argv) {
   // Define background processes
   map<string, VString> bkg_procs;
   VString bkgs, bkgs_em;
-  bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"};
-  bkgs_em = {"W", "ZTT", "TTT","VVT", "QCD", "ZL", "TTL", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"};
+  bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH_htt", "ZH_htt", "ttH_htt", "ggH_hww", "qqH_hww", "WH_hww", "ZH_hww"};
+  //bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH125", "ZH125", "ggHWW125", "qqHWW125", "WHWW125"};
+  bkgs_em = {"W", "ZTT", "TTT","VVT", "QCD", "ZL", "TTL", "VVL", "WH_htt", "ZH_htt", "ttH_htt", "ggH_hww", "qqH_hww", "WH_hww", "ZH_hww"};
 
 
   if(embedding){
@@ -185,15 +186,23 @@ int main(int argc, char **argv) {
         }
         else {
           cats[chn]={
-            {100, chn+"_ggh_0J"},
-            {101, chn+"_ggh_1J_PTH0to120"},
-            {102, chn+"_ggh_1J_PTH120to200"},
-            {103, chn+"_ggh_2J"},
-            {104, chn+"_ggh_PTHGT200"},
+            {100, chn+"_ggh_0J_PTH_0_10"},
+            {101, chn+"_ggh_0J_PTH_GT10"},
+            {102, chn+"_ggh_1J_PTH0to60"},
+            {103, chn+"_ggh_1J_PTH60to120"},
+            {104, chn+"_ggh_1J_PTH120to200"},
+            {105, chn+"_ggh_2J_PTH0to60"},
+            {106, chn+"_ggh_2J_PTH60to120"},
+            {107, chn+"_ggh_2J_PTH120to200"},
+            {108, chn+"_ggh_PTH_200_300"},
+            {109, chn+"_ggh_PTHGT300"},
+            {110, chn+"_ggh_vbftopo"},
             {200, chn+"_qqh_2J"},
             {201, chn+"_qqh_PTHGT200"},
-            {202, chn+"_vbftopo_highmjj"},
-            {203, chn+"_vbftopo_lowmjj"},
+            //{202, chn+"_vbftopo_highmjj"},
+            //{203, chn+"_vbftopo_lowmjj"},
+            {202, chn+"_qqh_vbftopo_highmjj"},
+            {203, chn+"_qqh_vbftopo_lowmjj"},
           };
         }
     }
@@ -229,7 +238,7 @@ int main(int argc, char **argv) {
   // Specify signal processes and masses
   vector<string> sig_procs;
   // STXS stage 0: ggH and VBF processes
-  if(stxs_signals == "stxs_stage0") sig_procs = {"ggH", "qqH"};
+  if(stxs_signals == "stxs_stage0") sig_procs = {"ggH_htt", "qqH_htt"};
   // STXS stage 1.1: Splits of ggH and VBF processes
   // References:
   // - https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHXSWGFiducialAndSTXS
@@ -237,32 +246,35 @@ int main(int argc, char **argv) {
   // - https://gitlab.cern.ch/LHCHIGGSXS/LHCHXSWG2/STXS
   else if(stxs_signals == "stxs_stage1p1") sig_procs = {
       // ggH
-      "ggH_GG2H_FWDH",
-      "ggH_GG2H_PTH_GT200",
-      "ggH_GG2H_0J_PTH_0_10",
-      "ggH_GG2H_0J_PTH_GT10",
-      "ggH_GG2H_1J_PTH_0_60",
-      "ggH_GG2H_1J_PTH_60_120",
-      "ggH_GG2H_1J_PTH_120_200",
-      "ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60",
-      "ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120",
-      "ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200",
-      "ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25",
-      "ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25",
-      "ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25",
-      "ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25",
+      "ggH_FWDH_htt",
+      "ggH_PTH_200_300_htt",
+      "ggH_PTH_300_450_htt",
+      "ggH_PTH_450_650_htt",
+      "ggH_PTH_GT650_htt",
+      "ggH_0J_PTH_0_10_htt",
+      "ggH_0J_PTH_GT10_htt",
+      "ggH_1J_PTH_0_60_htt",
+      "ggH_1J_PTH_60_120_htt",
+      "ggH_1J_PTH_120_200_htt",
+      "ggH_GE2J_MJJ_0_350_PTH_0_60_htt",
+      "ggH_GE2J_MJJ_0_350_PTH_60_120_htt",
+      "ggH_GE2J_MJJ_0_350_PTH_120_200_htt",
+      "ggH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
+      "ggH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
+      "ggH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
+      "ggH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
       // VBF
-      "qqH_QQ2HQQ_FWDH",
-      "qqH_QQ2HQQ_0J",
-      "qqH_QQ2HQQ_1J",
-      "qqH_QQ2HQQ_GE2J_MJJ_0_60",
-      "qqH_QQ2HQQ_GE2J_MJJ_60_120",
-      "qqH_QQ2HQQ_GE2J_MJJ_120_350",
-      "qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200",
-      "qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25",
-      "qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25",
-      "qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25",
-      "qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25"
+      "qqH_FWDH_htt",
+      "qqH_0J_htt",
+      "qqH_1J_htt",
+      "qqH_GE2J_MJJ_0_60_htt",
+      "qqH_GE2J_MJJ_60_120_htt",
+      "qqH_GE2J_MJJ_120_350_htt",
+      "qqH_GE2J_MJJ_GT350_PTH_GT200_htt",
+      "qqH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
+      "qqH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
+      "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
+      "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt"
   };
 
   else throw std::runtime_error("Given STXS signals are not known.");
@@ -341,7 +353,7 @@ int main(int argc, char **argv) {
   int count_lnN = 0;
   int count_all = 0;
   cb.cp().ForEachSyst([&count_lnN, &count_all](ch::Systematic *s) {
-    if (TString(s->name()).Contains("scale")||TString(s->name()).Contains("CMS_htt_boson_reso_met")){
+    if (TString(s->name()).Contains("scale")||TString(s->name()).Contains("CMS_htt_boson_reso_met")||TString(s->name()).Contains("res_j")||TString(s->name()).Contains("res_e")){
       count_all++;
       double err_u = 0.0;
       double err_d = 0.0;
@@ -419,7 +431,19 @@ int main(int argc, char **argv) {
       std::cout << "[INFO] Rebin background bin " << b << "\n";
       auto shape = cb.cp().bin({b}).backgrounds().GetShape();
       auto min = shape.GetBinLowEdge(1);
-      cb.cp().bin({b}).VariableRebin({min, 0.3, 0.4, 0.5, 0.6, 0.7, 1.0});
+      if(bstr.Contains("em") && bstr.Contains("misc")) cb.cp().bin({b}).VariableRebin({min, 0.4, 1.0});
+      else if(bstr.Contains("em_emb")){
+        if(categories == "stxs_stage1p1") cb.cp().bin({b}).VariableRebin({min, 0.3, 1.0});
+        else cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 1.0});
+      }
+      else if(bstr.Contains("et") && bstr.Contains("misc")) cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 1.0});
+      else if(bstr.Contains("mt") && bstr.Contains("misc")) cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 1.0});
+      else if(bstr.Contains("et") && bstr.Contains("zll") && categories == "stxs_stage1p1") cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 1.0});
+      else if(bstr.Contains("mt") && bstr.Contains("emb")){
+        if(categories == "stxs_stage1p1") cb.cp().bin({b}).VariableRebin({min, 0.4, 0.45, 0.5, 0.6, 1.0});
+        else cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 1.0});
+      }
+      else cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 0.7, 1.0});
     }
     // Rebin ggh stage 1.1 categories
     for (auto b : cb.cp().bin_set()) {
@@ -468,7 +492,7 @@ int main(int argc, char **argv) {
 
   // Perform auto-rebinning
   if (auto_rebin) {
-    const auto threshold = 1.0;
+    const auto threshold = 10.0;
     for (auto b : cb.cp().bin_set()) {
       std::cout << "[INFO] Rebin bin " << b << "\n";
       // Get shape of this category with sum of backgrounds
@@ -491,6 +515,7 @@ int main(int argc, char **argv) {
       if (binning.size() == 1){ // catching case, if the total yield of the histogram is smaller then threshold.
         binning.insert(binning.begin(), shape.GetBinLowEdge(1));
       }
+      binning.at(0)=shape.GetBinLowEdge(1); // in case that yield of lowest bin is smaller than threshold merge it with second lowest
       cb.cp().bin({b}).VariableRebin(binning);
     }
     // Remove categories with too little events, if specified
