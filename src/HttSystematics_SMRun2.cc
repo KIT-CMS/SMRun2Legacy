@@ -353,7 +353,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_t_emb_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.005));
+      .AddSyst(cb, "CMS_eff_t_emb_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.0087));
 
   // Tau ID: tt with 2 real taus
   for (auto tauIDbin : tauIDdmbins){
@@ -365,7 +365,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"tt"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_t_emb_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.007));
+      .AddSyst(cb, "CMS_eff_t_emb_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.012));
 
 
   // Common NP acting on EMB
@@ -392,7 +392,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.0087));
+      .AddSyst(cb, "CMS_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.005));
 
   // Tau ID: tt with 2 real taus
   for (auto tauIDbin : tauIDdmbins){
@@ -404,7 +404,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"tt"})
       .process({"EMB"})
-      .AddSyst(cb, "CMS_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.012));
+      .AddSyst(cb, "CMS_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.007));
 
   // Tau ID: tt with 1 real taus and 1 jet fake
   cb.cp()
