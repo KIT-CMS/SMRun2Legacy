@@ -29,51 +29,51 @@ using ch::JoinStr;
       // VBF
   std::vector<std::string> signals_ggH = {
       // STXS stage 0
-      "ggH",
+      "ggH_htt",
       // STXS stage 1.1
-      "ggH_GG2H_FWDH",
-      "ggH_GG2H_PTH_200_300",
-      "ggH_GG2H_PTH_300_450",
-      "ggH_GG2H_PTH_450_650",
-      "ggH_GG2H_PTH_GT650",
-      "ggH_GG2H_0J_PTH_0_10",
-      "ggH_GG2H_0J_PTH_GT10",
-      "ggH_GG2H_1J_PTH_0_60",
-      "ggH_GG2H_1J_PTH_60_120",
-      "ggH_GG2H_1J_PTH_120_200",
-      "ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60",
-      "ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120",
-      "ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200",
-      "ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25",
-      "ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25",
-      "ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25",
-      "ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25",
+      "ggH_FWDH_htt",
+      "ggH_PTH_200_300_htt",
+      "ggH_PTH_300_450_htt",
+      "ggH_PTH_450_650_htt",
+      "ggH_PTH_GT650_htt",
+      "ggH_0J_PTH_0_10_htt",
+      "ggH_0J_PTH_GT10_htt",
+      "ggH_1J_PTH_0_60_htt",
+      "ggH_1J_PTH_60_120_htt",
+      "ggH_1J_PTH_120_200_htt",
+      "ggH_GE2J_MJJ_0_350_PTH_0_60_htt",
+      "ggH_GE2J_MJJ_0_350_PTH_60_120_htt",
+      "ggH_GE2J_MJJ_0_350_PTH_120_200_htt",
+      "ggH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
+      "ggH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
+      "ggH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
+      "ggH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
       };
   std::vector<std::string> signals_qqH = {
       // STXS stage 0
-      "qqH",
+      "qqH_htt",
       // STXS stage 1
-      "qqH_QQ2HQQ_FWDH",
-      "qqH_QQ2HQQ_0J",
-      "qqH_QQ2HQQ_1J",
-      "qqH_QQ2HQQ_GE2J_MJJ_0_60",
-      "qqH_QQ2HQQ_GE2J_MJJ_60_120",
-      "qqH_QQ2HQQ_GE2J_MJJ_120_350",
-      "qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200",
-      "qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25",
-      "qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25",
-      "qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25",
-      "qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25"
+      "qqH_FWDH_htt",
+      "qqH_0J_htt",
+      "qqH_1J_htt",
+      "qqH_GE2J_MJJ_0_60_htt",
+      "qqH_GE2J_MJJ_60_120_htt",
+      "qqH_GE2J_MJJ_120_350_htt",
+      "qqH_GE2J_MJJ_GT350_PTH_GT200_htt",
+      "qqH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
+      "qqH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
+      "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
+      "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt"
       };
   std::vector<std::string> signals_VH = {
       // STXS stage 0
-      "WH125", "ZH125", "ttH125"};
+      "WH_htt", "ZH_htt", "ttH_htt"};
   std::vector<std::string> signals_ggHToWW = {
      // STXS stage 0
-     "ggHWW125"};
+     "ggH_hww"};
   std::vector<std::string> signals_qqHToWW = {
      // STXS stage 0
-     "qqHWW125"};
+     "qqH_hww"};
   std::vector<std::string> signals = JoinStr({signals_ggH, signals_qqH, signals_VH}); 
 
   // Background processes
@@ -90,7 +90,7 @@ using ch::JoinStr;
               signals,
               signals_ggHToWW,
               signals_qqHToWW,
-              {"WHWW125", "ZHWW125"},
+              {"WH_hww", "ZH_hww"},
               {"ZTT", "TT", "TTT", "TTL", "TTJ", "W", "ZJ", "ZL", "VV", "VVT", "VVL", "VVJ", "ST"}
               });
   // ##########################################################################
@@ -720,7 +720,7 @@ using ch::JoinStr;
   }else{
   std::vector<std::string> filtered_processes2;
   for (auto element : mc_processes){
-      if (element!="ggH_GG2H_0J_PTH_0_10") filtered_processes2.push_back(element);
+      if (element!="ggH_0J_PTH_0_10") filtered_processes2.push_back(element);
   }
   cb.cp()
       .channel({"et", "mt", "em"})
@@ -746,11 +746,11 @@ using ch::JoinStr;
       .AddSyst(cb, "CMS_scale_met_unclustered", "shape", SystMap<>::init(1.00));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process(JoinStr({signals, signals_ggHToWW, signals_qqHToWW, {"WHWW125", "ZHWW125"}, {"ZTT", "ZL", "ZJ", "W"}}))
+      .process(JoinStr({signals, signals_ggHToWW, signals_qqHToWW, {"WH_hww", "ZH_hww"}, {"ZTT", "ZL", "ZJ", "W"}}))
       .AddSyst(cb, "CMS_htt_boson_scale_met_$ERA", "shape", SystMap<>::init(1.00));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process(JoinStr({signals, signals_ggHToWW, signals_qqHToWW, {"WHWW125", "ZHWW125"}, {"ZTT", "ZL", "ZJ", "W"}}))
+      .process(JoinStr({signals, signals_ggHToWW, signals_qqHToWW, {"WH_hww", "ZH_hww"}, {"ZTT", "ZL", "ZJ", "W"}}))
       .AddSyst(cb, "CMS_htt_boson_res_met_$ERA", "shape", SystMap<>::init(1.00));
 
   // ##########################################################################
@@ -1011,15 +1011,15 @@ using ch::JoinStr;
   // Uncertainty on branching ratio for HWW at 125 GeV
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-     .process(JoinStr({signals_ggHToWW,signals_qqHToWW,{"WHWW125", "ZHWW125"}}))
+     .process(JoinStr({signals_ggHToWW,signals_qqHToWW,{"WH_hww", "ZH_hww"}}))
      .AddSyst(cb, "BR_hww_THU", "lnN", SystMap<>::init(1.0099));   
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-     .process(JoinStr({signals_ggHToWW,signals_qqHToWW,{"WHWW125", "ZHWW125"}}))
+     .process(JoinStr({signals_ggHToWW,signals_qqHToWW,{"WH_hww", "ZH_hww"}}))
      .AddSyst(cb, "BR_hww_PU_mq", "lnN", SystMap<>::init(1.0099));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-     .process(JoinStr({signals_ggHToWW,signals_qqHToWW,{"WHWW125", "ZHWW125"}}))
+     .process(JoinStr({signals_ggHToWW,signals_qqHToWW,{"WH_hww", "ZH_hww"}}))
      .AddSyst(cb, "BR_hww_PU_alphas", "lnN", SystMap<>::init(1.0066));
   // QCD scale
   if (!ggh_wg1) {
@@ -1036,15 +1036,15 @@ using ch::JoinStr;
   }
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process({"ZH125", "ZHWW125"})
+      .process({"ZH_htt", "ZH_hww"})
       .AddSyst(cb, "QCDScale_VH", "lnN", SystMap<>::init(1.009));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process({"WH125", "WHWW125"})
+      .process({"WH_htt", "WH_hww"})
       .AddSyst(cb, "QCDScale_VH", "lnN", SystMap<>::init(1.008));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process({"ttH125"})
+      .process({"ttH_htt"})
       .AddSyst(cb, "QCDScale_ttH", "lnN", SystMap<>::init(1.08));
 
   // PDF
@@ -1058,15 +1058,15 @@ using ch::JoinStr;
       .AddSyst(cb, "pdf_Higgs_qqbar", "lnN", SystMap<>::init(1.021));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process({"ZH125", "ZHWW125"})
+      .process({"ZH_htt", "ZH_hww"})
       .AddSyst(cb, "pdf_Higgs_VH", "lnN", SystMap<>::init(1.013));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process({"WH125", "WHWW125"})
+      .process({"WH_htt", "WH_hww"})
       .AddSyst(cb, "pdf_Higgs_VH", "lnN", SystMap<>::init(1.018));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process({"ttH125"})
+      .process({"ttH_htt"})
       .AddSyst(cb, "pdf_Higgs_ttH", "lnN", SystMap<>::init(1.036));
 
   // Gluon-fusion WG1 uncertainty scheme

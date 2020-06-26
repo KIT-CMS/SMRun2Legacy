@@ -118,9 +118,9 @@ int main(int argc, char **argv) {
   // Define background processes
   map<string, VString> bkg_procs;
   VString bkgs, bkgs_em;
-  bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"};
+  bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH_htt", "ZH_htt", "ttH_htt", "ggH_hww", "qqH_hww", "WH_hww", "ZH_hww"};
   //bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH125", "ZH125", "ggHWW125", "qqHWW125", "WHWW125"};
-  bkgs_em = {"W", "ZTT", "TTT","VVT", "QCD", "ZL", "TTL", "VVL", "WH125", "ZH125", "ttH125", "ggHWW125", "qqHWW125", "WHWW125", "ZHWW125"};
+  bkgs_em = {"W", "ZTT", "TTT","VVT", "QCD", "ZL", "TTL", "VVL", "WH_htt", "ZH_htt", "ttH_htt", "ggH_hww", "qqH_hww", "WH_hww", "ZH_hww"};
 
 
   if(embedding){
@@ -238,7 +238,7 @@ int main(int argc, char **argv) {
   // Specify signal processes and masses
   vector<string> sig_procs;
   // STXS stage 0: ggH and VBF processes
-  if(stxs_signals == "stxs_stage0") sig_procs = {"ggH", "qqH"};
+  if(stxs_signals == "stxs_stage0") sig_procs = {"ggH_htt", "qqH_htt"};
   // STXS stage 1.1: Splits of ggH and VBF processes
   // References:
   // - https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHXSWGFiducialAndSTXS
@@ -246,35 +246,35 @@ int main(int argc, char **argv) {
   // - https://gitlab.cern.ch/LHCHIGGSXS/LHCHXSWG2/STXS
   else if(stxs_signals == "stxs_stage1p1") sig_procs = {
       // ggH
-      "ggH_GG2H_FWDH",
-      "ggH_GG2H_PTH_200_300",
-      "ggH_GG2H_PTH_300_450",
-      "ggH_GG2H_PTH_450_650",
-      "ggH_GG2H_PTH_GT650",
-      "ggH_GG2H_0J_PTH_0_10",
-      "ggH_GG2H_0J_PTH_GT10",
-      "ggH_GG2H_1J_PTH_0_60",
-      "ggH_GG2H_1J_PTH_60_120",
-      "ggH_GG2H_1J_PTH_120_200",
-      "ggH_GG2H_GE2J_MJJ_0_350_PTH_0_60",
-      "ggH_GG2H_GE2J_MJJ_0_350_PTH_60_120",
-      "ggH_GG2H_GE2J_MJJ_0_350_PTH_120_200",
-      "ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25",
-      "ggH_GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25",
-      "ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25",
-      "ggH_GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25",
+      "ggH_FWDH_htt",
+      "ggH_PTH_200_300_htt",
+      "ggH_PTH_300_450_htt",
+      "ggH_PTH_450_650_htt",
+      "ggH_PTH_GT650_htt",
+      "ggH_0J_PTH_0_10_htt",
+      "ggH_0J_PTH_GT10_htt",
+      "ggH_1J_PTH_0_60_htt",
+      "ggH_1J_PTH_60_120_htt",
+      "ggH_1J_PTH_120_200_htt",
+      "ggH_GE2J_MJJ_0_350_PTH_0_60_htt",
+      "ggH_GE2J_MJJ_0_350_PTH_60_120_htt",
+      "ggH_GE2J_MJJ_0_350_PTH_120_200_htt",
+      "ggH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
+      "ggH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
+      "ggH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
+      "ggH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
       // VBF
-      "qqH_QQ2HQQ_FWDH",
-      "qqH_QQ2HQQ_0J",
-      "qqH_QQ2HQQ_1J",
-      "qqH_QQ2HQQ_GE2J_MJJ_0_60",
-      "qqH_QQ2HQQ_GE2J_MJJ_60_120",
-      "qqH_QQ2HQQ_GE2J_MJJ_120_350",
-      "qqH_QQ2HQQ_GE2J_MJJ_GT350_PTH_GT200",
-      "qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25",
-      "qqH_QQ2HQQ_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25",
-      "qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25",
-      "qqH_QQ2HQQ_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25"
+      "qqH_FWDH_htt",
+      "qqH_0J_htt",
+      "qqH_1J_htt",
+      "qqH_GE2J_MJJ_0_60_htt",
+      "qqH_GE2J_MJJ_60_120_htt",
+      "qqH_GE2J_MJJ_120_350_htt",
+      "qqH_GE2J_MJJ_GT350_PTH_GT200_htt",
+      "qqH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
+      "qqH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
+      "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
+      "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt"
   };
 
   else throw std::runtime_error("Given STXS signals are not known.");
