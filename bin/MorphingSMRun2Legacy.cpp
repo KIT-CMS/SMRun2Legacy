@@ -565,7 +565,7 @@ int main(int argc, char **argv) {
     else if (era==2018){
       gen_mean = 0.019;
     }
-    auto bbb = ch::BinomialBinByBinFactory()
+    auto bbb = ch::BinomialBinByBinViaAutoMCstatsFactory()
                    .SetPattern("CMS_$ANALYSIS_$CHANNEL_$BIN_$ERA_$PROCESS_binomial_bin_$#")
                    .SetBinomialP(gen_mean)
                    .SetBinomialN(1000.0)

@@ -129,6 +129,117 @@ class BinomialBinByBinFactory: public BinByBinFactory {
   double binomial_p_;
   double binomial_n_;
 };
+
+class BinomialBinByBinViaAutoMCstatsFactory: public BinByBinFactory {
+ public:
+  BinomialBinByBinViaAutoMCstatsFactory();
+
+  /**
+   * Create binomial bin-by-bin shape uncertainties for every process in **src**, and
+   * add these to **dest**
+   *
+   * The behaviour of this function is controlled by three parameters:
+   * 
+   *   * The first is the uncertainty threshold which determines whether a 
+   *     systematic will be created for a given histogram bin
+   *     (\ref SetAddThreshold). For a bin with content \f$x\f$ and bin error
+   *     \f$e\f$, this threshold is thefractional error \f$e/x\f$.
+   *   * The second parameters (\ref SetFixNorm) is a flag that when set to
+   *     `true` will re-normalize the up and down shape templates to have the
+   *     same integral as the nominal. This means the nuisance parameter for
+   *     this bin is only able to change the shape of the distribution: if a
+   *     bin is shifted up, all other bins are shifted down slightly to
+   *     preserve the normalisation. This feature is useful when the
+   *     statistical uncertainty in the process yield is considered as an
+   *     independent nuisance parameter.
+   *   * The third parameters is a pattern-string which prescribes how the
+   *     bin-by-bin uncertainties should be named. By default this is
+   *     `CMS_$ANALYSIS_$CHANNEL_$BIN_$ERA_$PROCESS_bin_$#`, but can be
+   *     changed with \ref SetPattern. Note that the special term `$#`
+   *     should always be included as this is replaced with the bin index.
+   */
+  void AddBinomialBinByBin(CombineHarvester &src, CombineHarvester &dest);
+
+  /**
+   * By default this class only produces output on the screen when an error
+   * occurs, set to a value greater than zero for more verbose output
+   */
+  inline BinomialBinByBinViaAutoMCstatsFactory& SetVerbosity(unsigned verbosity) {
+    return static_cast<BinomialBinByBinViaAutoMCstatsFactory&> (BinByBinFactory::SetVerbosity(verbosity));
+  }
+
+  /**
+   * Set the fractional bin error threshold for bin-by-bin creation and
+   * for participation in the merging algorithm
+   */
+  inline BinomialBinByBinViaAutoMCstatsFactory& SetAddThreshold(double val) {
+    return static_cast<BinomialBinByBinViaAutoMCstatsFactory&> (BinByBinFactory::SetAddThreshold(val));
+  }
+
+  /**
+   * The threshold for the merging algorithm
+   */
+  inline BinomialBinByBinViaAutoMCstatsFactory& SetMergeThreshold(double val) {
+    return static_cast<BinomialBinByBinViaAutoMCstatsFactory&> (BinByBinFactory::SetMergeThreshold(val));
+  }
+
+  /**
+   * The pattern-string for the systematic naming convention
+   */
+  inline BinomialBinByBinViaAutoMCstatsFactory& SetPattern(std::string const& pattern) {
+    return static_cast<BinomialBinByBinViaAutoMCstatsFactory&> (BinByBinFactory::SetPattern(pattern));
+  }
+
+  /**
+   * Whether or not the bin-by-bin systematics are allowed to vary the process
+   * normalisation
+   */
+  inline BinomialBinByBinViaAutoMCstatsFactory& SetFixNorm(bool fix) {
+    return static_cast<BinomialBinByBinViaAutoMCstatsFactory&> (BinByBinFactory::SetFixNorm(fix));
+  }
+
+  /**
+   * Construct approximate Poisson uncertainties instead of default Gaussian
+   */
+  inline BinomialBinByBinViaAutoMCstatsFactory& SetPoissonErrors(bool poisson_errors) {
+    return static_cast<BinomialBinByBinViaAutoMCstatsFactory&> (BinByBinFactory::SetPoissonErrors(poisson_errors));
+  }
+
+  /**
+   * Set whether bins with zero content can participate in the merging procedure
+   */
+  inline BinomialBinByBinViaAutoMCstatsFactory& SetMergeZeroBins(bool merge) {
+    return static_cast<BinomialBinByBinViaAutoMCstatsFactory&> (BinByBinFactory::SetMergeZeroBins(merge));
+  }
+
+  /**
+   * Set whether bins with error >= content participate in the merging procedure
+   */
+  inline BinomialBinByBinViaAutoMCstatsFactory& SetMergeSaturatedBins(bool merge) {
+    return static_cast<BinomialBinByBinViaAutoMCstatsFactory&> (BinByBinFactory::SetMergeSaturatedBins(merge));
+  }
+
+  /**
+   * Set value of probability p for event passing in embedded kinematic filtering
+   */
+  inline BinomialBinByBinViaAutoMCstatsFactory& SetBinomialP(double val) {
+    binomial_p_ = val;
+    return *this;
+  }
+
+  /**
+   * Set value of number of tries n for event passing in embedded kinematic filtering
+   */
+  inline BinomialBinByBinViaAutoMCstatsFactory& SetBinomialN(double val) {
+    binomial_n_ = val;
+    return *this;
+  }
+
+
+ private:
+  double binomial_p_;
+  double binomial_n_;
+};
 }
 
 #endif

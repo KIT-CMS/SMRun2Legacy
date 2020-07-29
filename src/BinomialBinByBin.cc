@@ -74,4 +74,42 @@ void BinomialBinByBinFactory::AddBinomialBinByBin(CombineHarvester &src, Combine
   }
 }
 
+BinomialBinByBinViaAutoMCstatsFactory::BinomialBinByBinViaAutoMCstatsFactory() : BinByBinFactory() {}
+
+void BinomialBinByBinViaAutoMCstatsFactory::AddBinomialBinByBin(CombineHarvester &src, CombineHarvester &dest) {
+  std::vector<Process *> procs;
+  src.ForEachProc([&](Process *p) { 
+    procs.push_back(p);
+  });
+  for (unsigned i = 0; i < procs.size(); ++i) {
+    if (!procs[i]->shape()) continue;
+    std::unique_ptr<TH1> h = std::unique_ptr<TH1>(static_cast<TH1*>(procs[i]->shape()->Clone()));
+    if (h->GetSumw2N() == 0) {
+      std::cout << "Process " << procs[i]->process()
+                << " does not continue the weights information needed for "
+                   "valid errors, skipping\n";
+      continue;
+    }
+    unsigned n_pop_bins = 0;
+    for (int j = 1; j <= h->GetNbinsX(); ++j) {
+      if (h->GetBinContent(j) > 0.0) ++n_pop_bins;
+    }
+    if (n_pop_bins <= 1 && BinomialBinByBinViaAutoMCstatsFactory::GetFixNorm()) {
+      if (BinomialBinByBinViaAutoMCstatsFactory::GetVerbosity() >= 1) {
+        std::cout << "Requested fixed_norm but template has <= 1 populated "
+                     "bins, skipping\n";
+        std::cout << Process::PrintHeader << *(procs[i]) << "\n";
+      }
+      continue;
+    }
+    for (int j = 1; j <= h->GetNbinsX(); ++j) {
+      double val = h->GetBinContent(j);
+      double err_old = h->GetBinError(j);
+      double err2 = val*binomial_p_/binomial_n_*(1.-binomial_p_);
+      h->SetBinError(j, std::sqrt(err_old*err_old+err2));
+    }
+    procs[i]->set_shape(std::move(h), false);
+  }
+}
+
 }
