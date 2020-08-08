@@ -1412,7 +1412,7 @@ using ch::JoinStr;
     
   // Syst. norm: Bin-correlated
   // uncorrelated between eras
-  
+
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
@@ -1507,7 +1507,7 @@ using ch::JoinStr;
 	       ({"tt"}, {21},  1.099) //ff
 	       ({"tt"}, {300}, 1.095) //incl
 	       );
-    */y
+    */
   // Syst. norm: Bin-dependent, correlated across years
   // uncorrelated between eras
   cb.cp()
