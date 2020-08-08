@@ -1307,11 +1307,19 @@ using ch::JoinStr;
   cb.cp()
       .channel({"tt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_qcd_tau2_pt_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+      .AddSyst(cb, "CMS_ff_qcd_tau2_pt_0jet_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
   cb.cp()
       .channel({"tt"})
       .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_corr_qcd_tau2_pt_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+      .AddSyst(cb, "CMS_ff_corr_qcd_tau2_pt_0jet_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+  cb.cp()
+      .channel({"tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_qcd_tau2_pt_1jet_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+  cb.cp()
+      .channel({"tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_corr_qcd_tau2_pt_1jet_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
   cb.cp()
       .channel({"tt"})
       .process({"jetFakes"})
@@ -1401,9 +1409,24 @@ using ch::JoinStr;
 	       ({"et"}, {2, 200, 201, 202, 203},  1.112)
 	       ({"tt"}, {2, 200, 201, 202, 203},  1.052)
 	       );
-
+    
   // Syst. norm: Bin-correlated
   // uncorrelated between eras
+  
+  cb.cp()
+      .channel({"et", "mt", "tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_jetbinned_stat_0jet_norm_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+  cb.cp()
+      .channel({"et", "mt", "tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_jetbinned_stat_1jet_norm_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+  cb.cp()
+      .channel({"et", "mt", "tt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_jetbinned_stat_2jet_norm_$CHANNEL_$ERA", "shape", SystMap<>::init(1.0));
+
+  /*
   cb.cp()
       .channel({"et", "mt", "tt"})
       .process({"jetFakes"})
@@ -1484,7 +1507,7 @@ using ch::JoinStr;
 	       ({"tt"}, {21},  1.099) //ff
 	       ({"tt"}, {300}, 1.095) //incl
 	       );
-
+    */y
   // Syst. norm: Bin-dependent, correlated across years
   // uncorrelated between eras
   cb.cp()
