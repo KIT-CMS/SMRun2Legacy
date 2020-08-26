@@ -386,6 +386,40 @@ int main(int argc, char **argv) {
   });
   std::cout << "[WARNING] Turned " << count_lnN << " of " << count_all << " checked systematics into lnN:" << std::endl;
 
+  //update rates for Higgs processes from mH=125.0 to mH=125.4
+  cb.cp().process_rgx({"ggH.*htt"}).ForEachProc([&](ch::Process *proc) {
+    //std::cout << "Updating rate of "+proc->process() << std::endl;
+    proc->set_rate(proc->rate()*0.984);
+  });
+  cb.cp().process_rgx({"qqH.*htt"}).ForEachProc([&](ch::Process *proc) {
+    //std::cout << "Updating rate	of "+proc->process() <<	std::endl;
+    proc->set_rate(proc->rate()*0.987);
+  });
+  cb.cp().process_rgx({"WH.*htt"}).ForEachProc([&](ch::Process *proc) {
+    //std::cout << "Updating rate	of "+proc->process() << std::endl;
+    proc->set_rate(proc->rate()*0.979);
+  });
+  cb.cp().process_rgx({"ZH.*htt"}).ForEachProc([&](ch::Process *proc) {
+    //std::cout << "Updating rate	of "+proc->process() << std::endl;
+    proc->set_rate(proc->rate()*0.982);
+  });
+  cb.cp().process_rgx({"ggH.*hww"}).ForEachProc([&](ch::Process *proc) {
+    //std::cout << "Updating rate	of "+proc->process() <<	std::endl;
+    proc->set_rate(proc->rate()*1.025);
+  });
+  cb.cp().process_rgx({"qqH.*hww"}).ForEachProc([&](ch::Process *proc) {
+    //std::cout << "Updating rate	of "+proc->process() <<	std::endl;
+    proc->set_rate(proc->rate()*1.028);
+  });
+  cb.cp().process_rgx({"WH.*hww"}).ForEachProc([&](ch::Process *proc) {
+    //std::cout << "Updating rate       of "+proc->process() << std::endl;
+    proc->set_rate(proc->rate()*1.020);
+  });
+  cb.cp().process_rgx({"ZH.*hww"}).ForEachProc([&](ch::Process *proc) {
+    //std::cout << "Updating rate       of "+proc->process() << std::endl;
+    proc->set_rate(proc->rate()*1.022);
+  });
+
   // Replacing observation with the sum of the backgrounds (Asimov data)
   // useful to be able to check this, so don't do the replacement
   // for these

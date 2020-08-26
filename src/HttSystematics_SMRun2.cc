@@ -999,7 +999,7 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(signals)
-      .AddSyst(cb, "BR_htt_THU", "lnN", SystMap<>::init(1.017));
+      .AddSyst(cb, "BR_htt_THU", "lnN", SystMap<>::init(1.0117));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(signals)
@@ -1007,20 +1007,20 @@ using ch::JoinStr;
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
       .process(signals)
-      .AddSyst(cb, "BR_htt_PU_alphas", "lnN", SystMap<>::init(1.0062));
+      .AddSyst(cb, "BR_htt_PU_alphas", "lnN", SystMap<>::init(1.0061));
   // Uncertainty on branching ratio for HWW at 125 GeV
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
      .process(JoinStr({signals_ggHToWW,signals_qqHToWW,{"WH_hww", "ZH_hww"}}))
-     .AddSyst(cb, "BR_hww_THU", "lnN", SystMap<>::init(1.0099));   
+     .AddSyst(cb, "BR_hww_THU", "lnN", SystMap<>::init(1.0098));   
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
      .process(JoinStr({signals_ggHToWW,signals_qqHToWW,{"WH_hww", "ZH_hww"}}))
-     .AddSyst(cb, "BR_hww_PU_mq", "lnN", SystMap<>::init(1.0099));
+     .AddSyst(cb, "BR_hww_PU_mq", "lnN", SystMap<>::init(1.0097));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
      .process(JoinStr({signals_ggHToWW,signals_qqHToWW,{"WH_hww", "ZH_hww"}}))
-     .AddSyst(cb, "BR_hww_PU_alphas", "lnN", SystMap<>::init(1.0066));
+     .AddSyst(cb, "BR_hww_PU_alphas", "lnN", SystMap<>::init(1.0063));
   // QCD scale
   if (!ggh_wg1) {
   cb.cp()
