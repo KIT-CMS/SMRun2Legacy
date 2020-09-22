@@ -752,6 +752,14 @@ using ch::JoinStr;
       .channel({"et", "mt", "tt", "em"})
       .process(JoinStr({signals, signals_ggHToWW, signals_qqHToWW, {"WH_hww", "ZH_hww"}, {"ZTT", "ZL", "ZJ", "W"}}))
       .AddSyst(cb, "CMS_htt_boson_res_met_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"et", "mt", "tt"})
+      .process({"EMB"})
+      .AddSyst(cb, "CMS_scale_met_emb", "shape", SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"em"})
+      .process({"EMB"})
+      .AddSyst(cb, "CMS_scale_met_emb_em", "shape", SystMap<>::init(1.00));
 
   // ##########################################################################
   // Uncertainty: Background normalizations
@@ -1159,51 +1167,52 @@ using ch::JoinStr;
       .process({signals_qqHToWW})
      .AddSyst(cb, "QCDScale_qqH", "lnN", SystMap<>::init(1.005));
   }
+
     cb.cp()
      .channel({"et", "mt", "tt", "em"})
      .process({signals_qqH})
-     .AddSyst(cb, "CMS_htt_vbf_scale_0jet", "shape", SystMap<>::init(1.00));
+     .AddSyst(cb, "vbf_scale_0jet", "shape", SystMap<>::init(1.00));
     cb.cp()
      .channel({"et", "mt", "tt", "em"})
      .process({signals_qqH})
-     .AddSyst(cb, "CMS_htt_vbf_scale_1jet", "shape", SystMap<>::init(1.00));
+     .AddSyst(cb, "vbf_scale_1jet", "shape", SystMap<>::init(1.00));
     cb.cp()
      .channel({"et", "mt", "tt", "em"})
      .process({signals_qqH})
-     .AddSyst(cb, "CMS_htt_vbf_scale_lowmjj", "shape", SystMap<>::init(1.00));
+     .AddSyst(cb, "vbf_scale_lowmjj", "shape", SystMap<>::init(1.00));
     cb.cp()
      .channel({"et", "mt", "tt", "em"})
      .process({signals_qqH})
-     .AddSyst(cb, "CMS_htt_vbf_scale_highmjj_lowpt", "shape", SystMap<>::init(1.00));
+     .AddSyst(cb, "vbf_scale_highmjj_lowpt", "shape", SystMap<>::init(1.00));
     cb.cp()
      .channel({"et", "mt", "tt", "em"})
      .process({signals_qqH})
-     .AddSyst(cb, "CMS_htt_vbf_scale_highmjj_highpt", "shape", SystMap<>::init(1.00));
+     .AddSyst(cb, "vbf_scale_highmjj_highpt", "shape", SystMap<>::init(1.00));
     
     cb.cp()
      .channel({"et", "mt", "tt", "em"})
      .process({signals_ggH})
-     .AddSyst(cb, "CMS_htt_ggH_scale_0jet", "shape", SystMap<>::init(1.00));
+     .AddSyst(cb, "ggH_scale_0jet", "shape", SystMap<>::init(1.00));
     cb.cp()
      .channel({"et", "mt", "tt", "em"})
      .process({signals_ggH})
-     .AddSyst(cb, "CMS_htt_ggH_scale_1jet_lowpt", "shape", SystMap<>::init(1.00));
+     .AddSyst(cb, "ggH_scale_1jet_lowpt", "shape", SystMap<>::init(1.00));
     cb.cp()
      .channel({"et", "mt", "tt", "em"})
      .process({signals_ggH})
-     .AddSyst(cb, "CMS_htt_ggH_scale_2jet_lowpt", "shape", SystMap<>::init(1.00));
+     .AddSyst(cb, "ggH_scale_2jet_lowpt", "shape", SystMap<>::init(1.00));
     cb.cp()
      .channel({"et", "mt", "tt", "em"})
      .process({signals_ggH})
-     .AddSyst(cb, "CMS_htt_ggH_scale_highpt", "shape", SystMap<>::init(1.00));
+     .AddSyst(cb, "ggH_scale_highpt", "shape", SystMap<>::init(1.00));
     cb.cp()
      .channel({"et", "mt", "tt", "em"})
      .process({signals_ggH})
-     .AddSyst(cb, "CMS_htt_ggH_scale_very_highpt", "shape", SystMap<>::init(1.00));
+     .AddSyst(cb, "ggH_scale_very_highpt", "shape", SystMap<>::init(1.00));
     cb.cp()
      .channel({"et", "mt", "tt", "em"})
      .process({signals_ggH})
-     .AddSyst(cb, "CMS_htt_ggH_scale_vbf", "shape", SystMap<>::init(1.00));
+     .AddSyst(cb, "ggH_scale_vbf", "shape", SystMap<>::init(1.00));
 
   // ##########################################################################
   // Uncertainty: Embedded events
