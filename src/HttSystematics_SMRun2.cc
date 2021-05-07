@@ -49,6 +49,28 @@ using ch::JoinStr;
       "ggH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
       "ggH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
       };
+  std::vector<std::string> signals_ggZH_had = {
+      // STXS stage 0
+      "ggZH_had_htt",
+      // STXS stage 1.1
+      "ggZH_had_FWDH_htt",
+      "ggZH_had_PTH_200_300_htt",
+      "ggZH_had_PTH_300_450_htt",
+      "ggZH_had_PTH_450_650_htt",
+      "ggZH_had_PTH_GT650_htt",
+      "ggZH_had_0J_PTH_0_10_htt",
+      "ggZH_had_0J_PTH_GT10_htt",
+      "ggZH_had_1J_PTH_0_60_htt",
+      "ggZH_had_1J_PTH_60_120_htt",
+      "ggZH_had_1J_PTH_120_200_htt",
+      "ggZH_had_GE2J_MJJ_0_350_PTH_0_60_htt",
+      "ggZH_had_GE2J_MJJ_0_350_PTH_60_120_htt",
+      "ggZH_had_GE2J_MJJ_0_350_PTH_120_200_htt",
+      "ggZH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
+      "ggZH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
+      "ggZH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
+      "ggZH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
+      };
   std::vector<std::string> signals_qqH = {
       // STXS stage 0
       "qqH_htt",
@@ -65,16 +87,64 @@ using ch::JoinStr;
       "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
       "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt"
       };
+  std::vector<std::string> signals_VH_had = {
+      // STXS stage 0
+      "WH_had_htt",
+      "ZH_had_htt",
+      // STXS stage 1
+      "WH_had_FWDH_htt",
+      "WH_had_0J_htt",
+      "WH_had_1J_htt",
+      "WH_had_GE2J_MJJ_0_60_htt",
+      "WH_had_GE2J_MJJ_60_120_htt",
+      "WH_had_GE2J_MJJ_120_350_htt",
+      "WH_had_GE2J_MJJ_GT350_PTH_GT200_htt",
+      "WH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
+      "WH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
+      "WH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
+      "WH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
+      "ZH_had_FWDH_htt",
+      "ZH_had_0J_htt",
+      "ZH_had_1J_htt",
+      "ZH_had_GE2J_MJJ_0_60_htt",
+      "ZH_had_GE2J_MJJ_60_120_htt",
+      "ZH_had_GE2J_MJJ_120_350_htt",
+      "ZH_had_GE2J_MJJ_GT350_PTH_GT200_htt",
+      "ZH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
+      "ZH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
+      "ZH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
+      "ZH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt"
+      };
   std::vector<std::string> signals_VH = {
       // STXS stage 0
-      "WH_htt", "ZH_htt", "ttH_htt"};
+      "WH_lep_htt", "ZH_lep_htt", "ggZH_lep_htt", "ttH_htt",
+      // STXS stage 1
+      "WH_lep_FWDH_htt",
+      "WH_lep_PTV_0_75_htt",
+      "WH_lep_PTV_75_150_htt",
+      "WH_lep_PTV_150_250_0J_htt",
+      "WH_lep_PTV_150_250_GE1J_htt",
+      "WH_lep_PTV_GT250_htt",
+      "ZH_lep_FWDH_htt",
+      "ZH_lep_PTV_0_75_htt",
+      "ZH_lep_PTV_75_150_htt",
+      "ZH_lep_PTV_150_250_0J_htt",
+      "ZH_lep_PTV_150_250_GE1J_htt",
+      "ZH_lep_PTV_GT250_htt",
+      "ggZH_lep_FWDH_htt",
+      "ggZH_lep_PTV_0_75_htt",
+      "ggZH_lep_PTV_75_150_htt",
+      "ggZH_lep_PTV_150_250_0J_htt",
+      "ggZH_lep_PTV_150_250_GE1J_htt",
+      "ggZH_lep_PTV_GT250_htt"
+      };
   std::vector<std::string> signals_ggHToWW = {
      // STXS stage 0
      "ggH_hww"};
   std::vector<std::string> signals_qqHToWW = {
      // STXS stage 0
      "qqH_hww"};
-  std::vector<std::string> signals = JoinStr({signals_ggH, signals_qqH, signals_VH}); 
+  std::vector<std::string> signals = JoinStr({signals_ggH, signals_ggZH_had, signals_qqH, signals_VH_had, signals_VH}); 
 
   // Background processes
   /* // Not used in the function, keep it for documentation purposes.
@@ -1044,11 +1114,29 @@ using ch::JoinStr;
   }
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process({"ZH_htt", "ZH_hww"})
+      .process({"ZH_had_htt", "ZH_lep_htt", "ggZH_had_htt", "ggZH_lep_htt", "ZH_hww",
+      "ZH_lep_FWDH_htt",
+      "ZH_lep_PTV_0_75_htt",
+      "ZH_lep_PTV_75_150_htt",
+      "ZH_lep_PTV_150_250_0J_htt",
+      "ZH_lep_PTV_150_250_GE1J_htt",
+      "ZH_lep_PTV_GT250_htt",
+      "ggZH_lep_FWDH_htt",
+      "ggZH_lep_PTV_0_75_htt",
+      "ggZH_lep_PTV_75_150_htt",
+      "ggZH_lep_PTV_150_250_0J_htt",
+      "ggZH_lep_PTV_150_250_GE1J_htt",
+      "ggZH_lep_PTV_GT250_htt"})
       .AddSyst(cb, "QCDScale_VH", "lnN", SystMap<>::init(1.009));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process({"WH_htt", "WH_hww"})
+      .process({"WH_had_htt", "WH_lep_htt", "WH_hww"
+      "WH_lep_FWDH_htt",
+      "WH_lep_PTV_0_75_htt",
+      "WH_lep_PTV_75_150_htt",
+      "WH_lep_PTV_150_250_0J_htt",
+      "WH_lep_PTV_150_250_GE1J_htt",
+      "WH_lep_PTV_GT250_htt"})
       .AddSyst(cb, "QCDScale_VH", "lnN", SystMap<>::init(1.008));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
@@ -1066,11 +1154,29 @@ using ch::JoinStr;
       .AddSyst(cb, "pdf_Higgs_qqbar", "lnN", SystMap<>::init(1.021));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process({"ZH_htt", "ZH_hww"})
+      .process({"ZH_had_htt", "ZH_lep_htt", "ggZH_had_htt", "ggZH_lep_htt", "ZH_hww"
+      "ZH_lep_FWDH_htt",
+      "ZH_lep_PTV_0_75_htt",
+      "ZH_lep_PTV_75_150_htt",
+      "ZH_lep_PTV_150_250_0J_htt",
+      "ZH_lep_PTV_150_250_GE1J_htt",
+      "ZH_lep_PTV_GT250_htt",
+      "ggZH_lep_FWDH_htt",
+      "ggZH_lep_PTV_0_75_htt",
+      "ggZH_lep_PTV_75_150_htt",
+      "ggZH_lep_PTV_150_250_0J_htt",
+      "ggZH_lep_PTV_150_250_GE1J_htt",
+      "ggZH_lep_PTV_GT250_htt"})
       .AddSyst(cb, "pdf_Higgs_VH", "lnN", SystMap<>::init(1.013));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
-      .process({"WH_htt", "WH_hww"})
+      .process({"WH_had_htt", "WH_lep_htt", "WH_hww"
+      "WH_lep_FWDH_htt",
+      "WH_lep_PTV_0_75_htt",
+      "WH_lep_PTV_75_150_htt",
+      "WH_lep_PTV_150_250_0J_htt",
+      "WH_lep_PTV_150_250_GE1J_htt",
+      "WH_lep_PTV_GT250_htt"})
       .AddSyst(cb, "pdf_Higgs_VH", "lnN", SystMap<>::init(1.018));
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
@@ -1081,39 +1187,39 @@ using ch::JoinStr;
   if (ggh_wg1) {
     cb.cp()
       .channel({"et", "mt", "tt", "em"})
-       .process({signals_ggH})
+       .process(JoinStr({signals_ggH, signals_ggZH_had}))
       .AddSyst(cb, "THU_ggH_Mig01", "shape", SystMap<>::init(1.00));
     cb.cp()
       .channel({"et", "mt", "tt", "em"})
-       .process({signals_ggH})
+       .process(JoinStr({signals_ggH, signals_ggZH_had}))
       .AddSyst(cb, "THU_ggH_Mig12", "shape", SystMap<>::init(1.00));
     cb.cp()
       .channel({"et", "mt", "tt", "em"})
-       .process({signals_ggH})
+       .process(JoinStr({signals_ggH, signals_ggZH_had}))
       .AddSyst(cb, "THU_ggH_Mu", "shape", SystMap<>::init(1.00));
     cb.cp()
       .channel({"et", "mt", "tt", "em"})
-       .process({signals_ggH})
+       .process(JoinStr({signals_ggH, signals_ggZH_had}))
       .AddSyst(cb, "THU_ggH_PT120", "shape", SystMap<>::init(1.00));
     cb.cp()
       .channel({"et", "mt", "tt", "em"})
-       .process({signals_ggH})
+       .process(JoinStr({signals_ggH, signals_ggZH_had}))
       .AddSyst(cb, "THU_ggH_PT60", "shape", SystMap<>::init(1.00));
     cb.cp()
       .channel({"et", "mt", "tt", "em"})
-       .process({signals_ggH})
+       .process(JoinStr({signals_ggH, signals_ggZH_had}))
       .AddSyst(cb, "THU_ggH_Res", "shape", SystMap<>::init(1.00));
     cb.cp()
       .channel({"et", "mt", "tt", "em"})
-       .process({signals_ggH})
+       .process(JoinStr({signals_ggH, signals_ggZH_had}))
       .AddSyst(cb, "THU_ggH_VBF2j", "shape", SystMap<>::init(1.00));
     cb.cp()
       .channel({"et", "mt", "tt", "em"})
-       .process({signals_ggH})
+       .process(JoinStr({signals_ggH, signals_ggZH_had}))
       .AddSyst(cb, "THU_ggH_VBF3j", "shape", SystMap<>::init(1.00));
     cb.cp()
       .channel({"et", "mt", "tt", "em"})
-       .process({signals_ggH})
+       .process(JoinStr({signals_ggH, signals_ggZH_had}))
       .AddSyst(cb, "THU_ggH_qmtop", "shape", SystMap<>::init(1.00));
     cb.cp()
       .channel({"et", "mt", "tt", "em"})
@@ -1124,43 +1230,43 @@ using ch::JoinStr;
  if (qqh_wg1) {
    cb.cp()
      .channel({"et", "mt", "tt", "em"})
-     .process({signals_qqH})
+     .process(JoinStr({signals_qqH, signals_VH_had}))
      .AddSyst(cb, "THU_qqH_TOT", "shape", SystMap<>::init(1.00));
    cb.cp()
      .channel({"et", "mt", "tt", "em"})
-     .process({signals_qqH})
+     .process(JoinStr({signals_qqH, signals_VH_had}))
      .AddSyst(cb, "THU_qqH_PTH200", "shape", SystMap<>::init(1.00));
    cb.cp()
      .channel({"et", "mt", "tt", "em"})
-     .process({signals_qqH})
+     .process(JoinStr({signals_qqH, signals_VH_had}))
      .AddSyst(cb, "THU_qqH_Mjj60", "shape", SystMap<>::init(1.00));
    cb.cp()
      .channel({"et", "mt", "tt", "em"})
-     .process({signals_qqH})
+     .process(JoinStr({signals_qqH, signals_VH_had}))
      .AddSyst(cb, "THU_qqH_Mjj120", "shape", SystMap<>::init(1.00));
    cb.cp()
      .channel({"et", "mt", "tt", "em"})
-     .process({signals_qqH})
+     .process(JoinStr({signals_qqH, signals_VH_had}))
      .AddSyst(cb, "THU_qqH_Mjj350", "shape", SystMap<>::init(1.00));
    cb.cp()
      .channel({"et", "mt", "tt", "em"})
-     .process({signals_qqH})
+     .process(JoinStr({signals_qqH, signals_VH_had}))
      .AddSyst(cb, "THU_qqH_Mjj700", "shape", SystMap<>::init(1.00));
    cb.cp()
      .channel({"et", "mt", "tt", "em"})
-     .process({signals_qqH})
+     .process(JoinStr({signals_qqH, signals_VH_had}))
      .AddSyst(cb, "THU_qqH_Mjj1000", "shape", SystMap<>::init(1.00));
    cb.cp()
      .channel({"et", "mt", "tt", "em"})
-     .process({signals_qqH})
+     .process(JoinStr({signals_qqH, signals_VH_had}))
      .AddSyst(cb, "THU_qqH_Mjj1500", "shape", SystMap<>::init(1.00));
    cb.cp()
      .channel({"et", "mt", "tt", "em"})
-     .process({signals_qqH})
+     .process(JoinStr({signals_qqH, signals_VH_had}))
      .AddSyst(cb, "THU_qqH_25", "shape", SystMap<>::init(1.00));
    cb.cp()
      .channel({"et", "mt", "tt", "em"})
-     .process({signals_qqH})
+     .process(JoinStr({signals_qqH, signals_VH_had}))
      .AddSyst(cb, "THU_qqH_JET01", "shape", SystMap<>::init(1.00));
    cb.cp()
      .channel({"et", "mt", "tt", "em"})

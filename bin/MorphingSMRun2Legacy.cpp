@@ -118,9 +118,9 @@ int main(int argc, char **argv) {
   // Define background processes
   map<string, VString> bkg_procs;
   VString bkgs, bkgs_em;
-  bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH_htt", "ZH_htt", "ttH_htt", "ggH_hww", "qqH_hww", "WH_hww", "ZH_hww"};
+  bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "ttH_htt", "ggH_hww", "qqH_hww", "WH_hww", "ZH_hww"};
   //bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH125", "ZH125", "ggHWW125", "qqHWW125", "WHWW125"};
-  bkgs_em = {"W", "ZTT", "TTT","VVT", "QCD", "ZL", "TTL", "VVL", "WH_htt", "ZH_htt", "ttH_htt", "ggH_hww", "qqH_hww", "WH_hww", "ZH_hww"};
+  bkgs_em = {"W", "ZTT", "TTT","VVT", "QCD", "ZL", "TTL", "VVL", "ttH_htt", "ggH_hww", "qqH_hww", "WH_hww", "ZH_hww"};
 
 
   if(embedding){
@@ -238,7 +238,7 @@ int main(int argc, char **argv) {
   // Specify signal processes and masses
   vector<string> sig_procs;
   // STXS stage 0: ggH and VBF processes
-  if(stxs_signals == "stxs_stage0") sig_procs = {"ggH_htt", "qqH_htt"};
+  if(stxs_signals == "stxs_stage0") sig_procs = {"ggH_htt", "ggZH_had_htt", "qqH_htt", "WH_had_htt", "ZH_had_htt", "WH_lep_htt", "ZH_lep_htt", "ggZH_lep_htt"};
   // STXS stage 1.1: Splits of ggH and VBF processes
   // References:
   // - https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHXSWGFiducialAndSTXS
@@ -263,6 +263,23 @@ int main(int argc, char **argv) {
       "ggH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
       "ggH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
       "ggH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
+      "ggZH_had_FWDH_htt",
+      "ggZH_had_PTH_200_300_htt",
+      "ggZH_had_PTH_300_450_htt",
+      "ggZH_had_PTH_450_650_htt",
+      "ggZH_had_PTH_GT650_htt",
+      "ggZH_had_0J_PTH_0_10_htt",
+      "ggZH_had_0J_PTH_GT10_htt",
+      "ggZH_had_1J_PTH_0_60_htt",
+      "ggZH_had_1J_PTH_60_120_htt",
+      "ggZH_had_1J_PTH_120_200_htt",
+      "ggZH_had_GE2J_MJJ_0_350_PTH_0_60_htt",
+      "ggZH_had_GE2J_MJJ_0_350_PTH_60_120_htt",
+      "ggZH_had_GE2J_MJJ_0_350_PTH_120_200_htt",
+      "ggZH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
+      "ggZH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
+      "ggZH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
+      "ggZH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
       // VBF
       "qqH_FWDH_htt",
       "qqH_0J_htt",
@@ -274,7 +291,48 @@ int main(int argc, char **argv) {
       "qqH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
       "qqH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
       "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
-      "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt"
+      "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
+      "WH_had_FWDH_htt",
+      "WH_had_0J_htt",
+      "WH_had_1J_htt",
+      "WH_had_GE2J_MJJ_0_60_htt",
+      "WH_had_GE2J_MJJ_60_120_htt",
+      "WH_had_GE2J_MJJ_120_350_htt",
+      "WH_had_GE2J_MJJ_GT350_PTH_GT200_htt",
+      "WH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
+      "WH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
+      "WH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
+      "WH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
+      "ZH_had_FWDH_htt",
+      "ZH_had_0J_htt",
+      "ZH_had_1J_htt",
+      "ZH_had_GE2J_MJJ_0_60_htt",
+      "ZH_had_GE2J_MJJ_60_120_htt",
+      "ZH_had_GE2J_MJJ_120_350_htt",
+      "ZH_had_GE2J_MJJ_GT350_PTH_GT200_htt",
+      "ZH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
+      "ZH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
+      "ZH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
+      "ZH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
+      //VH_lep
+      "WH_lep_FWDH_htt",
+      "WH_lep_PTV_0_75_htt",
+      "WH_lep_PTV_75_150_htt",
+      "WH_lep_PTV_150_250_0J_htt",
+      "WH_lep_PTV_150_250_GE1J_htt",
+      "WH_lep_PTV_GT250_htt",
+      "ZH_lep_FWDH_htt",
+      "ZH_lep_PTV_0_75_htt",
+      "ZH_lep_PTV_75_150_htt",
+      "ZH_lep_PTV_150_250_0J_htt",
+      "ZH_lep_PTV_150_250_GE1J_htt",
+      "ZH_lep_PTV_GT250_htt",
+      "ggZH_lep_FWDH_htt",
+      "ggZH_lep_PTV_0_75_htt",
+      "ggZH_lep_PTV_75_150_htt",
+      "ggZH_lep_PTV_150_250_0J_htt",
+      "ggZH_lep_PTV_150_250_GE1J_htt",
+      "ggZH_lep_PTV_GT250_htt"
   };
 
   else throw std::runtime_error("Given STXS signals are not known.");
