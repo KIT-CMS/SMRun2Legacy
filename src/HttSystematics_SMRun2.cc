@@ -175,19 +175,19 @@ using ch::JoinStr;
   // ##########################################################################
 
   float lumi_unc = 1.0;
-  float lumi_corr = 1.0;
-  float lumi_1718 = 1.0;
+  float lumi_unc_corr = 1.0;
+  float lumi_unc_1718 = 1.0;
   if (era == 2016) {
       lumi_unc = 1.010;
-      lumi_corr = 1.006;
+      lumi_unc_corr = 1.006;
   } else if (era == 2017) {
       lumi_unc = 1.020;
-      lumi_corr = 1.009;
-      lumi_1718 = 1.006;
+      lumi_unc_corr = 1.009;
+      lumi_unc_1718 = 1.006;
   } else if (era == 2018) {
       lumi_unc = 1.015;
-      lumi_corr = 1.020;
-      lumi_1718 = 1.002;
+      lumi_unc_corr = 1.020;
+      lumi_unc_1718 = 1.002;
   }
   cb.cp()
       .channel({"et", "mt", "tt", "em"})
