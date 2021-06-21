@@ -444,6 +444,24 @@ int main(int argc, char **argv) {
   });
   std::cout << "[WARNING] Turned " << count_lnN << " of " << count_all << " checked systematics into lnN:" << std::endl;
 
+  //update 2016 nominal lumi
+  if(era==2016){
+    for(auto x : bkgs_em){ //that contains all relevant mc bkgs if jetFakes are used instead of MC
+      if(x=="EMB" || x=="QCD") continue; //skip data driven bkgs
+      cb.cp().process({x}).ForEachProc([&](ch::Process *proc) {
+        std::cout << "Updating rate of "+proc->process() << std::endl;
+        proc->set_rate(proc->rate()*1.0128);
+      });
+    }
+    for(auto x : sig_procs){
+      if(x=="EMB" || x=="QCD") continue; //skip	data driven bkgs
+      cb.cp().process({x}).ForEachProc([&](ch::Process *proc) {
+        std::cout << "Updating rate of "+proc->process() << std::endl;
+        proc->set_rate(proc->rate()*1.0128);
+      });
+    }
+  }  
+
   //update rates for Higgs processes from mH=125.0 to mH=125.4
   cb.cp().process_rgx({"ggH.*htt"}).ForEachProc([&](ch::Process *proc) {
     //std::cout << "Updating rate of "+proc->process() << std::endl;
