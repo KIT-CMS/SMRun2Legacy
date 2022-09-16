@@ -59,6 +59,7 @@ int main(int argc, char **argv) {
   bool train_emb = true;
   bool train_stage0 = false;
   bool embedding = false;
+  bool use_automc = true;
   bool classic_bbb = false;
   bool binomial_bbb = false;
   bool verbose = false;
@@ -79,6 +80,7 @@ int main(int argc, char **argv) {
       ("midfix", po::value<string>(&midfix)->default_value(midfix))
       ("channel", po::value<string>(&chan)->default_value(chan))
       ("auto_rebin", po::value<bool>(&auto_rebin)->default_value(auto_rebin))
+      ("use_automc", po::value<bool>(&use_automc)->default_value(use_automc))
       ("rebin_categories", po::value<bool>(&rebin_categories)->default_value(rebin_categories))
       ("manual_rebin_for_yields", po::value<bool>(&manual_rebin_for_yields)->default_value(manual_rebin_for_yields))
       ("regional_jec", po::value<bool>(&regional_jec)->default_value(regional_jec))
@@ -119,6 +121,9 @@ int main(int argc, char **argv) {
   map<string, VString> bkg_procs;
   VString bkgs, bkgs_em;
   bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "ttH_htt", "ggH_hww", "qqH_hww", "WH_hww", "ZH_hww"};
+  // todo for now excluded are "ggH_hww", "qqH_hww", "WH_hww", "ZH_hww"
+  // todo added in next iteration: ttH_htt
+  bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL"};
   //bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH125", "ZH125", "ggHWW125", "qqHWW125", "WHWW125"};
   bkgs_em = {"W", "ZTT", "TTT","VVT", "QCD", "ZL", "TTL", "VVL", "ttH_htt", "ggH_hww", "qqH_hww", "WH_hww", "ZH_hww"};
 
@@ -214,9 +219,9 @@ int main(int argc, char **argv) {
 
       if(chn=="em") cats[chn].push_back({19, chn+"_db"});
       if(chn!="tt") cats[chn].push_back({13, chn+"_tt"});
-      if(chn=="mt" || chn=="et") cats[chn].push_back({15, chn+"_zll"});
+      // if(chn=="mt" || chn=="et") cats[chn].push_back({15, chn+"_zll"});
 
-      if (train_emb) cats[chn].push_back({20, chn+"_emb"});
+      if (train_emb) cats[chn].push_back({20, chn+"_ztt"});
       else cats[chn].push_back({12, chn+"_ztt"});
 
       if (train_ff) {
@@ -239,6 +244,8 @@ int main(int argc, char **argv) {
   vector<string> sig_procs;
   // STXS stage 0: ggH and VBF processes
   if(stxs_signals == "stxs_stage0") sig_procs = {"ggH_htt", "ggZH_had_htt", "qqH_htt", "WH_had_htt", "ZH_had_htt", "WH_lep_htt", "ZH_lep_htt", "ggZH_lep_htt"};
+  if(stxs_signals == "stxs_stage0") sig_procs = {"ggH_htt", "qqH_htt"};
+
   // STXS stage 1.1: Splits of ggH and VBF processes
   // References:
   // - https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHXSWGFiducialAndSTXS
@@ -370,10 +377,10 @@ int main(int argc, char **argv) {
   // Extract shapes from input ROOT files
   for (string chn : chns) {
     cb.cp().channel({chn}).backgrounds().ExtractShapes(
-        input_dir[chn] + std::to_string(era) + midfix + chn + "-synced"+postfix+ ".root",
+        input_dir[chn] + "htt_" + chn + ".inputs-sm-Run" + std::to_string(era) + postfix + ".root",
         "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC");
     cb.cp().channel({chn}).process(sig_procs).ExtractShapes(
-        input_dir[chn] + std::to_string(era) + midfix + chn + "-synced"+postfix+ ".root",
+        input_dir[chn] + "htt_" + chn + ".inputs-sm-Run" + std::to_string(era) + postfix + ".root",
         "$BIN/$PROCESS$MASS", "$BIN/$PROCESS$MASS_$SYSTEMATIC");
   }
 
@@ -681,6 +688,11 @@ int main(int argc, char **argv) {
                    .SetBinomialN(1000.0)
                    .SetFixNorm(false);
     bbb.AddBinomialBinByBin(cb.cp().channel({"em"}).process({"EMB"}), cb);
+  }
+
+  if (use_automc) {
+    std::cout << "[INFO] Adding SetAutoMCStats .\n";
+    cb.SetAutoMCStats(cb, 0.);
   }
 
 
