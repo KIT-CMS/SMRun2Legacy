@@ -40,10 +40,11 @@ int main(int argc, char **argv) {
   // Define program options
   string output_folder = "sm_run2";
   string base_path = string(getenv("CMSSW_BASE")) + "/src/CombineHarvester/SMRun2Legacy/shapes";
-  string input_folder_em = "Vienna/";
-  string input_folder_et = "Vienna/";
-  string input_folder_mt = "Vienna/";
-  string input_folder_tt = "Vienna/";
+  string input_folder_emt = "Vienna/";
+  string input_folder_met = "Vienna/";
+  string input_folder_mmt = "Vienna/";
+  string input_folder_mtt = "Vienna/";
+  string input_folder_ett = "Vienna/";
   string chan = "all";
   string postfix = "-ML";
   string midfix = "";
@@ -51,6 +52,7 @@ int main(int argc, char **argv) {
   bool ggh_wg1 = true;
   bool qqh_wg1 = true;
   bool auto_rebin = false;
+  bool use_automc = true;
   bool rebin_categories = true;
   bool manual_rebin_for_yields = false;
   bool real_data = false;
@@ -66,19 +68,21 @@ int main(int argc, char **argv) {
   string stxs_signals = "stxs_stage0"; // "stxs_stage0" or "stxs_stage1p1"
   string categories = "stxs_stage0"; // "stxs_stage0", "stxs_stage1p1" or "gof"
   string gof_category_name = "gof";
-  int era = 2016; // 2016 or 2017
+  int era = 2018; // 2016 or 2017
   po::variables_map vm;
   po::options_description config("configuration");
   config.add_options()
       ("base_path", po::value<string>(&base_path)->default_value(base_path))
-      ("input_folder_em", po::value<string>(&input_folder_em)->default_value(input_folder_em))
-      ("input_folder_et", po::value<string>(&input_folder_et)->default_value(input_folder_et))
-      ("input_folder_mt", po::value<string>(&input_folder_mt)->default_value(input_folder_mt))
-      ("input_folder_tt", po::value<string>(&input_folder_tt)->default_value(input_folder_tt))
+      ("input_folder_emt", po::value<string>(&input_folder_emt)->default_value(input_folder_emt))
+      ("input_folder_met", po::value<string>(&input_folder_met)->default_value(input_folder_met))
+      ("input_folder_mmt", po::value<string>(&input_folder_mmt)->default_value(input_folder_mmt))
+      ("input_folder_mtt", po::value<string>(&input_folder_mtt)->default_value(input_folder_mtt))
+      ("input_folder_ett", po::value<string>(&input_folder_ett)->default_value(input_folder_ett))
       ("postfix", po::value<string>(&postfix)->default_value(postfix))
       ("midfix", po::value<string>(&midfix)->default_value(midfix))
       ("channel", po::value<string>(&chan)->default_value(chan))
       ("auto_rebin", po::value<bool>(&auto_rebin)->default_value(auto_rebin))
+      ("use_automc", po::value<bool>(&use_automc)->default_value(use_automc))
       ("rebin_categories", po::value<bool>(&rebin_categories)->default_value(rebin_categories))
       ("manual_rebin_for_yields", po::value<bool>(&manual_rebin_for_yields)->default_value(manual_rebin_for_yields))
       ("regional_jec", po::value<bool>(&regional_jec)->default_value(regional_jec))
@@ -104,240 +108,50 @@ int main(int argc, char **argv) {
 
   // Define channels
   VString chns;
-  if (chan.find("mt") != std::string::npos)
-    chns.push_back("mt");
-  if (chan.find("et") != std::string::npos)
-    chns.push_back("et");
-  if (chan.find("tt") != std::string::npos)
-    chns.push_back("tt");
-  if (chan.find("em") != std::string::npos)
-    chns.push_back("em");
+  if (chan.find("emt") != std::string::npos)
+    chns.push_back("emt");
+  if (chan.find("met") != std::string::npos)
+    chns.push_back("met");
+  if (chan.find("mmt") != std::string::npos)
+    chns.push_back("mmt");
+  if (chan.find("mtt") != std::string::npos)
+    chns.push_back("mtt");
+  if (chan.find("ett") != std::string::npos)
+    chns.push_back("ett");
   if (chan == "all")
-    chns = {"mt", "et", "tt", "em"};
+    chns = {"emt", "met", "mmt", "mtt", "ett"};
 
   // Define background processes
   map<string, VString> bkg_procs;
-  VString bkgs, bkgs_em;
-  bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "ttH_htt", "ggH_hww", "qqH_hww", "WH_hww", "ZH_hww"};
-  //bkgs = {"W", "ZTT", "QCD", "ZL", "ZJ", "TTT", "TTL", "TTJ", "VVJ", "VVT", "VVL", "WH125", "ZH125", "ggHWW125", "qqHWW125", "WHWW125"};
-  bkgs_em = {"W", "ZTT", "TTT","VVT", "QCD", "ZL", "TTL", "VVL", "ttH_htt", "ggH_hww", "qqH_hww", "WH_hww", "ZH_hww"};
-
-
-  if(embedding){
-    bkgs.erase(std::remove(bkgs.begin(), bkgs.end(), "ZTT"), bkgs.end());
-    bkgs.erase(std::remove(bkgs.begin(), bkgs.end(), "TTT"), bkgs.end());
-    bkgs.erase(std::remove(bkgs.begin(), bkgs.end(), "VVT"), bkgs.end());
-    bkgs = JoinStr({bkgs,{"EMB"}});
-    bkgs_em.erase(std::remove(bkgs_em.begin(), bkgs_em.end(), "ZTT"), bkgs_em.end());
-    bkgs_em.erase(std::remove(bkgs_em.begin(), bkgs_em.end(), "TTT"), bkgs_em.end());
-    bkgs_em.erase(std::remove(bkgs_em.begin(), bkgs_em.end(), "VVT"), bkgs_em.end());
-    bkgs_em = JoinStr({bkgs_em,{"EMB"}});
-  }
+  VString bkgs_dd, bkgs_mc, bkgs, sig_procs;
+  bkgs_mc = {"ggZZ", "rem_VH", "WWW", "rem_VV", "WWZ", "ZZZ", "rem_ttbar", "WZ", "Wjets", "ZH", "DY", "ZZ", "TT", "rem_VV"};
+  bkgs_dd = {"ggZZ", "rem_VH", "WWW", "WWZ", "ZZZ", "rem_ttbar", "WZ", "ZH", "jetFakes", "ZZ"};
+  sig_procs = {"WHplus", "WHminus"};
   if(jetfakes){
-    bkgs.erase(std::remove(bkgs.begin(), bkgs.end(), "QCD"), bkgs.end());
-    bkgs.erase(std::remove(bkgs.begin(), bkgs.end(), "W"), bkgs.end());
-    bkgs.erase(std::remove(bkgs.begin(), bkgs.end(), "VVJ"), bkgs.end());
-    bkgs.erase(std::remove(bkgs.begin(), bkgs.end(), "TTJ"), bkgs.end());
-    bkgs.erase(std::remove(bkgs.begin(), bkgs.end(), "ZJ"), bkgs.end());
-    bkgs = JoinStr({bkgs,{"jetFakes"}});
+    bkgs = bkgs_dd;
+  }
+  else {
+    bkgs = bkgs_mc;
   }
 
-  std::cout << "[INFO] Considerung the following processes:\n";
-  if (chan.find("em") != std::string::npos) {
-    std::cout << "For em channel : \n";
-    for (unsigned int i=0; i < bkgs_em.size(); i++) std::cout << bkgs_em[i] << std::endl;
-  }
-  if (chan.find("mt") != std::string::npos || chan.find("et") != std::string::npos || chan.find("tt") != std::string::npos) {
-    std::cout << "For et,mt,tt channels : \n";
-    for (unsigned int i=0; i < bkgs.size(); i++) std::cout << bkgs[i] << std::endl;}
-  bkg_procs["et"] = bkgs;
-  bkg_procs["mt"] = bkgs;
-  bkg_procs["tt"] = bkgs;
-  bkg_procs["em"] = bkgs_em;
-
+  // std::cout << "[INFO] Considerung the following processes:\n";
+  // for (unsigned int i=0; i < bkgs.size(); i++) std::cout << bkgs[i] << std::endl;}
+  bkg_procs["emt"] = bkgs;
+  bkg_procs["met"] = bkgs;
+  bkg_procs["mmt"] = bkgs;
+  bkg_procs["mtt"] = bkgs;
+  bkg_procs["ett"] = bkgs;
+  
   // Define categories
   map<string, Categories> cats;
   std::vector<std::string> cats_to_keep; // will be used later for the card writer
-  for (auto chn : chns){
-    //define mapping for signal categories if categories is stage0 /1p1
-    if(categories == "stxs_stage0"){
-      cats[chn]={
-        //{ 1, chn+"_ggh"},
-        //{ 2, chn+"_qqh"},
-        //use 2D category instead:
-        { 1, chn+"_xxh"},
-    };
-    } else if (categories == "inclusive"){
-    cats[chn]={
-      { 1, chn+"_xxh"},
-    };
-    } else if (categories == "stxs_stage1p1") {
-        if(train_stage0){
-          cats[chn]={
-            {100, chn+"_ggh_100"},
-            {101, chn+"_ggh_101"},
-            {102, chn+"_ggh_102"},
-            {103, chn+"_ggh_103"},
-            {200, chn+"_qqh_200"},
-            {201, chn+"_qqh_201"},
-            {202, chn+"_qqh_202"},
-            {203, chn+"_qqh_203"},
-          };
-        }
-        else {
-          cats[chn]={
-            {100, chn+"_ggh_0J_PTH_0_10"},
-            {101, chn+"_ggh_0J_PTH_GT10"},
-            {102, chn+"_ggh_1J_PTH0to60"},
-            {103, chn+"_ggh_1J_PTH60to120"},
-            {104, chn+"_ggh_1J_PTH120to200"},
-            {105, chn+"_ggh_2J_PTH0to60"},
-            {106, chn+"_ggh_2J_PTH60to120"},
-            {107, chn+"_ggh_2J_PTH120to200"},
-            {108, chn+"_ggh_PTH_200_300"},
-            {109, chn+"_ggh_PTHGT300"},
-            {110, chn+"_ggh_vbftopo"},
-            {200, chn+"_qqh_2J"},
-            {201, chn+"_qqh_PTHGT200"},
-            //{202, chn+"_vbftopo_highmjj"},
-            //{203, chn+"_vbftopo_lowmjj"},
-            {202, chn+"_qqh_vbftopo_highmjj"},
-            {203, chn+"_qqh_vbftopo_lowmjj"},
-          };
-        }
-    }
+  cats["emt"] = {{1, "emt_pt_W"}, {2, "emt_m_tt"}};
+  cats["met"] = {{1, "met_pt_W"}, {2, "met_m_tt"}};
+  cats["mmt"] = {{1, "mmt_pt_W"}, {2, "mmt_m_tt"}};
+  cats["mtt"] = {{1, "mtt_pt_W"}, {2, "mtt_m_tt"}};
+  cats["ett"] = {{1, "ett_pt_W"}, {2, "ett_m_tt"}};
 
-    //define mapping for background categories if categories ist stage0 /1p1
-    //11 :w , 12: ztt, 13: tt, 14: ss, 15: zll, 16: misc, 17:noniso, 18: st?? 19:db, 20:emb, 21: ff
-    if (categories == "stxs_stage0" || categories == "stxs_stage1p1" || categories=="inclusive"){
-      cats[chn].push_back({16,chn+"_misc"});
-
-      if(chn=="em") cats[chn].push_back({19, chn+"_db"});
-      if(chn!="tt") cats[chn].push_back({13, chn+"_tt"});
-      if(chn=="mt" || chn=="et") cats[chn].push_back({15, chn+"_zll"});
-
-      if (train_emb) cats[chn].push_back({20, chn+"_emb"});
-      else cats[chn].push_back({12, chn+"_ztt"});
-
-      if (train_ff) {
-        if(chn=="em") cats[chn].push_back({14, chn+"_ss"}); // switch to ff does nothing for em so this is added both times
-        else cats[chn].push_back({21, chn+"_ff"});
-      } else {
-        if(chn=="mt" || chn=="et") cats[chn].push_back({11, chn+"_w"});
-        if(chn=="tt") cats[chn].push_back({17, chn+"_noniso"});
-        else cats[chn].push_back({14, chn+"_ss"});
-      }
-    }
-    else if(categories == "gof") cats[chn] = { {300, gof_category_name.c_str() }};
-    else throw std::runtime_error("Given categorization is not known.");
-  }
-  for (auto chn : chns){
-    for (auto tuple: cats[chn]) cout << tuple.first << ": " << tuple.second << endl;
-  }
-
-  // Specify signal processes and masses
-  vector<string> sig_procs;
-  // STXS stage 0: ggH and VBF processes
-  if(stxs_signals == "stxs_stage0") sig_procs = {"ggH_htt", "ggZH_had_htt", "qqH_htt", "WH_had_htt", "ZH_had_htt", "WH_lep_htt", "ZH_lep_htt", "ggZH_lep_htt"};
-  // STXS stage 1.1: Splits of ggH and VBF processes
-  // References:
-  // - https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHXSWGFiducialAndSTXS
-  // - https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHXSWG2
-  // - https://gitlab.cern.ch/LHCHIGGSXS/LHCHXSWG2/STXS
-  else if(stxs_signals == "stxs_stage1p1") sig_procs = {
-      // ggH
-      "ggH_FWDH_htt",
-      "ggH_PTH_200_300_htt",
-      "ggH_PTH_300_450_htt",
-      "ggH_PTH_450_650_htt",
-      "ggH_PTH_GT650_htt",
-      "ggH_0J_PTH_0_10_htt",
-      "ggH_0J_PTH_GT10_htt",
-      "ggH_1J_PTH_0_60_htt",
-      "ggH_1J_PTH_60_120_htt",
-      "ggH_1J_PTH_120_200_htt",
-      "ggH_GE2J_MJJ_0_350_PTH_0_60_htt",
-      "ggH_GE2J_MJJ_0_350_PTH_60_120_htt",
-      "ggH_GE2J_MJJ_0_350_PTH_120_200_htt",
-      "ggH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
-      "ggH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
-      "ggH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
-      "ggH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
-      "ggZH_had_FWDH_htt",
-      "ggZH_had_PTH_200_300_htt",
-      "ggZH_had_PTH_300_450_htt",
-      "ggZH_had_PTH_450_650_htt",
-      "ggZH_had_PTH_GT650_htt",
-      "ggZH_had_0J_PTH_0_10_htt",
-      "ggZH_had_0J_PTH_GT10_htt",
-      "ggZH_had_1J_PTH_0_60_htt",
-      "ggZH_had_1J_PTH_60_120_htt",
-      "ggZH_had_1J_PTH_120_200_htt",
-      "ggZH_had_GE2J_MJJ_0_350_PTH_0_60_htt",
-      "ggZH_had_GE2J_MJJ_0_350_PTH_60_120_htt",
-      "ggZH_had_GE2J_MJJ_0_350_PTH_120_200_htt",
-      "ggZH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
-      "ggZH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
-      "ggZH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
-      "ggZH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
-      // VBF
-      "qqH_FWDH_htt",
-      "qqH_0J_htt",
-      "qqH_1J_htt",
-      "qqH_GE2J_MJJ_0_60_htt",
-      "qqH_GE2J_MJJ_60_120_htt",
-      "qqH_GE2J_MJJ_120_350_htt",
-      "qqH_GE2J_MJJ_GT350_PTH_GT200_htt",
-      "qqH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
-      "qqH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
-      "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
-      "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
-      "WH_had_FWDH_htt",
-      "WH_had_0J_htt",
-      "WH_had_1J_htt",
-      "WH_had_GE2J_MJJ_0_60_htt",
-      "WH_had_GE2J_MJJ_60_120_htt",
-      "WH_had_GE2J_MJJ_120_350_htt",
-      "WH_had_GE2J_MJJ_GT350_PTH_GT200_htt",
-      "WH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
-      "WH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
-      "WH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
-      "WH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
-      "ZH_had_FWDH_htt",
-      "ZH_had_0J_htt",
-      "ZH_had_1J_htt",
-      "ZH_had_GE2J_MJJ_0_60_htt",
-      "ZH_had_GE2J_MJJ_60_120_htt",
-      "ZH_had_GE2J_MJJ_120_350_htt",
-      "ZH_had_GE2J_MJJ_GT350_PTH_GT200_htt",
-      "ZH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
-      "ZH_had_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
-      "ZH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
-      "ZH_had_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
-      //VH_lep
-      "WH_lep_FWDH_htt",
-      "WH_lep_PTV_0_75_htt",
-      "WH_lep_PTV_75_150_htt",
-      "WH_lep_PTV_150_250_0J_htt",
-      "WH_lep_PTV_150_250_GE1J_htt",
-      "WH_lep_PTV_GT250_htt",
-      "ZH_lep_FWDH_htt",
-      "ZH_lep_PTV_0_75_htt",
-      "ZH_lep_PTV_75_150_htt",
-      "ZH_lep_PTV_150_250_0J_htt",
-      "ZH_lep_PTV_150_250_GE1J_htt",
-      "ZH_lep_PTV_GT250_htt",
-      "ggZH_lep_FWDH_htt",
-      "ggZH_lep_PTV_0_75_htt",
-      "ggZH_lep_PTV_75_150_htt",
-      "ggZH_lep_PTV_150_250_0J_htt",
-      "ggZH_lep_PTV_150_250_GE1J_htt",
-      "ggZH_lep_PTV_GT250_htt"
-  };
-
-  else throw std::runtime_error("Given STXS signals are not known.");
   vector<string> masses = {"125"};
-
   // Create combine harverster object
   ch::CombineHarvester cb;
 
@@ -353,30 +167,29 @@ int main(int argc, char **argv) {
     cb.AddObservations({"*"}, {"htt"}, {era_tag}, {chn}, cats[chn]);
     cb.AddProcesses({"*"}, {"htt"}, {era_tag}, {chn}, bkg_procs[chn], cats[chn],
                     false);
-    cb.AddProcesses(masses, {"htt"}, {era_tag}, {chn}, sig_procs, cats[chn],
+    cb.AddProcesses({""}, {"htt"}, {era_tag}, {chn}, sig_procs, cats[chn],
                     true);
   }
 
   // Add systematics
-  ch::AddSMRun2Systematics(cb, jetfakes, embedding, regional_jec, ggh_wg1, qqh_wg1, era);
-
+  ch::AddSMRun2Systematics(cb, jetfakes, embedding, regional_jec, ggh_wg1, era);
   // Define the location of the "auxiliaries" directory where we can
   // source the input files containing the datacard shapes
   std::map<string, string> input_dir;
-  input_dir["mt"] = base_path + "/" + input_folder_mt + "/";
-  input_dir["et"] = base_path + "/" + input_folder_et + "/";
-  input_dir["tt"] = base_path + "/" + input_folder_tt + "/";
-  input_dir["em"] = base_path + "/" + input_folder_em + "/";
+  input_dir["emt"] = base_path + "/" + input_folder_emt + "/";
+  input_dir["met"] = base_path + "/" + input_folder_met + "/";
+  input_dir["mmt"] = base_path + "/" + input_folder_mmt + "/";
+  input_dir["mtt"] = base_path + "/" + input_folder_mtt + "/";
+  input_dir["ett"] = base_path + "/" + input_folder_ett + "/";
   // Extract shapes from input ROOT files
   for (string chn : chns) {
     cb.cp().channel({chn}).backgrounds().ExtractShapes(
-        input_dir[chn] + std::to_string(era) + midfix + chn + "-synced"+postfix+ ".root",
+        input_dir[chn] + std::to_string(era)+"_"+chn+"_synced.root",
         "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC");
     cb.cp().channel({chn}).process(sig_procs).ExtractShapes(
-        input_dir[chn] + std::to_string(era) + midfix + chn + "-synced"+postfix+ ".root",
+        input_dir[chn] + std::to_string(era)+"_"+chn+"_synced.root",
         "$BIN/$PROCESS$MASS", "$BIN/$PROCESS$MASS_$SYSTEMATIC");
   }
-
   // Delete processes with 0 yield
   cb.FilterProcs([&](ch::Process *p) {
     bool null_yield = !(p->rate() > 0.0);
@@ -390,7 +203,7 @@ int main(int argc, char **argv) {
     }
     return null_yield;
   });
-
+std::cout << "hier3" << "\n";
   // Delete systematics with 0 yield since these result in a bogus norm error in combine
   cb.FilterSysts([&](ch::Systematic *s) {
     if (s->type() == "shape") {
@@ -407,7 +220,8 @@ int main(int argc, char **argv) {
     }
     return false;
   });
-
+std::cout << "hier" << "\n";
+// this i do not understand. not in nmssm script
   int count_lnN = 0;
   int count_all = 0;
   cb.cp().ForEachSyst([&count_lnN, &count_all](ch::Systematic *s) {
@@ -446,13 +260,6 @@ int main(int argc, char **argv) {
 
   //update 2016 nominal lumi
   if(era==2016){
-    for(auto x : bkgs_em){ //that contains all relevant mc bkgs if jetFakes are used instead of MC
-      if(x=="EMB" || x=="QCD") continue; //skip data driven bkgs
-      cb.cp().process({x}).ForEachProc([&](ch::Process *proc) {
-        std::cout << "Updating rate of "+proc->process() << std::endl;
-        proc->set_rate(proc->rate()*1.0128);
-      });
-    }
     for(auto x : sig_procs){
       if(x=="EMB" || x=="QCD") continue; //skip	data driven bkgs
       cb.cp().process({x}).ForEachProc([&](ch::Process *proc) {
@@ -461,41 +268,6 @@ int main(int argc, char **argv) {
       });
     }
   }  
-
-  //update rates for Higgs processes from mH=125.0 to mH=125.4
-  cb.cp().process_rgx({"ggH.*htt"}).ForEachProc([&](ch::Process *proc) {
-    //std::cout << "Updating rate of "+proc->process() << std::endl;
-    proc->set_rate(proc->rate()*0.984);
-  });
-  cb.cp().process_rgx({"qqH.*htt"}).ForEachProc([&](ch::Process *proc) {
-    //std::cout << "Updating rate	of "+proc->process() <<	std::endl;
-    proc->set_rate(proc->rate()*0.987);
-  });
-  cb.cp().process_rgx({"WH.*htt"}).ForEachProc([&](ch::Process *proc) {
-    //std::cout << "Updating rate	of "+proc->process() << std::endl;
-    proc->set_rate(proc->rate()*0.979);
-  });
-  cb.cp().process_rgx({"ZH.*htt"}).ForEachProc([&](ch::Process *proc) {
-    //std::cout << "Updating rate	of "+proc->process() << std::endl;
-    proc->set_rate(proc->rate()*0.982);
-  });
-  cb.cp().process_rgx({"ggH.*hww"}).ForEachProc([&](ch::Process *proc) {
-    //std::cout << "Updating rate	of "+proc->process() <<	std::endl;
-    proc->set_rate(proc->rate()*1.025);
-  });
-  cb.cp().process_rgx({"qqH.*hww"}).ForEachProc([&](ch::Process *proc) {
-    //std::cout << "Updating rate	of "+proc->process() <<	std::endl;
-    proc->set_rate(proc->rate()*1.028);
-  });
-  cb.cp().process_rgx({"WH.*hww"}).ForEachProc([&](ch::Process *proc) {
-    //std::cout << "Updating rate       of "+proc->process() << std::endl;
-    proc->set_rate(proc->rate()*1.020);
-  });
-  cb.cp().process_rgx({"ZH.*hww"}).ForEachProc([&](ch::Process *proc) {
-    //std::cout << "Updating rate       of "+proc->process() << std::endl;
-    proc->set_rate(proc->rate()*1.022);
-  });
-
   // Replacing observation with the sum of the backgrounds (Asimov data)
   // useful to be able to check this, so don't do the replacement
   // for these
@@ -529,51 +301,6 @@ int main(int argc, char **argv) {
       cb.cp().bin({b}).ForEachObs([&](ch::Observation *obs) {
         obs->set_shape(total_procs_shape,true);
       });
-    }
-  }
-
-  // Rebin categories to predefined binning for binning
-  if (rebin_categories) {
-    // Rebin background categories
-    for (auto b : cb.cp().bin_set()) {
-      TString bstr = b;
-      if (bstr.Contains("ggh") || bstr.Contains("qqh") || bstr.Contains("vbftopo") || bstr.Contains("xxh")) continue;
-      std::cout << "[INFO] Rebin background bin " << b << "\n";
-      auto shape = cb.cp().bin({b}).backgrounds().GetShape();
-      auto min = shape.GetBinLowEdge(1);
-      if(bstr.Contains("em") && bstr.Contains("misc")) cb.cp().bin({b}).VariableRebin({min, 0.4, 1.0});
-      else if(bstr.Contains("em_emb")){
-        if(categories == "stxs_stage1p1") cb.cp().bin({b}).VariableRebin({min, 0.3, 1.0});
-        else cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 1.0});
-      }
-      else if(bstr.Contains("et") && bstr.Contains("misc")) cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 1.0});
-      else if(bstr.Contains("mt") && bstr.Contains("misc")) cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 1.0});
-      else if(bstr.Contains("et") && bstr.Contains("zll") && categories == "stxs_stage1p1") cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 1.0});
-      else if(bstr.Contains("mt") && bstr.Contains("emb")){
-        if(categories == "stxs_stage1p1") cb.cp().bin({b}).VariableRebin({min, 0.4, 0.45, 0.5, 0.6, 1.0});
-        else cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 1.0});
-      }
-      else cb.cp().bin({b}).VariableRebin({min, 0.4, 0.5, 0.6, 0.7, 1.0});
-    }
-    // Rebin ggh stage 1.1 categories
-    for (auto b : cb.cp().bin_set()) {
-      TString bstr = b;
-      if (bstr.Contains("ggh_10")) {
-        std::cout << "[INFO] Rebin ggh signal bin " << b << "\n";
-        auto shape = cb.cp().bin({b}).backgrounds().GetShape();
-        auto min = shape.GetBinLowEdge(1);
-        cb.cp().bin({b}).VariableRebin({min, 0.3, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 1.0});
-      }
-    }
-    // Rebin qqh stage 1.1 categories
-    for (auto b : cb.cp().bin_set()) {
-      TString bstr = b;
-      if (bstr.Contains("qqh_20")) {
-        std::cout << "[INFO] Rebin qqh signal bin " << b << "\n";
-        auto shape = cb.cp().bin({b}).backgrounds().GetShape();
-        auto min = shape.GetBinLowEdge(1);
-        cb.cp().bin({b}).VariableRebin({min, 0.4, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.90, 0.95, 1.0});
-      }
     }
   }
 
@@ -682,7 +409,10 @@ int main(int argc, char **argv) {
                    .SetFixNorm(false);
     bbb.AddBinomialBinByBin(cb.cp().channel({"em"}).process({"EMB"}), cb);
   }
-
+  if (use_automc) {
+    std::cout << "[INFO] Adding SetAutoMCStats .\n";
+    cb.SetAutoMCStats(cb, 0.);
+  }
 
   // This function modifies every entry to have a standardised bin name of
   // the form: {analysis}_{channel}_{bin_id}_{era}
