@@ -356,23 +356,23 @@ using ch::JoinStr;
 
   cb.cp()
       .channel({ "emt", "met", "mmt", "mtt", "ett"})
-      .process(JoinStr({mc_processes, {"jetFakes"}}))
+      .process(JoinStr({mc_processes}))
       .AddSyst(cb, "CMS_scale_t_1prong_$ERA", "shape", SystMap<>::init(1.0));
 
   cb.cp()
       .channel({ "emt", "met", "mmt", "mtt", "ett"})
-      .process(JoinStr({mc_processes, {"jetFakes"}}))
+      .process(JoinStr({mc_processes}))
       .AddSyst(cb, "CMS_scale_t_1prong1pizero_$ERA", "shape",
                SystMap<>::init(1.0));
 
   cb.cp()
       .channel({ "emt", "met", "mmt", "mtt", "ett"})
-      .process(JoinStr({mc_processes, {"jetFakes"}}))
+      .process(JoinStr({mc_processes}))
       .AddSyst(cb, "CMS_scale_t_3prong_$ERA", "shape", SystMap<>::init(1.0));
 
   cb.cp()
       .channel({ "emt", "met", "mmt", "mtt", "ett"})
-      .process(JoinStr({mc_processes, {"jetFakes"}}))
+      .process(JoinStr({mc_processes}))
       .AddSyst(cb, "CMS_scale_t_3prong1pizero_$ERA", "shape",
                SystMap<>::init(1.0));
 
@@ -958,19 +958,40 @@ using ch::JoinStr;
 
   // ##########################################################################
   // Uncertainty: Jet fakes
+  // ##########################################################################
+
+  cb.cp()
+      .channel({"emt", "met", "mmt", "mtt", "ett"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_stat_$ERA", "shape", SystMap<>::init(1.00));  
+  cb.cp()
+      .channel({"emt", "met", "mmt", "mtt", "ett"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_syst_$ERA", "shape", SystMap<>::init(1.00));
+  cb.cp()
+      .channel({"mtt", "ett"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_njet", "lnN", SystMap<>::init(1.10));  
+  cb.cp()
+      .channel({"emt", "met", "mmt"})
+      .process({"jetFakes"})
+      .AddSyst(cb, "CMS_ff_njet_bkgcomp_$CHANNEL", "lnN", SystMap<>::init(1.15));
+
+  // ##########################################################################
+  // Uncertainty: Jet fakes
   // References:
   // - https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauJet2TauFakes
   // Notes:
   // - FIXME: add 2017 norm uncertainties, and properly correlate across years
   // ##########################################################################
-  cb.cp()
-      .channel({"mtt", "ett"})
-      .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_njet", "lnN", SystMap<>::init(1.10));
-  cb.cp()
-      .channel({"emt", "met", "mmt"})
-      .process({"jetFakes"})
-      .AddSyst(cb, "CMS_ff_njet_bkgcomp_$CHANNEL", "lnN", SystMap<>::init(1.15));
+//   cb.cp()
+//       .channel({"mtt", "ett"})
+//       .process({"jetFakes"})
+//       .AddSyst(cb, "CMS_ff_njet", "lnN", SystMap<>::init(1.10));
+//   cb.cp()
+//       .channel({"emt", "met", "mmt"})
+//       .process({"jetFakes"})
+//       .AddSyst(cb, "CMS_ff_njet_bkgcomp_$CHANNEL", "lnN", SystMap<>::init(1.15));
 
   // QCD shape stat.
 //   cb.cp()

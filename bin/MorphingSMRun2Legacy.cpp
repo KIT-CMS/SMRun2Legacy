@@ -105,7 +105,9 @@ int main(int argc, char **argv) {
       ("era", po::value<int>(&era)->default_value(era));
   po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
   po::notify(vm);
-
+  std::cout<<input_folder_emt<<std::endl;
+  std::cout<<input_folder_mmt<<std::endl;
+  std::cout<<base_path<<std::endl;
   // Define channels
   VString chns;
   if (chan.find("emt") != std::string::npos)
@@ -145,11 +147,11 @@ int main(int argc, char **argv) {
   // Define categories
   map<string, Categories> cats;
   std::vector<std::string> cats_to_keep; // will be used later for the card writer
-  cats["emt"] = {{1, "emt_pt_W"}, {2, "emt_m_tt"}};
-  cats["met"] = {{1, "met_pt_W"}, {2, "met_m_tt"}};
-  cats["mmt"] = {{1, "mmt_pt_W"}, {2, "mmt_m_tt"}};
-  cats["mtt"] = {{1, "mtt_pt_W"}, {2, "mtt_m_tt"}};
-  cats["ett"] = {{1, "ett_pt_W"}, {2, "ett_m_tt"}};
+  cats["emt"] = {{1, "emt_pt_W_plus"}, {2, "emt_m_tt_plus"}, {3, "emt_pt_W_minus"}, {4, "emt_m_tt_minus"}, {5, "emt_m_tt_control"}};
+  cats["met"] = {{1, "met_pt_W_plus"}, {2, "met_m_tt_plus"}, {3, "met_pt_W_minus"}, {4, "met_m_tt_minus"},{5, "met_m_tt_control"}};
+  cats["mmt"] = {{1, "mmt_pt_W_plus"}, {2, "mmt_m_tt_plus"}, {3, "mmt_pt_W_minus"}, {4, "mmt_m_tt_minus"},{5, "mmt_m_tt_control"}};
+  cats["mtt"] = {{1, "mtt_pt_W_plus"}, {2, "mtt_m_tt_plus"}, {3, "mtt_pt_W_minus"}, {4, "mtt_m_tt_minus"},{5, "mtt_m_tt_control"}};
+  cats["ett"] = {{1, "ett_pt_W_plus"}, {2, "ett_m_tt_plus"}, {3, "ett_pt_W_minus"}, {4, "ett_m_tt_minus"},{5, "ett_m_tt_control"}};
 
   vector<string> masses = {"125"};
   // Create combine harverster object
