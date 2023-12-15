@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
   string stxs_signals = "stxs_stage0"; // "stxs_stage0" or "stxs_stage1p1"
   string categories = "stxs_stage0"; // "stxs_stage0", "stxs_stage1p1" or "gof"
   string gof_category_name = "gof";
-  int era = 2018; // 2016 or 2017
+  string era = "2018"; // 2016 or 2017
   po::variables_map vm;
   po::options_description config("configuration");
   config.add_options()
@@ -102,7 +102,7 @@ int main(int argc, char **argv) {
       ("train_stage0", po::value<bool>(&train_stage0)->default_value(train_stage0))
       ("classic_bbb", po::value<bool>(&classic_bbb)->default_value(classic_bbb))
       ("binomial_bbb", po::value<bool>(&binomial_bbb)->default_value(binomial_bbb))
-      ("era", po::value<int>(&era)->default_value(era));
+      ("era", po::value<string>(&era)->default_value(era));
   po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
   po::notify(vm);
   std::cout<<input_folder_emt<<std::endl;
@@ -121,14 +121,14 @@ int main(int argc, char **argv) {
   if (chan.find("ett") != std::string::npos)
     chns.push_back("ett");
   if (chan == "all")
-    chns = {"emt", "met", "mmt", "mtt", "ett"};
+    chns = {"emt", "mmt", "mtt", "ett"};
 
   // Define background processes
   map<string, VString> bkg_procs;
   VString bkgs_dd, bkgs_mc, bkgs, sig_procs;
-  bkgs_mc = {"ggZZ", "rem_VH", "WWW", "rem_VV", "WWZ", "ZZZ", "rem_ttbar", "WZ", "Wjets", "ZH", "DY", "ZZ", "TT", "rem_VV"};
-  bkgs_dd = {"ggZZ", "rem_VH", "WWW", "WWZ", "ZZZ", "rem_ttbar", "WZ", "ZH", "jetFakes", "ZZ"};
-  sig_procs = {"WHplus", "WHminus"};
+  bkgs_mc = {"ggZZ", "rem_H", "VVV", "rem_VV", "rem_ttbar", "WZ", "Wjets", "DY", "ZZ", "TT"};
+  bkgs_dd = {"ggZZ", "rem_H", "VVV", "rem_ttbar", "WZ", "jetFakes", "ZZ"};
+  sig_procs = {"WHtautau_plus", "WHtautau_minus","WHWW_plus", "WHWW_minus"};
   if(jetfakes){
     bkgs = bkgs_dd;
   }
@@ -147,11 +147,30 @@ int main(int argc, char **argv) {
   // Define categories
   map<string, Categories> cats;
   std::vector<std::string> cats_to_keep; // will be used later for the card writer
-  cats["emt"] = {{1, "emt_pt_W_plus"}, {2, "emt_m_tt_plus"}, {3, "emt_pt_W_minus"}, {4, "emt_m_tt_minus"}, {5, "emt_m_tt_control"}};
-  cats["met"] = {{1, "met_pt_W_plus"}, {2, "met_m_tt_plus"}, {3, "met_pt_W_minus"}, {4, "met_m_tt_minus"},{5, "met_m_tt_control"}};
-  cats["mmt"] = {{1, "mmt_pt_W_plus"}, {2, "mmt_m_tt_plus"}, {3, "mmt_pt_W_minus"}, {4, "mmt_m_tt_minus"},{5, "mmt_m_tt_control"}};
-  cats["mtt"] = {{1, "mtt_pt_W_plus"}, {2, "mtt_m_tt_plus"}, {3, "mtt_pt_W_minus"}, {4, "mtt_m_tt_minus"},{5, "mtt_m_tt_control"}};
-  cats["ett"] = {{1, "ett_pt_W_plus"}, {2, "ett_m_tt_plus"}, {3, "ett_pt_W_minus"}, {4, "ett_m_tt_minus"},{5, "ett_m_tt_control"}};
+  // cats["emt"] = {{1, "emt_m_tt_sig_plus"}, {2, "emt_m_tt_sig_minus"}, {3, "emt_m_tt_control_plus_high_ptw"}, {4, "emt_m_tt_control_minus_high_ptw"}, {5, "emt_m_tt_control_plus_low_ptw"}, {6, "emt_m_tt_control_minus_low_ptw"}};
+  // cats["met"] = {{1, "met_m_tt_sig_plus"}, {2, "met_m_tt_sig_minus"}, {3, "met_m_tt_control_plus_high_ptw"}, {4, "met_m_tt_control_minus_high_ptw"}, {5, "met_m_tt_control_plus_low_ptw"}, {6, "met_m_tt_control_minus_low_ptw"}};
+  // cats["mmt"] = {{1, "mmt_m_tt_sig_plus"}, {2, "mmt_m_tt_sig_minus"}, {3, "mmt_m_tt_control_plus_high_ptw"}, {4, "mmt_m_tt_control_minus_high_ptw"}, {5, "mmt_m_tt_control_plus_low_ptw"}, {6, "mmt_m_tt_control_minus_low_ptw"}};
+  // cats["mtt"] = {{1, "mtt_m_tt_sig_plus"}, {2, "mtt_m_tt_sig_minus"}, {3, "mtt_m_tt_control_plus_high_ptw"}, {4, "mtt_m_tt_control_minus_high_ptw"}, {5, "mtt_m_tt_control_plus_low_ptw"}, {6, "mtt_m_tt_control_minus_low_ptw"}};
+  // cats["ett"] = {{1, "ett_m_tt_sig_plus"}, {2, "ett_m_tt_sig_minus"}, {3, "ett_m_tt_control_plus_high_ptw"}, {4, "ett_m_tt_control_minus_high_ptw"}, {5, "ett_m_tt_control_plus_low_ptw"}, {6, "ett_m_tt_control_minus_low_ptw"}}; 
+
+  if (era == "2016preVFP" or era == "2016postVFP") {
+  cats["emt"] = {{1, "emt_m_tt_all_cats_plus"},{2, "emt_m_tt_all_cats_minus"}};
+  cats["mmt"] = {{1, "mmt_m_tt_all_cats_plus"},{2, "mmt_m_tt_all_cats_minus"}};
+  cats["mtt"] = {{1, "mtt_m_tt_all_cats_plus"},{2, "mtt_m_tt_all_cats_minus"}};
+  cats["ett"] = {{1, "ett_m_tt_all_cats_plus"},{2, "ett_m_tt_all_cats_minus"}}; 
+  }
+  else {
+    cats["emt"] = {{1, "emt_m_tt_sig_plus"}, {2, "emt_m_tt_sig_minus"}, {3, "emt_m_tt_control_plus"}, {4, "emt_m_tt_control_minus"}};
+  // cats["met"] = {{1, "met_m_tt_sig_plus"}, {2, "met_m_tt_sig_minus"}, {3, "met_m_tt_control_plus"}, {4, "met_m_tt_control_minus"}};
+  cats["mmt"] = {{1, "mmt_m_tt_sig_plus"}, {2, "mmt_m_tt_sig_minus"}, {3, "mmt_m_tt_control_plus"}, {4, "mmt_m_tt_control_minus"}};
+  cats["mtt"] = {{1, "mtt_m_tt_sig_plus"}, {2, "mtt_m_tt_sig_minus"}, {3, "mtt_m_tt_control_plus"}, {4, "mtt_m_tt_control_minus"}};
+  cats["ett"] = {{1, "ett_m_tt_sig_plus"}, {2, "ett_m_tt_sig_minus"}, {3, "ett_m_tt_control_plus"}, {4, "ett_m_tt_control_minus"}}; 
+  }
+  // cats["emt"] = {{1, "emt_m_tt_sig_lowpt"}, {2, "emt_m_tt_sig_midpt"}, {3, "emt_m_tt_sig_highpt"}};
+  // cats["met"] = {{1, "met_m_tt_sig_lowpt"}, {2, "met_m_tt_sig_midpt"}, {3, "met_m_tt_sig_highpt"}};
+  // cats["mmt"] = {{1, "mmt_m_tt_sig_lowpt"}, {2, "mmt_m_tt_sig_midpt"}, {3, "mmt_m_tt_sig_highpt"}};
+  // cats["mtt"] = {{1, "mtt_m_tt_sig_lowpt"}, {2, "mtt_m_tt_sig_midpt"}, {3, "mtt_m_tt_sig_highpt"}};
+  // cats["ett"] = {{1, "ett_m_tt_sig_lowpt"}, {2, "ett_m_tt_sig_midpt"}, {3, "ett_m_tt_sig_highpt"}}; 
 
   vector<string> masses = {"125"};
   // Create combine harverster object
@@ -159,9 +178,10 @@ int main(int argc, char **argv) {
 
   // Add observations and processes
   std::string era_tag;
-  if (era == 2016) era_tag = "2016";
-  else if (era == 2017) era_tag = "2017";
-  else if (era == 2018) era_tag = "2018";
+  if (era == "2016preVFP") era_tag = "2016preVFP";
+  else if (era == "2016postVFP") era_tag = "2016postVFP";
+  else if (era == "2017") era_tag = "2017";
+  else if (era == "2018") era_tag = "2018";
 
   else std::runtime_error("Given era is not implemented.");
 
@@ -186,10 +206,10 @@ int main(int argc, char **argv) {
   // Extract shapes from input ROOT files
   for (string chn : chns) {
     cb.cp().channel({chn}).backgrounds().ExtractShapes(
-        input_dir[chn] + std::to_string(era)+"_"+chn+"_synced.root",
+        input_dir[chn] + era +"_"+chn+"_synced.root",
         "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC");
     cb.cp().channel({chn}).process(sig_procs).ExtractShapes(
-        input_dir[chn] + std::to_string(era)+"_"+chn+"_synced.root",
+        input_dir[chn] + era +"_"+chn+"_synced.root",
         "$BIN/$PROCESS$MASS", "$BIN/$PROCESS$MASS_$SYSTEMATIC");
   }
   // Delete processes with 0 yield
@@ -261,7 +281,7 @@ std::cout << "hier" << "\n";
   std::cout << "[WARNING] Turned " << count_lnN << " of " << count_all << " checked systematics into lnN:" << std::endl;
 
   //update 2016 nominal lumi
-  if(era==2016){
+  if(era=="2016"){
     for(auto x : sig_procs){
       if(x=="EMB" || x=="QCD") continue; //skip	data driven bkgs
       cb.cp().process({x}).ForEachProc([&](ch::Process *proc) {
@@ -395,13 +415,16 @@ std::cout << "hier" << "\n";
   if (binomial_bbb) {
     // Used for statistical fluctuation in embedded weights in em channel
     auto gen_mean = 0.0;
-    if (era==2016){
+    if (era=="2016preVFP"){
       gen_mean = 0.017;
     }
-    else if (era==2017){
+    else if (era=="2016postVFP"){
+      gen_mean = 0.017;
+    }
+    else if (era=="2017"){
       gen_mean = 0.014;
     }
-    else if (era==2018){
+    else if (era=="2018"){
       gen_mean = 0.019;
     }
     auto bbb = ch::BinomialBinByBinViaAutoMCstatsFactory()

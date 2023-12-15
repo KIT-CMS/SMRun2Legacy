@@ -18,7 +18,7 @@ using ch::syst::process;
 using ch::syst::bin;
 using ch::JoinStr;
 
-  void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, bool regional_jec, bool ggh_wg1, int era) {
+  void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, bool regional_jec, bool ggh_wg1, string era) {
 
   // ##########################################################################
   // Define groups of processes
@@ -145,7 +145,7 @@ using ch::JoinStr;
      // STXS stage 0
      "qqH_hww"};
   std::vector<std::string> signals = JoinStr({signals_ggH, signals_ggZH_had, signals_qqH, signals_VH_had, signals_VH}); 
-  std::vector<std::string> signals_WH = {"WHplus", "WHminus"};
+  std::vector<std::string> signals_WH = {"WHtautau_plus", "WHtautau_minus", "WHWW_plus", "WHWW_minus"};
   // Background processes
   /* // Not used in the function, keep it for documentation purposes.
   std::vector<std::string> backgrounds = {"ZTT",  "W",   "ZL",      "ZJ",
@@ -162,7 +162,7 @@ using ch::JoinStr;
               signals_qqHToWW,
               signals_WH,
               {"WH_hww", "ZH_hww"},
-              {"ggZZ", "rem_VH", "WWW", "rem_VV", "WWZ", "ZZZ", "rem_ttbar", "WZ", "Wjets", "ZH", "DY", "ZZ", "TT"}
+              {"ggZZ", "rem_H", "VVV", "rem_VV", "rem_ttbar", "WZ", "Wjets", "DY", "ZZ", "TT"}
               });
   // ##########################################################################
   // Uncertainty: Lumi
@@ -178,14 +178,19 @@ using ch::JoinStr;
   float lumi_unc = 1.0;
   float lumi_unc_corr = 1.0;
   float lumi_unc_1718 = 1.0;
-  if (era == 2016) {
+  if (era == "2016preVFP") {
       lumi_unc = 1.010;
       lumi_unc_corr = 1.006;
-  } else if (era == 2017) {
+  } 
+  if (era == "2016postVFP") {
+      lumi_unc = 1.010;
+      lumi_unc_corr = 1.006;
+  } 
+  else if (era == "2017") {
       lumi_unc = 1.020;
       lumi_unc_corr = 1.009;
       lumi_unc_1718 = 1.006;
-  } else if (era == 2018) {
+  } else if (era == "2018") {
       lumi_unc = 1.015;
       lumi_unc_corr = 1.020;
       lumi_unc_1718 = 1.002;
@@ -210,7 +215,7 @@ using ch::JoinStr;
   // Notes:
   // - FIXME: assumed as uncorrelated accross the years for now, what is the recommendation?
   // ##########################################################################
-  if (era != 2018) {
+  if (era != "2018") {
   cb.cp()
       .channel({"emt", "met", "mmt", "mtt", "ett"})
       .process(mc_processes)
@@ -281,12 +286,12 @@ using ch::JoinStr;
   for (auto tauIDbin : tauIDdmbins){
     cb.cp()
         .channel({"ett", "mtt"})
-        .process(JoinStr({signals, {"ggZZ", "rem_VH", "WWW", "WWZ", "ZZZ", "rem_ttbar", "WZ", "ZZ"}}))
+        .process(mc_processes)
         .AddSyst(cb, "CMS_eff_t_dm"+tauIDbin+"_$ERA", "shape", SystMap<>::init(1.0));
   }
   cb.cp()
       .channel({ "mtt", "ett"})
-      .process(JoinStr({signals, {"ggZZ", "rem_VH", "WWW", "WWZ", "ZZZ", "rem_ttbar", "WZ", "ZZ"}}))
+      .process(mc_processes)
       .AddSyst(cb, "CMS_eff_t_$CHANNEL_$ERA", "lnN", SystMap<>::init(1.014));
 
   // Tau ID: tt with 1 real taus and 1 jet fake
@@ -455,7 +460,7 @@ using ch::JoinStr;
   }
 
   // JER
-  if (era != 2017){
+  if (era != "2017"){
   cb.cp()
       .channel({"emt", "met", "mmt", "mtt", "ett"})
       .process(mc_processes)
@@ -482,12 +487,18 @@ using ch::JoinStr;
   // - FIXME: Clustered vs unclustered MET? Inclusion of JES splitting?
   // - FIXME: References?
   // ##########################################################################
-
+if (era == "2017" or era == "2018") {
   cb.cp()
       .channel({"emt", "met", "mmt", "mtt", "ett"})
       .process(mc_processes)  //Z and W processes are only included due to the EWK fraction. Make sure that there is no contribution to the shift from the DY or Wjets samples.
       .AddSyst(cb, "CMS_scale_met_unclustered_$ERA", "shape", SystMap<>::init(1.00));
-    //TODO uncomment for next iteration
+}    //TODO uncomment for next iteration
+else {
+    cb.cp()
+      .channel({"emt", "met", "mmt", "mtt", "ett"})
+      .process({"ggZZ", "rem_VH", "VVV", "rem_VV", "WZ", "Wjets", "ZH", "DY", "ZZ", "TT"})  //Z and W processes are only included due to the EWK fraction. Make sure that there is no contribution to the shift from the DY or Wjets samples.
+      .AddSyst(cb, "CMS_scale_met_unclustered_$ERA", "shape", SystMap<>::init(1.00));
+}
   cb.cp()
       .channel({"emt", "met", "mmt", "mtt", "ett"})
       .process(mc_processes)
@@ -512,7 +523,7 @@ using ch::JoinStr;
   // VV
   cb.cp()
       .channel({"emt", "met", "mmt", "mtt", "ett"})
-      .process({"ggZZ", "WWW", "rem_VV", "WWZ", "ZZZ", "WZ", "ZZ" })
+      .process({"ggZZ", "VVV", "rem_VV", "WZ", "ZZ" })
       .AddSyst(cb, "CMS_htt_vvXsec", "lnN", SystMap<>::init(1.05));
 
   // TT
@@ -595,7 +606,7 @@ using ch::JoinStr;
   // - FIXME: References?
   // ##########################################################################
 
-  if (era == 2016) {
+  if (era == "2016preVFP" or era == "2016postVFP") {
       cb.cp()
           .channel({"emt", "met", "mmt", "mtt", "ett"})
           .process({"DY"})
