@@ -26,7 +26,7 @@
 #include <utility>
 #include <vector>
 #include <math.h>
-
+#include <typeinfo>
 using namespace std;
 using boost::starts_with;
 namespace po = boost::program_options;
@@ -45,6 +45,8 @@ int main(int argc, char **argv) {
   string input_folder_mmt = "Vienna/";
   string input_folder_mtt = "Vienna/";
   string input_folder_ett = "Vienna/";
+  string input_folder_ltt = "Vienna/";
+  string input_folder_llt = "Vienna/";
   string chan = "all";
   string postfix = "-ML";
   string midfix = "";
@@ -78,6 +80,8 @@ int main(int argc, char **argv) {
       ("input_folder_mmt", po::value<string>(&input_folder_mmt)->default_value(input_folder_mmt))
       ("input_folder_mtt", po::value<string>(&input_folder_mtt)->default_value(input_folder_mtt))
       ("input_folder_ett", po::value<string>(&input_folder_ett)->default_value(input_folder_ett))
+      ("input_folder_ltt", po::value<string>(&input_folder_ltt)->default_value(input_folder_ltt))
+      ("input_folder_llt", po::value<string>(&input_folder_llt)->default_value(input_folder_llt))
       ("postfix", po::value<string>(&postfix)->default_value(postfix))
       ("midfix", po::value<string>(&midfix)->default_value(midfix))
       ("channel", po::value<string>(&chan)->default_value(chan))
@@ -105,13 +109,17 @@ int main(int argc, char **argv) {
       ("era", po::value<string>(&era)->default_value(era));
   po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
   po::notify(vm);
-  std::cout<<input_folder_emt<<std::endl;
-  std::cout<<input_folder_mmt<<std::endl;
+  std::cout<<input_folder_llt<<std::endl;
+  std::cout<<input_folder_ltt<<std::endl;
   std::cout<<base_path<<std::endl;
   // Define channels
   VString chns;
   if (chan.find("emt") != std::string::npos)
     chns.push_back("emt");
+  if (chan.find("llt") != std::string::npos)
+    chns.push_back("llt");
+  if (chan.find("ltt") != std::string::npos)
+    chns.push_back("ltt");
   if (chan.find("met") != std::string::npos)
     chns.push_back("met");
   if (chan.find("mmt") != std::string::npos)
@@ -120,15 +128,21 @@ int main(int argc, char **argv) {
     chns.push_back("mtt");
   if (chan.find("ett") != std::string::npos)
     chns.push_back("ett");
-  if (chan == "all")
-    chns = {"emt", "mmt", "mtt", "ett"};
-
+  if (chan == "all") {
+    //if (era == "2016preVFP" or era == "2016postVFP")
+      chns = {"llt", "ltt"};
+  //   // else
+  //   //   chns = {"llt", "mmt", "mtt", "ett"};
+  }
+  // if (chan == "all") {
+  //     chns = {"llt", "mmt", "ett", "mtt"};
+  // }
   // Define background processes
   map<string, VString> bkg_procs;
   VString bkgs_dd, bkgs_mc, bkgs, sig_procs;
-  bkgs_mc = {"ggZZ", "rem_H", "VVV", "rem_VV", "rem_ttbar", "WZ", "Wjets", "DY", "ZZ", "TT"};
-  bkgs_dd = {"ggZZ", "rem_H", "VVV", "rem_ttbar", "WZ", "jetFakes", "ZZ"};
-  sig_procs = {"WHtautau_plus", "WHtautau_minus","WHWW_plus", "WHWW_minus"};
+  bkgs_mc = {"ggZZ", "ggZH",  "ZH",  "VVV", "rem_VV", "rem_ttbar", "WZ", "Wjets", "DY", "ZZ", "TT"};
+  bkgs_dd = {"ggZZ","ggZH",  "ZH",  "VVV", "rem_ttbar", "WZ", "jetFakes", "ZZ"};
+  sig_procs = {"WH_htt_plus", "WH_htt_minus","WH_hww_plus", "WH_hww_minus"};
   if(jetfakes){
     bkgs = bkgs_dd;
   }
@@ -143,6 +157,8 @@ int main(int argc, char **argv) {
   bkg_procs["mmt"] = bkgs;
   bkg_procs["mtt"] = bkgs;
   bkg_procs["ett"] = bkgs;
+  bkg_procs["ltt"] = bkgs;
+  bkg_procs["llt"] = bkgs;
   
   // Define categories
   map<string, Categories> cats;
@@ -153,30 +169,52 @@ int main(int argc, char **argv) {
   // cats["mtt"] = {{1, "mtt_m_tt_sig_plus"}, {2, "mtt_m_tt_sig_minus"}, {3, "mtt_m_tt_control_plus_high_ptw"}, {4, "mtt_m_tt_control_minus_high_ptw"}, {5, "mtt_m_tt_control_plus_low_ptw"}, {6, "mtt_m_tt_control_minus_low_ptw"}};
   // cats["ett"] = {{1, "ett_m_tt_sig_plus"}, {2, "ett_m_tt_sig_minus"}, {3, "ett_m_tt_control_plus_high_ptw"}, {4, "ett_m_tt_control_minus_high_ptw"}, {5, "ett_m_tt_control_plus_low_ptw"}, {6, "ett_m_tt_control_minus_low_ptw"}}; 
 
-  if (era == "2016preVFP" or era == "2016postVFP") {
-  cats["emt"] = {{1, "emt_m_tt_all_cats_plus"},{2, "emt_m_tt_all_cats_minus"}};
-  cats["mmt"] = {{1, "mmt_m_tt_all_cats_plus"},{2, "mmt_m_tt_all_cats_minus"}};
-  cats["mtt"] = {{1, "mtt_m_tt_all_cats_plus"},{2, "mtt_m_tt_all_cats_minus"}};
-  cats["ett"] = {{1, "ett_m_tt_all_cats_plus"},{2, "ett_m_tt_all_cats_minus"}}; 
-  }
-  else {
-    cats["emt"] = {{1, "emt_m_tt_sig_plus"}, {2, "emt_m_tt_sig_minus"}, {3, "emt_m_tt_control_plus"}, {4, "emt_m_tt_control_minus"}};
-  // cats["met"] = {{1, "met_m_tt_sig_plus"}, {2, "met_m_tt_sig_minus"}, {3, "met_m_tt_control_plus"}, {4, "met_m_tt_control_minus"}};
-  cats["mmt"] = {{1, "mmt_m_tt_sig_plus"}, {2, "mmt_m_tt_sig_minus"}, {3, "mmt_m_tt_control_plus"}, {4, "mmt_m_tt_control_minus"}};
-  cats["mtt"] = {{1, "mtt_m_tt_sig_plus"}, {2, "mtt_m_tt_sig_minus"}, {3, "mtt_m_tt_control_plus"}, {4, "mtt_m_tt_control_minus"}};
-  cats["ett"] = {{1, "ett_m_tt_sig_plus"}, {2, "ett_m_tt_sig_minus"}, {3, "ett_m_tt_control_plus"}, {4, "ett_m_tt_control_minus"}}; 
-  }
-  // cats["emt"] = {{1, "emt_m_tt_sig_lowpt"}, {2, "emt_m_tt_sig_midpt"}, {3, "emt_m_tt_sig_highpt"}};
-  // cats["met"] = {{1, "met_m_tt_sig_lowpt"}, {2, "met_m_tt_sig_midpt"}, {3, "met_m_tt_sig_highpt"}};
-  // cats["mmt"] = {{1, "mmt_m_tt_sig_lowpt"}, {2, "mmt_m_tt_sig_midpt"}, {3, "mmt_m_tt_sig_highpt"}};
-  // cats["mtt"] = {{1, "mtt_m_tt_sig_lowpt"}, {2, "mtt_m_tt_sig_midpt"}, {3, "mtt_m_tt_sig_highpt"}};
-  // cats["ett"] = {{1, "ett_m_tt_sig_lowpt"}, {2, "ett_m_tt_sig_midpt"}, {3, "ett_m_tt_sig_highpt"}}; 
+//cutbased
+  // if (era == "2016preVFP" or era == "2016postVFP") {
+  // cats["llt"] = {{1, "llt_m_tt_all_cats_plus"},{2, "llt_m_tt_all_cats_minus"}};
+  // cats["mmt"] = {{1, "mmt_m_tt_all_cats_plus"},{2, "mmt_m_tt_all_cats_minus"}};
+  // cats["mtt"] = {{1, "mtt_m_tt_all_cats_plus"},{2, "mtt_m_tt_all_cats_minus"}};
+  // cats["ett"] = {{1, "ett_m_tt_all_cats_plus"},{2, "ett_m_tt_all_cats_minus"}}; 
+  // }
+  // else {
+  //   cats["llt"] = {{1, "llt_m_tt_sig_plus"}, {2, "llt_m_tt_sig_minus"}, {3, "llt_m_tt_control_plus"}, {4, "llt_m_tt_control_minus"}};
+  // cats["mmt"] = {{1, "mmt_m_tt_sig_plus"}, {2, "mmt_m_tt_sig_minus"}, {3, "mmt_m_tt_control_plus"}, {4, "mmt_m_tt_control_minus"}};
+  // cats["mtt"] = {{1, "mtt_m_tt_sig_plus"}, {2, "mtt_m_tt_sig_minus"}, {3, "mtt_m_tt_control_plus"}, {4, "mtt_m_tt_control_minus"}};
+  // cats["ett"] = {{1, "ett_m_tt_sig_plus"}, {2, "ett_m_tt_sig_minus"}, {3, "ett_m_tt_control_plus"}, {4, "ett_m_tt_control_minus"}}; 
+  // }
+
+//xsec analysis
+// cats["llt"] = {{1, "llt_sig_both_charges"}, {2, "llt_misc_both_charges"}, {3, "llt_diboson_both_charges"}};
+// cats["ltt"] = {{1, "ltt_sig_both_charges"}, {2, "ltt_misc_both_charges"}, {3, "ltt_diboson_both_charges"}};
+//NN_analysis
+
+  // if (era == "2016preVFP" or era == "2016postVFP") {
+  cats["llt"] = {{1, "llt_sig_nn_signal_plus"}, {2, "llt_sig_nn_signal_minus"}, {3, "llt_misc_nn_signal_plus"}, {4, "llt_misc_nn_signal_minus"}, {5, "llt_diboson_nn_signal_plus"}, {6, "llt_diboson_nn_signal_minus"}};
+  cats["ltt"] = {{1, "ltt_sig_nn_signal_plus"}, {2, "ltt_sig_nn_signal_minus"}, {3, "ltt_misc_nn_signal_plus"}, {4, "ltt_misc_nn_signal_minus"}, {5, "ltt_diboson_nn_signal_plus"}, {6, "ltt_diboson_nn_signal_minus"}};
+  // // }
+  // else {
+  // cats["llt"] = {{1, "llt_sig_nn_signal_plus"}, {2, "llt_sig_nn_signal_minus"}, {3, "llt_misc_nn_signal_plus"}, {4, "llt_misc_nn_signal_minus"}, {5, "llt_diboson_nn_signal_plus"}, {6, "llt_diboson_nn_signal_minus"}};
+  // cats["mmt"] = {{1, "mmt_sig_nn_signal_plus"}, {2, "mmt_sig_nn_signal_minus"}, {3, "mmt_misc_nn_signal_plus"}, {4, "mmt_misc_nn_signal_minus"}, {5, "mmt_diboson_nn_signal_plus"}, {6, "mmt_diboson_nn_signal_minus"}};
+  // cats["mtt"] = {{1, "mtt_sig_nn_signal_plus"}, {2, "mtt_sig_nn_signal_minus"}, {3, "mtt_misc_nn_signal_plus"}, {4, "mtt_misc_nn_signal_minus"}, {5, "mtt_diboson_nn_signal_plus"}, {6, "mtt_diboson_nn_signal_minus"}};
+  // cats["ett"] = {{1, "ett_sig_nn_signal_plus"}, {2, "ett_sig_nn_signal_minus"}, {3, "ett_misc_nn_signal_plus"}, {4, "ett_misc_nn_signal_minus"}, {5, "ett_diboson_nn_signal_plus"}, {6, "ett_diboson_nn_signal_minus"}};
+  // }
+//GOF
+//  if(categories == "gof") {
+  // cats["mmt"] = { {1, gof_category_name.c_str() }};
+  // cats["emt"] = { {1, gof_category_name.c_str() }};
+  // cats["met"] = { {1, gof_category_name.c_str() }};
+  // cats["mtt"] = { {1, gof_category_name.c_str() }};
+  // cats["ett"] = { {1, gof_category_name.c_str() }};
+  // cats["ltt"] = { {1, gof_category_name.c_str() }};
+  // cats["llt"] = { {1, gof_category_name.c_str() }};
+  
+//  }
 
   vector<string> masses = {"125"};
   // Create combine harverster object
   ch::CombineHarvester cb;
 
-  // Add observations and processes
+  // Add observations and
   std::string era_tag;
   if (era == "2016preVFP") era_tag = "2016preVFP";
   else if (era == "2016postVFP") era_tag = "2016postVFP";
@@ -194,7 +232,9 @@ int main(int argc, char **argv) {
   }
 
   // Add systematics
+  std::cout<<"haaaaaaaaaaaaaaaa"<<std::endl;
   ch::AddSMRun2Systematics(cb, jetfakes, embedding, regional_jec, ggh_wg1, era);
+  std::cout<<"huuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"<<std::endl;
   // Define the location of the "auxiliaries" directory where we can
   // source the input files containing the datacard shapes
   std::map<string, string> input_dir;
@@ -203,6 +243,8 @@ int main(int argc, char **argv) {
   input_dir["mmt"] = base_path + "/" + input_folder_mmt + "/";
   input_dir["mtt"] = base_path + "/" + input_folder_mtt + "/";
   input_dir["ett"] = base_path + "/" + input_folder_ett + "/";
+  input_dir["llt"] = base_path + "/" + input_folder_llt + "/";
+  input_dir["ltt"] = base_path + "/" + input_folder_ltt + "/";
   // Extract shapes from input ROOT files
   for (string chn : chns) {
     cb.cp().channel({chn}).backgrounds().ExtractShapes(
@@ -211,6 +253,13 @@ int main(int argc, char **argv) {
     cb.cp().channel({chn}).process(sig_procs).ExtractShapes(
         input_dir[chn] + era +"_"+chn+"_synced.root",
         "$BIN/$PROCESS$MASS", "$BIN/$PROCESS$MASS_$SYSTEMATIC");
+  }
+  std::cout << "halllllllllllllllllo huhuhu " << std::endl;
+  for (auto b : cb.cp().bin_set()) {
+  std::cout << "bin" << b <<std::endl;
+  cb.cp().bin({b}).data().GetShape().Print() ;
+  cb.cp().bin({b}).signals().GetShape().Print();
+  cb.cp().bin({b}).backgrounds().GetShape().Print();
   }
   // Delete processes with 0 yield
   cb.FilterProcs([&](ch::Process *p) {
@@ -249,6 +298,7 @@ std::cout << "hier" << "\n";
   cb.cp().ForEachSyst([&count_lnN, &count_all](ch::Systematic *s) {
     if (TString(s->name()).Contains("scale")||TString(s->name()).Contains("CMS_htt_boson_reso_met")||TString(s->name()).Contains("res_j")||TString(s->name()).Contains("res_e")){
       count_all++;
+      std::cout << "oiiii" << ch::Systematic::PrintHeader << *s << "\n";
       double err_u = 0.0;
       double err_d = 0.0;
       int nbins = s->shape_u()->GetNbinsX();
@@ -289,7 +339,41 @@ std::cout << "hier" << "\n";
         proc->set_rate(proc->rate()*1.0128);
       });
     }
-  }  
+  }
+  //test jetFakes normalization
+  // for(auto x : {"ZH"}){
+  //     cb.cp().process({x}).ForEachProc([&](ch::Process *proc) {
+  //       std::cout << "Updating rate of "+proc->process() << std::endl;
+  //       proc->set_rate(proc->rate()*1.5);
+  //     });
+  //   }
+  // for(auto x : sig_procs){
+  //     cb.cp().process({x}).ForEachProc([&](ch::Process *proc) {
+  //       std::cout << "Updating rate of "+proc->process() << std::endl;
+  //       proc->set_rate(proc->rate()*10.);
+  //     });
+  //   }
+  // scale ZH(tautau) because of missing ggZH(tautau) UL sample
+  // for (string chn : chns) {
+  //   if(chn=="ett" || chn=="mtt" || chn=="ltt") {
+  //     cb.cp().process({"ZH"}).ForEachProc([&](ch::Process *proc) {
+  //       std::cout << "Updating rate of "+proc->process() << std::endl;
+  //       proc->set_rate(proc->rate()*1.24);
+  //     });
+  //   }
+  //   else {
+  //     cb.cp().process({"ZH"}).ForEachProc([&](ch::Process *proc) {
+  //       std::cout << "Updating rate of "+proc->process() << std::endl;
+  //       proc->set_rate(proc->rate()*1.2);
+  //     });
+  //   }
+    // cb.cp().process({"VVV"}).ForEachProc([&](ch::Process *proc) {
+    //     std::cout << "Updating rate of "+proc->process() << std::endl;
+    //     proc->set_rate(proc->rate()*1.2);
+    //   });
+    //}
+
+
   // Replacing observation with the sum of the backgrounds (Asimov data)
   // useful to be able to check this, so don't do the replacement
   // for these
@@ -299,6 +383,7 @@ std::cout << "hier" << "\n";
       auto background_shape = cb.cp().bin({b}).backgrounds().GetShape();
       auto signal_shape = cb.cp().bin({b}).signals().GetShape();
       auto total_procs_shape = cb.cp().bin({b}).data().GetShape();
+      std::cout << "total procs" << total_procs_shape.Integral() << " " << "background_shape " << background_shape.Integral() << " " << "signal procs" << signal_shape.Integral() << std::endl;
       total_procs_shape.Scale(0.0);
       bool no_signal = (signal_shape.GetNbinsX() == 1 && signal_shape.Integral() == 0.0);
       bool no_background = (background_shape.GetNbinsX() == 1 && background_shape.Integral() == 0.0);
@@ -318,16 +403,26 @@ std::cout << "hier" << "\n";
       }
       else
       {
+        std::cout << " signal and bkg in bin " << b << std::endl;
+        // std::cout << "total procs" << total_procs_shape.Integral() << " " << "background_shape " << background_shape.Integral() << " " << "signal procs" << signal_shape.Integral() << std::endl;
         total_procs_shape = total_procs_shape + background_shape + signal_shape;
       }
+      std::cout << "final int" << total_procs_shape.Integral()<< std::endl;
       cb.cp().bin({b}).ForEachObs([&](ch::Observation *obs) {
         obs->set_shape(total_procs_shape,true);
       });
     }
   }
-
+  // // test of pulls, if you observe a different xsec than expected
+  // for(auto x : {"VVV"}){
+  //     cb.cp().process({x}).ForEachProc([&](ch::Process *proc) {
+  //       std::cout << "Updating rate of "+proc->process() << std::endl;
+  //       proc->set_rate(proc->rate()*0.8);
+  //     });
+  //   }
   // At this point we can fix the negative bins
   std::cout << "[INFO] Fixing negative bins.\n";
+  std::cout<<"hoooooooooooooo"<<std::endl;
   cb.ForEachProc([](ch::Process *p) {
     if (ch::HasNegativeBins(p->shape())) {
       auto newhist = p->ClonedShape();
@@ -351,15 +446,23 @@ std::cout << "hier" << "\n";
 
   // Perform auto-rebinning
   if (auto_rebin) {
-    const auto threshold = 10.0;
+    auto threshold =10.0;
     for (auto b : cb.cp().bin_set()) {
-      std::cout << "[INFO] Rebin bin " << b << "\n";
+      if (b.find("_sig_") != std::string::npos) {
+        threshold = 10.0;
+        std::cout << "Signal category" << threshold << std::endl;
+    } else {
+      threshold = 20.0;
+        std::cout << "background" << threshold << std::endl;
+    }
+      std::cout << "[INFO] Rebin bin " << b << "type" << typeid(b).name() << "\n";
       // Get shape of this category with sum of backgrounds
       auto shape = cb.cp().bin({b}).backgrounds().GetShape();
       // Push back last bin edge
       vector<double> binning;
       const auto num_bins = shape.GetNbinsX();
       binning.push_back(shape.GetBinLowEdge(num_bins + 1));
+      std::cout<<shape.GetBinLowEdge(num_bins + 1) <<std::endl;
       // Now, go backwards through bins (from right to left) and merge a bin if
       // the background yield is below a given threshold.
       auto c = 0.0;
@@ -438,7 +541,7 @@ std::cout << "hier" << "\n";
     std::cout << "[INFO] Adding SetAutoMCStats .\n";
     cb.SetAutoMCStats(cb, 0.);
   }
-
+  std::cout<<"hiiiiiiiiiiiiii"<<std::endl;
   // This function modifies every entry to have a standardised bin name of
   // the form: {analysis}_{channel}_{bin_id}_{era}
   ch::SetStandardBinNames(cb, "$ANALYSIS_$CHANNEL_$BINID_$ERA");
