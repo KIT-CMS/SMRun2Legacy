@@ -1,4 +1,5 @@
 <bin file="MorphingSMRun2Legacy.cpp" name="MorphingSMRun2Legacy"></bin>
+<bin file="MorphingNMSSMRun2UL.cpp" name="MorphingNMSSMRun2UL"></bin>
 <use name="root"/>
 <use name="rootmath"/>
 <use name="roofit"/>
