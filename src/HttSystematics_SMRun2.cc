@@ -214,8 +214,12 @@ namespace {
 
   void AddSMRun2Systematics(CombineHarvester &cb, bool jetfakes, bool embedding, bool regional_jec, bool ggh_wg1, bool qqh_wg1, int era) {
 
+    bool split_tau_id_and_es_by_pt = true;
+    bool use_ml_ff_scheme = true;
+    bool correlate_emb = true;
+
     using namespace std::string_literals;
-    const std::vector<std::string> tau_decaymodes = {"0", "1", "10", "11"};
+    const std::vector<std::string> tau_decaymodes = {"1prong0pizero", "1prong1pizero", "3prong0pizero", "3prong1pizero"};
 
     SystematicBuilder builder(cb);
 
@@ -223,7 +227,7 @@ namespace {
     // - "CMS Luminosity Measurements for the 2016 Data Taking Period" (PAS, https://cds.cern.ch/record/2257069)
     // - Recommendation twiki https://twiki.cern.ch/twiki/bin/view/CMS/TWikiLUM#LumiComb  
     
-    float lumi_unc = (era == 2016) ? 1.010 : (era == 2017) ? 1.020 : (era == 2018) ? 1.015 : 1.0;
+    float lumi_unc = (era == 2016) ? 1.012 : (era == 2017) ? 1.0082 : (era == 2018) ? 1.0084 : 1.0;
     float lumi_unc_corr = (era == 2016) ? 1.006 : (era == 2017) ? 1.009 : (era == 2018) ? 1.020 : 1.0;
     float lumi_unc_1718 = (era == 2017) ? 1.006 : (era == 2018) ? 1.002 : 1.0;
 
@@ -244,10 +248,13 @@ namespace {
     builder.AddSyst("CMS_eff_trigger_mt_Run$ERA", "shape", processes::mc, channels::mt);
     builder.AddSyst("CMS_eff_trigger_em_Run$ERA", "lnN", processes::mc, channels::em, 1.02);
 
-    builder.AddSyst("CMS_eff_trigger_emb_et_Run$ERA", "shape", processes::emb, channels::et);
-    builder.AddSyst("CMS_eff_trigger_emb_mt_Run$ERA", "shape", processes::emb, channels::mt);
-    builder.AddSyst("CMS_eff_trigger_emb_em_Run$ERA", "lnN", processes::emb, channels::em, 1.02);
+    if (embedding){
+        builder.AddSyst("CMS_eff_trigger_emb_et_Run$ERA", "shape", processes::emb, channels::et);
+        builder.AddSyst("CMS_eff_trigger_emb_mt_Run$ERA", "shape", processes::emb, channels::mt);
+        builder.AddSyst("CMS_eff_trigger_emb_em_Run$ERA", "lnN", processes::emb, channels::em, 1.02);
+    }
 
+    // TODO: Adjust those to the new naming scheme.
     for (const auto& _dm : tau_decaymodes) {
         builder.AddSyst("CMS_eff_trigger_tt_dm"s + _dm + "_Run$ERA", "shape", processes::mc, channels::tt);
         builder.AddSyst("CMS_eff_trigger_tt_dm"s + _dm + "_Run$ERA", "shape", processes::emb, channels::tt, 0.5);
@@ -256,48 +263,112 @@ namespace {
 
     // 3% in Tau ID SF with different anti-l fake WP
 
-    builder.AddSyst("CMS_eff_t_wp_Run$ERA", "lnN", JoinStr({processes::htt, processes::emb, processes::real_tau_bkg_mc}), channels::mt_tt, 1.03);
+    if (correlate_emb) {
+        builder.AddSyst("CMS_eff_t_wp_Run$ERA", "lnN", JoinStr({processes::htt, processes::emb, processes::real_tau_bkg_mc}), channels::mt_tt, 1.03);
+    } else {
+        // Decorrelated: MC gets the standard name, EMB gets an emb-specific name
+        builder.AddSyst("CMS_eff_t_wp_Run$ERA", "lnN", JoinStr({processes::htt, processes::real_tau_bkg_mc}), channels::mt_tt, 1.03);
+        builder.AddSyst("CMS_eff_t_emb_wp_Run$ERA", "lnN", processes::emb, channels::mt_tt, 1.03);
+    }
 
     // Lepton ID
 
     builder.AddSyst("CMS_eff_e", "lnN", processes::mc, channels::em_et, 1.02);
     builder.AddSyst("CMS_eff_m", "lnN", processes::mc, channels::em_mt, 1.02);
-    builder.AddSyst("CMS_eff_e_emb", "lnN", processes::emb, channels::em_et, 1.017);
-    builder.AddSyst("CMS_eff_m_emb", "lnN", processes::emb, channels::em_mt, 1.017);
-    builder.AddSyst("CMS_eff_e", "lnN", processes::emb, channels::em_et, 1.01); // Correlated part
-    builder.AddSyst("CMS_eff_m", "lnN", processes::emb, channels::em_mt, 1.01); // Correlated part
-
+    if (embedding) {
+        if (correlate_emb) {
+            builder.AddSyst("CMS_eff_e", "lnN", processes::emb, channels::em_et, 1.01);
+            builder.AddSyst("CMS_eff_m", "lnN", processes::emb, channels::em_mt, 1.01);
+            builder.AddSyst("CMS_eff_e_emb", "lnN", processes::emb, channels::em_et, 1.017);
+            builder.AddSyst("CMS_eff_m_emb", "lnN", processes::emb, channels::em_mt, 1.017);
+        } else {
+            builder.AddSyst("CMS_eff_e_emb", "lnN", processes::emb, channels::em_et, 1.02);
+            builder.AddSyst("CMS_eff_m_emb", "lnN", processes::emb, channels::em_mt, 1.02);
+        }
+    }
     // Tau ID
 
     // MC
 
-    const std::vector<std::string> pt_bins_tau_ID = {"30-35", "35-40", "40-500", "500-1000", "1000-Inf"};
-    const std::vector<std::string> pt_bins_emb_tau_ID = {"30-35", "35-40", "40-Inf"};  // discrepancy between last bins
+    const std::vector<std::string> detailed_tau_decaymodes = {
+        "1prong0pizero", "1prong1pizero", "3prong0pizero", "3prong1pizero"
+    };
+    std::vector<std::string> tau_pt_suffixes;
 
-    for (const auto& _pt : pt_bins_tau_ID){
-        builder.AddSyst("CMS_eff_t_"s + _pt + "_Run$ERA", "shape", processes::real_taus_mc, channels::lt);
+    if (split_tau_id_and_es_by_pt) {
+        tau_pt_suffixes = {"20to40", "40toInf"};
+    } else {
+        tau_pt_suffixes = {""}; // "CMS_eff_t_1prong0pizero_Run2018" vs "CMS_eff_t_1prong0pizero_20to40_Run2018"
     }
-    builder.AddSyst("CMS_eff_t_$CHANNEL_Run$ERA", "lnN", processes::real_taus_mc, channels::lt, 1.01);
+
+    // Tau ID + Tau Energy Scale
+    for (const auto& dm : detailed_tau_decaymodes) {
+        for (const auto& pt_suffix : tau_pt_suffixes) {
+            
+            std::string bin_name = dm;
+
+            if (!pt_suffix.empty()){
+                bin_name += "_" + pt_suffix;
+            }
+
+            // ---
+            // Tau ID
+
+            // Common Component (Correlated)
+            // CMS_eff_t_1prong0pizero_20to40_Run2018
+            std::string id_common = "CMS_eff_t_" + bin_name + "_Run$ERA";
+            builder.AddSyst(id_common, "shape", processes::real_taus_mc, channels::lt);
+
+            if (embedding) {
+                if (correlate_emb) {
+                    builder.AddSyst(id_common, "shape", processes::emb, channels::lt);
+                }
+
+                // Embedding Specific Component (Uncorrelated)
+                // CMS_eff_t_emb_1prong0pizero20to40_Run2018
+                std::string id_emb = "CMS_eff_t_emb_" + bin_name + "_Run$ERA";
+                builder.AddSyst(id_emb, "shape", processes::emb, channels::lt);
+            }
+
+            // ---
+            // Tau Energy Scale
+
+            // Common Component (Correlated)
+            // CMS_scale_t_1prong0pizero_20to40_Run2018
+            std::string tes_common = "CMS_scale_t_" + bin_name + "_Run$ERA";
+            builder.AddSyst(tes_common, "shape", processes::real_taus_mc, channels::lt);
+
+            if (embedding) {
+                if (correlate_emb) {
+                    builder.AddSyst(tes_common, "shape", processes::emb, channels::lt);
+                }
+
+                // Embedding Specific Component (Uncorrelated)
+                // CMS_scale_t_emb_1prong0pizero_20to40_Run2018
+                std::string tes_emb = "CMS_scale_t_emb_" + bin_name + "_Run$ERA";
+                builder.AddSyst(tes_emb, "shape", processes::emb, channels::lt);
+            }
+
+            if (jetfakes) {
+                std::string tes_mc_jf  = "CMS_scale_t_" + bin_name + "_$CHANNEL_Run$ERA";
+                std::string tes_emb_jf = "CMS_scale_t_emb_" + bin_name + "_$CHANNEL_Run$ERA";
+
+                builder.AddSyst(tes_mc_jf, "shape", processes::jetFakes, channels::lt);
+
+                if (embedding) {
+                    builder.AddSyst(tes_emb_jf, "shape", processes::jetFakes, channels::lt);
+                }
+            } 
+        }
+    }
 
     for (const auto& _dm: tau_decaymodes){
         builder.AddSyst("CMS_eff_t_dm"s + _dm + "_Run$ERA", "shape", processes::real_taus_mc, channels::tt);
     }
     builder.AddSyst("CMS_eff_t_$CHANNEL_Run$ERA", "lnN", processes::real_taus_mc, channels::tt, 1.014);
 
-    // EMB
-
-    for (const auto& _pt : {"30-35", "35-40", "40-500"}){ // TODO: fix this inconsistency
-        builder.AddSyst("CMS_eff_t_"s + _pt +  "_Run$ERA", "shape", processes::emb, channels::lt, 0.5);
-    }
-    builder.AddSyst("CMS_eff_t_$CHANNEL_Run$ERA", "lnN", processes::emb, channels::lt, 1.005);
-
-    for (const auto& _pt : pt_bins_emb_tau_ID){
-        builder.AddSyst("CMS_eff_t_emb_"s + _pt + "_Run$ERA", "shape", processes::emb, channels::lt, 0.866);
-    }
-    builder.AddSyst("CMS_eff_t_emb_$CHANNEL_Run$ERA", "lnN", processes::emb, channels::lt, 1.0087);
-
     for (const auto& _dm : tau_decaymodes){
-        // builder.AddSyst("CMS_eff_t_emb_dm"s + _dm + "_Run$ERA", "shape", processes::emb, channels::mt, 0.866); // add when available
+        // builder.AddSyst("CMS_eff_t_emb_dm"s + _dm + "_Run$ERA", "shape", processes::emb, channels::lt, 0.866); // add when available
         builder.AddSyst("CMS_eff_t_dm"s + _dm + "_Run$ERA", "shape", processes::emb, channels::tt, 0.5);
     }
     builder.AddSyst("CMS_eff_t_emb_$CHANNEL_Run$ERA", "lnN", processes::emb, channels::tt, 1.012);
@@ -308,17 +379,13 @@ namespace {
 
     // btag uncertainties
 
-    builder.AddSyst("CMS_btag_b_HF", "shape", processes::mc, channels::all);
-    builder.AddSyst("CMS_btag_j_LF", "shape", processes::mc, channels::all);
+    for (const auto& src : {"btag_b_HF", "btag_c_CFerr1", "btag_c_CFerr2", "btag_j_LF"}) {
+        builder.AddSyst("CMS_"s + src, "shape", processes::mc, channels::all);
+    }
 
-    builder.AddSyst("CMS_btag_b_HFstats1_Run$ERA", "shape", processes::mc, channels::all);
-    builder.AddSyst("CMS_btag_j_LFstats1_Run$ERA", "shape", processes::mc, channels::all);
-
-    builder.AddSyst("CMS_btag_b_HFstats2_Run$ERA", "shape", processes::mc, channels::all);
-    builder.AddSyst("CMS_btag_j_LFstats2_Run$ERA", "shape", processes::mc, channels::all);
-
-    builder.AddSyst("CMS_btag_c_CFerr1", "shape", processes::mc, channels::all);
-    builder.AddSyst("CMS_btag_c_CFerr2", "shape", processes::mc, channels::all);
+    for (const auto& src : {"btag_b_HFstats1", "btag_b_HFstats2", "btag_j_LFstats1", "btag_j_LFstats2"}) {
+        builder.AddSyst("CMS_"s + src + "_Run$ERA", "shape", processes::mc, channels::all);
+    }
 
     // electron and tau energy scales
 
@@ -326,13 +393,13 @@ namespace {
     builder.AddSyst("CMS_res_e", "shape", processes::mc, channels::em_et);
     builder.AddSyst("CMS_scale_e_emb", "shape", processes::emb, channels::em_et);
 
-    for (const auto& _dm : {"1prong", "1prong1pizero", "3prong", "3prong1pizero"}) {
-        builder.AddSyst("CMS_scale_t_"s + _dm + "_Run$ERA", "shape", processes::tes_affected_processes, channels::lt_tt);
-        builder.AddSyst("CMS_scale_t_"s + _dm + "_Run$ERA", "shape", processes::emb, channels::lt_tt, 0.5); // Correlated
-        if (embedding){
-            builder.AddSyst("CMS_scale_t_emb_"s + _dm + "_Run$ERA", "shape", JoinStr({processes::emb, {"jetFakes"}}), channels::lt_tt, 0.866);
-        }
-    }
+    // for (const auto& _dm : {"1prong", "1prong1pizero", "3prong", "3prong1pizero"}) {
+    //     builder.AddSyst("CMS_scale_t_"s + _dm + "_Run$ERA", "shape", processes::tes_affected_processes, channels::lt_tt);
+    //     builder.AddSyst("CMS_scale_t_"s + _dm + "_Run$ERA", "shape", processes::emb, channels::lt_tt, 0.5); // Correlated
+    //     if (embedding){
+    //         builder.AddSyst("CMS_scale_t_emb_"s + _dm + "_Run$ERA", "shape", JoinStr({processes::emb, {"jetFakes"}}), channels::lt_tt, 0.866);
+    //     }
+    // }
 
     // jes/jer Uncertainties
 
@@ -349,7 +416,6 @@ namespace {
         builder.AddSyst("CMS_scale_j_RelativeBal", "shape", processes::mc_gte1j, channels::all);
     }
 
-    builder.AddSyst("CMS_scale_j_Total", "shape", processes::mc_gte1j, channels::all);
     builder.AddSyst("CMS_res_j_Run$ERA", "shape", processes::mc_gte1j, channels::all);
 
     if (era == 2018){
@@ -358,7 +424,7 @@ namespace {
 
     // met energy scale and recoil
     //Z and W processes are only included due to the EWK fraction. Make sure that there is no contribution to the shift from the DY or Wjets samples.
-    builder.AddSyst("CMS_scale_met_unclustered_Run$ERA", "shape", JoinStr({processes::z, processes::ttbar, processes::w, processes::vv}), channels::all);
+    builder.AddSyst("CMS_scale_met_unclustered_Run$ERA", "shape", JoinStr({processes::htt, processes::hww, processes::z, processes::ttbar, processes::w, processes::vv}), channels::all);
     builder.AddSyst("CMS_htt_boson_scale_met_Run$ERA", "shape", JoinStr({processes::htt, processes::hww, processes::z, processes::w}), channels::all);
     builder.AddSyst("CMS_htt_boson_res_met_Run$ERA", "shape", JoinStr({processes::htt, processes::hww, processes::z, processes::w}), channels::all);
     
@@ -404,6 +470,7 @@ namespace {
     // Uncertainty: Electron/muon to tau fakes and ZL energy scale
 
     builder.AddSyst("CMS_ZLShape_mt_Run$ERA", "shape", {"ZL"}, channels::mt);
+
     for (int i = 1; i <= 5; ++i){
         builder.AddSyst("CMS_fake_m_WH"s + std::to_string(i) + "_Run$ERA", "shape", {"ZL"}, channels::mt);
     }
@@ -430,69 +497,90 @@ namespace {
   
     // jetFakes uncertainties
 
-    if (jetfakes) {
-        const std::vector<std::string> ff_method_uncts = {
-            "QCDFFunc",
-            "QCDFFmcSubUnc",
-            "WjetsFFunc",
-            "WjetsFFmcSubUnc",
-            "ttbarFFunc",
-            "process_fractionsfracQCDUnc",
-            "process_fractionsfracWjetsUnc",
-            "process_fractionsfracTTbarUnc",
-            "QCD_DR_SR_Corr",
-            "QCD_non_closure_tau_decaymode_2_Corr",
-            "QCD_non_closure_mass_2_Corr",
-            "QCD_non_closure_eta_1_Corr",
-            "QCD_non_closure_eta_2_Corr",
-            "QCD_non_closure_jpt_1_Corr",
-            "QCD_non_closure_jeta_1_Corr",
-            "QCD_non_closure_jpt_2_Corr",
-            "QCD_non_closure_jeta_2_Corr",
-            "QCD_non_closure_met_Corr",
-            "QCD_non_closure_deltaEta_ditaupair_Corr",
-            "QCD_non_closure_deltaR_ditaupair_Corr",
-            "QCD_non_closure_pt_ttjj_Corr",
-            "QCD_non_closure_mt_tot_Corr",
-            "QCD_non_closure_iso_1_Corr",
-            "Wjets_DR_SR_Corr",
-            "Wjets_non_closure_tau_decaymode_2_Corr",
-            "Wjets_non_closure_mass_2_Corr",
-            "Wjets_non_closure_eta_1_Corr",
-            "Wjets_non_closure_eta_2_Corr",
-            "Wjets_non_closure_jpt_1_Corr",
-            "Wjets_non_closure_jeta_1_Corr",
-            "Wjets_non_closure_jpt_2_Corr",
-            "Wjets_non_closure_jeta_2_Corr",
-            "Wjets_non_closure_met_Corr",
-            "Wjets_non_closure_deltaEta_ditaupair_Corr",
-            "Wjets_non_closure_deltaR_ditaupair_Corr",
-            "Wjets_non_closure_pt_ttjj_Corr",
-            "Wjets_non_closure_mt_tot_Corr",
-            "Wjets_non_closure_iso_1_Corr",
-            "ttbar_non_closure_nbtag_Corr",
-            "ttbar_non_closure_tau_decaymode_2_Corr",
-            "ttbar_non_closure_mass_2_Corr",
-            "ttbar_non_closure_eta_1_Corr",
-            "ttbar_non_closure_eta_2_Corr",
-            "ttbar_non_closure_jpt_1_Corr",
-            "ttbar_non_closure_jeta_1_Corr",
-            "ttbar_non_closure_jpt_2_Corr",
-            "ttbar_non_closure_jeta_2_Corr",
-            "ttbar_non_closure_met_Corr",
-            "ttbar_non_closure_deltaEta_ditaupair_Corr",
-            "ttbar_non_closure_pt_tt_Corr",
-            "ttbar_non_closure_pt_ttjj_Corr",
-            "ttbar_non_closure_deltaR_ditaupair_Corr",
-            "ttbar_non_closure_mt_tot_Corr",
-            "ttbar_non_closure_iso_1_Corr"
-        };
+    if (jetfakes){
+        if (use_ml_ff_scheme){
+            const std::vector<std::string> ff_base_sources = {
+                "ff_QCD",
+                "ff_Wjets",
+                // "ff_ttbar", done on MC so no MC subtraction uncertainty here
+                // ---
+                "ff_QCDStat",
+                "ff_WjetsStat",
+                "ff_ttbarStat",
+                // ---
+                "fractions_QCD",
+                "fractions_Wjets",
+                "fractions_ttbar",
+                // ---
+                "fractions_QCDStat",
+                "fractions_WjetsStat",
+                "fractions_ttbarStat",
+                // ---
+                "ff_total_sub_syst",
+                // ---
+                "QCD_DR_SR_correction",
+                "QCD_DR_SR_correctionStat",
+                // ---
+                // "Wjets_DR_SR_correction", done on MC so no MC subtraction uncertainty here
+                "Wjets_DR_SR_correctionStat",
+                // ---
+                "QCD_non_closure_CorrStat1Sigma",
+                "QCD_non_closure_CorrSystMCShift",
+                "QCD_non_closure_CorrSystBandAsym",
+                // ---
+                "Wjets_non_closure_CorrStat1Sigma",
+                "Wjets_non_closure_CorrSystMCShift",
+                "Wjets_non_closure_CorrSystBandAsym",
+                // ---
+                // "ttbar_non_closure_CorrSystMCShift", done on MC so no MC subtraction uncertainty here
+                "ttbar_non_closure_CorrStat1Sigma",
+                "ttbar_non_closure_CorrSystBandAsym",
 
-        for (const auto& unc : ff_method_uncts) {
-            builder.AddSyst("CMS_"s + unc + "_$CHANNEL_Run$ERA", "shape", processes::jetFakes, channels::lt);
+            };
+
+            for (const auto& unc : ff_base_sources) {
+                builder.AddSyst("CMS_"s + unc + "_$CHANNEL_Run$ERA", "shape", processes::jetFakes, channels::lt);
+            }
+        } else {
+
+            const std::vector<std::string> ff_base_sources = {
+                "QCDFFunc",
+                "WjetsFFunc",
+                "ttbarFFunc",
+                // ---
+                "QCDFFmcSubUnc",
+                "WjetsFFmcSubUnc",
+                // ---
+                "process_fractionsfracQCDUnc",
+                "process_fractionsfracWjetsUnc",
+                "process_fractionsfracTTbarUnc",
+                // ---
+                "ff_total_sub_syst",
+                // ---
+                "QCD_DR_SR_CorrStat1Sigma",
+                "QCD_DR_SR_CorrSystMCShift",
+                "QCD_DR_SR_CorrSystBandAsym",
+                // ---
+                "Wjets_DR_SR_CorrStat1Sigma",
+                "Wjets_DR_SR_CorrSystBandAsym",
+                // ---
+                "QCD_non_closure_CorrStat1Sigma",
+                "QCD_non_closure_CorrSystMCShift",
+                "QCD_non_closure_CorrSystBandAsym",
+                // ---
+                "Wjets_non_closure_CorrStat1Sigma",
+                "Wjets_non_closure_CorrSystMCShift",
+                "Wjets_non_closure_CorrSystBandAsym",
+                // ---
+                "ttbar_non_closure_CorrStat1Sigma",
+                "ttbar_non_closure_CorrSystBandAsym",
+                // ---
+            };
+
+            for (const auto& unc : ff_base_sources) {
+                builder.AddSyst("CMS_"s + unc + "_$CHANNEL_Run$ERA", "shape", processes::jetFakes, channels::lt);
+            }
         }
-
-        builder.AddSyst("CMS_ff_total_sub_syst_$CHANNEL_Run$ERA", "shape", processes::jetFakes, channels::lt_tt);
     }
 
     // Uncertainty: Theory uncertainties
