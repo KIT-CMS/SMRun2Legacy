@@ -350,8 +350,8 @@ namespace {
             }
 
             if (jetfakes) {
-                std::string tes_mc_jf  = "CMS_scale_t_" + bin_name + "_$CHANNEL_Run$ERA";
-                std::string tes_emb_jf = "CMS_scale_t_emb_" + bin_name + "_$CHANNEL_Run$ERA";
+                std::string tes_mc_jf  = "CMS_scale_t_" + bin_name + "_Run$ERA";
+                std::string tes_emb_jf = "CMS_scale_t_emb_" + bin_name + "_Run$ERA";
 
                 builder.AddSyst(tes_mc_jf, "shape", processes::jetFakes, channels::lt);
 
