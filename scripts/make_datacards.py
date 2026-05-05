@@ -2,6 +2,7 @@ import os
 import sys
 import argparse
 import glob
+import logging
 
 cmssw_base = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))  # CMSSW_BASE/src/CombineHarvester/SMRun2Legacy/scripts
 
@@ -28,6 +29,7 @@ from CombineHarvester.SMRun2Legacy.tools import (
     replace_with_asimov,
     load_systematic_shapes,
 )
+from CombineHarvester.SMRun2Legacy.custom_logging import setup_logging
 
 
 def str2bool(v):
@@ -74,7 +76,11 @@ parser.add_argument("--input-folder-em", type=str, default="shapes")
 parser.add_argument("--output-folder", type=str, default="output_cards")
 parser.add_argument("--postfix", type=str, default="-ML")
 
+parser.add_argument("--log-level", type=str, default="INFO")
+
 args = parser.parse_args()
+logger = setup_logging(logger=logging.getLogger(__name__), level=getattr(logging, args.log_level.upper()))
+logger.info(f"Starting datacard generation with arguments: {args}")
 
 if __name__ == "__main__":
     cb = ch.CombineHarvester()
@@ -92,7 +98,7 @@ if __name__ == "__main__":
         bkgs = get_backgrounds(channel=channel, embedding=args.embedding, jetfakes=args.jetfakes)
         sigs = get_signals(stxs_version=args.stxs_signals)
 
-        print(f"[INFO] Initializing channel {channel} with {len(categories)} categories...")
+        logger.info(f"Initializing channel {channel} with {len(categories)} categories: {categories}")
         cb.AddObservations(["*"], ["htt"], [era], [channel], categories)
         cb.AddProcesses(["*"], ["htt"], [era],[channel], bkgs, categories, False)
         cb.AddProcesses(masses, ["htt"],[era], [channel], sigs, categories, True)
@@ -109,7 +115,7 @@ if __name__ == "__main__":
         input_folder = input_folders.get(channel, "shapes")
         root_file = os.path.join(base_path, input_folder, f"htt_{channel}.inputs-sm-Run{era}{args.postfix}.root")
         root_files[channel] = root_file
-        print(f"[INFO] Extracting shapes for {channel} from {root_file}")
+        logger.info(f"Extracting shapes for {channel} from {root_file}")
         
         cb.cp().channel([channel]).backgrounds().ExtractShapes(root_file, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC")
         cb.cp().channel([channel]).signals().ExtractShapes(root_file, "$BIN/$PROCESS$MASS", "$BIN/$PROCESS$MASS_$SYSTEMATIC")
@@ -124,7 +130,7 @@ if __name__ == "__main__":
     if not args.real_data:
         replace_with_asimov(cb)
 
-    print("[INFO] Adding Systematics...")
+    logger.info(f"Adding Systematics...")
     add_systematics(
         cb,
         era=int(era),
@@ -150,13 +156,13 @@ if __name__ == "__main__":
         convert_shapes_to_lnN(cb)
 
     output_dir = os.path.join(args.output_folder, era) if "delme" not in args.output_folder else args.output_folder
-    print(f"[INFO] Writing datacards to {output_dir}")
+    logger.info(f"Writing datacards to {output_dir}")
     os.makedirs(output_dir, exist_ok=True)
     
     ch.SetStandardBinNames(cb, "$ANALYSIS_$CHANNEL_$BINID_$ERA")
 
     if args.bbb:
-        print("[INFO] Adding AutoMCStats...")
+        logger.info(f"Adding AutoMCStats...")
         cb.SetAutoMCStats(cb, 0.0)
     
     writer = ch.CardWriter(
@@ -175,4 +181,4 @@ if __name__ == "__main__":
             with open(card, "w", encoding="utf-8") as handle:
                 handle.writelines(lines)
         
-    print("[INFO] Done!")
+    logger.info(f"Done!")

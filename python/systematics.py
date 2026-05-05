@@ -1,4 +1,10 @@
+import logging
+
 import CombineHarvester.CombineTools.ch as ch
+from CombineHarvester.SMRun2Legacy.custom_logging import setup_logging
+
+
+logger = setup_logging(logger=logging.getLogger(__name__))
 
 
 class Channels:
@@ -16,6 +22,15 @@ class Channels:
         self.tt = ["tt"]
         self.em = ["em"]
 
+    def __str__(self) -> str:
+        _string = "Channels:\n"
+        for attr in dir(self):
+            if not attr.startswith('_') and attr != 'all':
+                _string += f"  {attr}: {getattr(self, attr)}\n"
+        return _string
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 class Processes:
     def __init__(self) -> None:
@@ -170,6 +185,16 @@ class Processes:
 
         # mc_gte1j not migrated, since potential error
 
+    def __str__(self) -> str:
+        _string = "Processes:\n"
+        for attr in dir(self):
+            if not attr.startswith('_') and attr != 'all':
+                _string += f"  {attr}: {getattr(self, attr)}\n"
+        return _string
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
 
 tau_decaymodes = {"1prong0pizero", "1prong1pizero", "3prong0pizero", "3prong1pizero"}
 
@@ -186,14 +211,20 @@ def add_systematics(
     ggh_wg1: bool = True,
     qqh_wg1: bool = True,
 ) -> None:
+    logger.debug(f"calling add_systematics {locals()}")
+
     channels, processes = Channels(), Processes()
+
+    logger.debug(f"Defined channels: {channels}")
+    logger.debug(f"Defined processes: {processes}")
 
     def add_syst(name, syst_type, processes, channels, value=1.0):
         if isinstance(value, (float, int)):
             syst_map = ch.SystMap()(float(value))
         else:
             syst_map = value
-            
+
+        logger.debug(f"Adding systematic {name} of type {syst_type} to processes {processes} in channels {channels} with value/map {value}")
         cb.cp().process(processes).channel(channels).AddSyst(cb, name, syst_type, syst_map)
     
     # Lumi

@@ -1,0 +1,3 @@
+[submodule "python/custom_logging"]
+	path = python/custom_logging
+	url = git@github.com:KIT-CMS/CustomLogging.git

@@ -1,17 +1,21 @@
 import ctypes
+import logging
 import math
 from typing import Literal, Tuple, Optional
 
 import ROOT
 
 import CombineHarvester.CombineTools.ch as ch
+from CombineHarvester.SMRun2Legacy.custom_logging import setup_logging
 
+
+logger = setup_logging(logger=logging.getLogger(__name__))
 
 def filter_zero_yield_processes(cb: ch.CombineHarvester) -> None:
-    print("[INFO] Filtering processes with null yield...")
+    logger.info(f"Filtering processes with null yield...")
     def filter_proc(p):
         if (null_yield := not (p.rate() > 0.0)):
-            print(f"[WARNING] Removing process {p.process()} in bin {p.bin()} with null yield")
+            logger.warning(f"Removing process {p.process()} in bin {p.bin()} with null yield")
             cb.FilterSysts(lambda s: s.bin() == p.bin() and s.process() == p.process() and s.era() == p.era())
         return null_yield
 
@@ -19,7 +23,7 @@ def filter_zero_yield_processes(cb: ch.CombineHarvester) -> None:
 
 
 def fix_negative_bins(cb: ch.CombineHarvester) -> None:
-    print("[INFO] Fixing negative bins to zero...")
+    logger.info(f"Fixing negative bins to zero...")
     def zero_negative_bins_th1(hist):
         if not hist:
             return False
@@ -42,7 +46,7 @@ def fix_negative_bins(cb: ch.CombineHarvester) -> None:
 
 
 def filter_zero_yield_systs(cb: ch.CombineHarvester) -> None:
-    print("[INFO] Filtering shape systematics with null yield...")
+    logger.info(f"Filtering shape systematics with null yield...")
     def hist_integral(hist):
         if not hist:
             return None
@@ -52,7 +56,7 @@ def filter_zero_yield_systs(cb: ch.CombineHarvester) -> None:
         if s.type() == "shape":
             shape_u, shape_d = s.shape_u(), s.shape_d()
             if not shape_u or not shape_d:
-                print(f"  [WARNING] Removing systematic {s.name()} on {s.process()} with missing shape")
+                logger.warning(f"Removing systematic {s.name()} on {s.process()} with missing shape")
                 return True
 
             yield_u, yield_d = hist_integral(shape_u), hist_integral(shape_d)
@@ -61,14 +65,14 @@ def filter_zero_yield_systs(cb: ch.CombineHarvester) -> None:
                 return True
 
             if yield_u == 0.0 or yield_d == 0.0:
-                print(f"  [WARNING] Removing systematic {s.name()} on {s.process()} with null yield in shift")
+                logger.warning(f"Removing systematic {s.name()} on {s.process()} with null yield in shift")
                 return True
         return False
     cb.FilterSysts(filter_syst)
 
 
 def load_systematic_shapes(cb: ch.CombineHarvester, root_file: str, channel: str) -> None:
-    print(f"[INFO] Loading shape systematics for {channel} from {root_file}")
+    logger.info(f"Loading shape systematics for {channel} from {root_file}")
     tfile = ROOT.TFile.Open(root_file, "READ")
 
     def has_shapes(s):
@@ -83,7 +87,7 @@ def load_systematic_shapes(cb: ch.CombineHarvester, root_file: str, channel: str
         if s.type() not in ("shape",):
             return False
         if not has_shapes(s):
-            print(f"  [WARNING] Removing systematic {s.name()} on {s.process()} with missing shape")
+            logger.warning(f"Removing systematic {s.name()} on {s.process()} with missing shape")
             return True
         return False
 
@@ -98,7 +102,7 @@ def convert_shapes_to_lnN(cb: ch.CombineHarvester) -> None:
     # Checks shape systematics. If the normalization shift is smaller than the statistical
     # uncertainty of the template, it replaces the shape systematic with a symmetrized lnN systematic.
 
-    print("[INFO] Checking shape systematics for lnN conversion...")    
+    logger.info(f"Checking shape systematics for lnN conversion...")
     count = {"lnN": 0, "all": 0}
 
     def check_and_convert(s):
@@ -126,7 +130,7 @@ def convert_shapes_to_lnN(cb: ch.CombineHarvester) -> None:
             # Is the shift smaller than the statistical uncertainty of the shift?
             if abs(value_u - 1.0) + abs(value_d - 1.0) < (err_u / yield_u) + (err_d / yield_d):
                 count["lnN"] += 1
-                print(f"  [WARNING] Replacing systematic by lnN: {name} (bin: {s.bin()}, proc: {s.process()})")
+                logger.warning(f"Replacing systematic by lnN: {name} (bin: {s.bin()}, proc: {s.process()})")
 
                 s.set_type("lnN")
                 up_is_larger = (value_u > value_d)
@@ -147,11 +151,11 @@ def convert_shapes_to_lnN(cb: ch.CombineHarvester) -> None:
                 s.set_value_d(value_d)
 
     cb.cp().ForEachSyst(check_and_convert)
-    print(f"[WARNING] Turned {count['lnN']} of {count['all']} checked systematics into lnN.")
+    logger.warning(f"Turned {count['lnN']} of {count['all']} checked systematics into lnN.")
 
 
 def replace_with_asimov(cb: ch.CombineHarvester) -> None:
-    print("[INFO] Replacing observation with Asimov dataset...")
+    logger.info(f"Replacing observation with Asimov dataset...")
 
     def is_empty_shape(hist) -> bool:
         return not hist or (hist.GetNbinsX() == 1 and hist.Integral() == 0.0)
@@ -164,7 +168,7 @@ def replace_with_asimov(cb: ch.CombineHarvester) -> None:
         has_sig = not is_empty_shape(sig_shape)
 
         if not has_bkg and not has_sig:
-            print(f"  [WARNING] No signal and no background available in bin {category}")
+            logger.warning(f"No signal and no background available in bin {category}")
             continue
 
         template = bkg_shape if has_bkg else sig_shape
@@ -175,12 +179,12 @@ def replace_with_asimov(cb: ch.CombineHarvester) -> None:
         if has_bkg:
             asimov_shape.Add(bkg_shape)
         else:
-            print(f"  [WARNING] No background available in bin {category}")
+            logger.warning(f"No background available in bin {category}")
 
         if has_sig:
             asimov_shape.Add(sig_shape)
         else:
-            print(f"  [WARNING] No signal available in bin {category}")
+            logger.warning(f"No signal available in bin {category}")
 
         category_bin.ForEachObs(lambda obs: obs.set_shape(asimov_shape, True))
 
@@ -287,7 +291,7 @@ def scale_higgs_mass_processes(
     if not apply_scaling:
         return
     
-    print("[INFO] Scaling Higgs mass processes...")
+    logger.info(f"Scaling Higgs mass processes...")
     for proc_rgx, scale_factor in scale_map:
         cb.cp().process_rgx([proc_rgx]).ForEachProc(lambda p: p.set_rate(p.rate() * scale_factor))
 
@@ -299,5 +303,5 @@ def scale_2016_lumi(
     scale_factor: float = 1.0128
 ) -> None:
     if str(era) == "2016" and apply_scaling:
-        print(f"[INFO] Updating nominal lumi for 2016 MC by a factor of {scale_factor}...")
+        logger.info(f"Updating nominal lumi for 2016 MC by a factor of {scale_factor}...")
         cb.cp().process(["EMB", "QCD", "jetFakes"], False).ForEachProc(lambda p: p.set_rate(p.rate() * scale_factor))  # Grab everything NOT data-driven
