@@ -63,10 +63,17 @@ parser.add_argument("--correlate-emb", type=str2bool, default=True)
 parser.add_argument("--regional-jec", type=str2bool, default=True)
 parser.add_argument("--convert-shapes-to-lnN", type=str2bool, default=True, help="Symmetrize noise shapes to lnN")
 
-parser.add_argument("--rebinning-strategy", type=str, default="none", choices=["none", "total_bkg", "per_process", "total_bkg__per_process"])
+parser.add_argument("--rebinning-strategy", type=str, default="none", choices=["none", "total_bkg", "per_process", "total_bkg__per_process", "combine"])
+
 parser.add_argument("--rebinning-threshold", type=float, default=10.0)
-parser.add_argument("--apply-mass-scaling", type=str2bool, default=False)
+
+parser.add_argument("--rebinning-using-combine", type=str2bool, default=False)
+parser.add_argument("--rebinning-using-combine-threshold", type=float, default=10.0)
+parser.add_argument("--rebinning-using-combine-uncert-fraction", type=float, default=0.9)
+parser.add_argument("--rebinning-using-combine-mode", type=int, default=1)
+
 parser.add_argument("--apply-2016-lumi-scaling", type=str2bool, default=False)
+parser.add_argument("--apply-mass-scaling", type=str2bool, default=False)
 
 parser.add_argument("--base-path", type=str, default=os.path.join(cmssw_base, "src/CombineHarvester/SMRun2Legacy/shapes"))
 parser.add_argument("--input-folder-mt", type=str, default="shapes")
@@ -150,7 +157,19 @@ if __name__ == "__main__":
     filter_zero_yield_systs(cb)
 
     if args.categories != "gof" and args.rebinning_strategy != "none":
-        apply_nn_rebinning(cb, strategy=args.rebinning_strategy, threshold=args.rebinning_threshold)
+        if args.rebinning_strategy == "combine":
+            logger.info(f"Applying rebinning using Combine's Rebin method...")
+            rebinner = (
+                ch.AutoRebin()
+                .SetBinThreshold(args.rebinning_threshold)
+                .SetBinUncertFraction(args.rebinning_using_combine_uncert_fraction)
+                .SetRebinMode(args.rebinning_using_combine_mode)
+                .SetPerformRebin(True)
+                .SetVerbosity(1)
+            )
+            rebinner.Rebin(cb,cb)
+        else:
+            apply_nn_rebinning(cb, strategy=args.rebinning_strategy, threshold=args.rebinning_threshold)
 
     if args.convert_shapes_to_lnN:
         convert_shapes_to_lnN(cb)
