@@ -155,7 +155,7 @@ if __name__ == "__main__":
     if args.convert_shapes_to_lnN:
         convert_shapes_to_lnN(cb)
 
-    output_dir = os.path.join(args.output_folder, era) if "delme" not in args.output_folder else args.output_folder
+    output_dir = args.output_folder
     logger.info(f"Writing datacards to {output_dir}")
     os.makedirs(output_dir, exist_ok=True)
     
