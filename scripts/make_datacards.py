@@ -24,8 +24,6 @@ from CombineHarvester.SMRun2Legacy.tools import (
     fix_negative_bins,
     convert_shapes_to_lnN,
     apply_nn_rebinning,
-    scale_higgs_mass_processes,
-    scale_2016_lumi,
     replace_with_asimov,
     load_systematic_shapes,
 )
@@ -71,9 +69,6 @@ parser.add_argument("--rebinning-using-combine", type=str2bool, default=False)
 parser.add_argument("--rebinning-using-combine-threshold", type=float, default=10.0)
 parser.add_argument("--rebinning-using-combine-uncert-fraction", type=float, default=0.9)
 parser.add_argument("--rebinning-using-combine-mode", type=int, default=1)
-
-parser.add_argument("--apply-2016-lumi-scaling", type=str2bool, default=False)
-parser.add_argument("--apply-mass-scaling", type=str2bool, default=False)
 
 parser.add_argument("--base-path", type=str, default=os.path.join(cmssw_base, "src/CombineHarvester/SMRun2Legacy/shapes"))
 parser.add_argument("--input-folder-mt", type=str, default="shapes")
@@ -126,10 +121,6 @@ if __name__ == "__main__":
         
         cb.cp().channel([channel]).backgrounds().ExtractShapes(root_file, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC")
         cb.cp().channel([channel]).signals().ExtractShapes(root_file, "$BIN/$PROCESS$MASS", "$BIN/$PROCESS$MASS_$SYSTEMATIC")
-
-    mh_125_00_to_125_11_map = (("ggH.*htt", float("nan")), ("qqH.*htt", float("nan")))
-    scale_higgs_mass_processes(cb, apply_scaling=args.apply_mass_scaling, scale_map=mh_125_00_to_125_11_map)
-    scale_2016_lumi(cb, era=era, apply_scaling=args.apply_2016_lumi_scaling) 
 
     fix_negative_bins(cb)
     filter_zero_yield_processes(cb)

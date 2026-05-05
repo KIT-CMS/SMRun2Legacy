@@ -272,36 +272,3 @@ def apply_nn_rebinning(
 
         final_edges = sorted(list(edges))
         cb.cp().bin([category]).VariableRebin(final_edges)  # leftovers absorbed by the peak since no internal edge was placed
-
-
-def scale_higgs_mass_processes(
-    cb: ch.CombineHarvester, 
-    apply_scaling: bool = False, 
-    scale_map: Tuple[Tuple[str, float], ...] = (
-        ("ggH.*htt", 0.984),
-        ("qqH.*htt", 0.987),
-        ("WH.*htt", 0.979),
-        ("ZH.*htt", 0.982),
-        ("ggH.*hww", 1.025),
-        ("qqH.*hww", 1.028),
-        ("WH.*hww", 1.020),
-        ("ZH.*hww", 1.022),
-    ),
-) -> None:
-    if not apply_scaling:
-        return
-    
-    logger.info(f"Scaling Higgs mass processes...")
-    for proc_rgx, scale_factor in scale_map:
-        cb.cp().process_rgx([proc_rgx]).ForEachProc(lambda p: p.set_rate(p.rate() * scale_factor))
-
-
-def scale_2016_lumi(
-    cb: ch.CombineHarvester, 
-    era: int, 
-    apply_scaling: bool = False, 
-    scale_factor: float = 1.0128
-) -> None:
-    if str(era) == "2016" and apply_scaling:
-        logger.info(f"Updating nominal lumi for 2016 MC by a factor of {scale_factor}...")
-        cb.cp().process(["EMB", "QCD", "jetFakes"], False).ForEachProc(lambda p: p.set_rate(p.rate() * scale_factor))  # Grab everything NOT data-driven
