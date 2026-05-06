@@ -173,8 +173,8 @@ def replace_with_asimov(cb: ch.CombineHarvester) -> None:
 
     for category in cb.cp().bin_set():
         category_bin = cb.cp().bin([category])
-        bkg_shape = category_bin.backgrounds().GetShape()
-        sig_shape = category_bin.signals().GetShape()
+        bkg_shape = category_bin.cp().backgrounds().GetShape()
+        sig_shape = category_bin.cp().signals().GetShape()
         has_bkg = not is_empty_shape(bkg_shape)
         has_sig = not is_empty_shape(sig_shape)
 
