@@ -102,13 +102,24 @@ def convert_shapes_to_lnN(cb: ch.CombineHarvester) -> None:
     # Checks shape systematics. If the normalization shift is smaller than the statistical
     # uncertainty of the template, it replaces the shape systematic with a symmetrized lnN systematic.
 
-    logger.info(f"Checking shape systematics for lnN conversion...")
-    count = {"lnN": 0, "all": 0}
+    logger.info("Checking shape systematics for lnN conversion...")
+    count = {"lnN": 0, "all": 0, "all_considered": 0}
 
     def check_and_convert(s):
+        if s.type() != "shape":
+            return
+
+        count["all"] += 1
         name = s.name()
-        if any(substring in name for substring in["scale", "CMS_htt_boson_reso_met", "res_j", "res_e"]):
-            count["all"] += 1
+        if any(
+            substring in name for substring in [
+                "scale",
+                "CMS_htt_boson_reso_met",
+                "res_j",
+                "res_e",
+            ]
+        ):
+            count["all_considered"] += 1
             shape_u, shape_d = s.shape_u(), s.shape_d()
             
             if not shape_u or not shape_d:
@@ -151,7 +162,7 @@ def convert_shapes_to_lnN(cb: ch.CombineHarvester) -> None:
                 s.set_value_d(value_d)
 
     cb.cp().ForEachSyst(check_and_convert)
-    logger.warning(f"Turned {count['lnN']} of {count['all']} checked systematics into lnN.")
+    logger.warning(f"Turned {count['lnN']} of {count['all_considered']} considered (out of {count['all']}) checked systematics into lnN.")
 
 
 def replace_with_asimov(cb: ch.CombineHarvester) -> None:
