@@ -6,6 +6,7 @@ from CombineHarvester.SMRun2Legacy.custom_logging import setup_logging
 
 logger = setup_logging(logger=logging.getLogger(__name__))
 
+
 def get_categories(
     channel: str,
     categorization: str,
@@ -15,7 +16,7 @@ def get_categories(
 ) -> list:
     logger.debug(f"Calling get_categories with {locals()}")
 
-    counter = count(11) # Start category IDs from 11
+    counter = count(10)  # Start category IDs from 11
     background_categories = []
 
     if categorization == "gof":
@@ -51,18 +52,21 @@ def get_categories(
         signal_categories = [(1, f"{channel}_vbf"), (2, f"{channel}_ggh")]
         logger.info(f"Using STXS stage 0 categorization with signal categories: {signal_categories}")
         return signal_categories + background_categories
-        
+
     elif categorization == "stxs_stage1p2_syst":
         signal_categories = [
-            (100, f"{channel}_vbf_bin201to202"),
-            (101, f"{channel}_vbf_bin203to210"),
-            (102, f"{channel}_ggh_bin101to104"),
-            (103, f"{channel}_ggh_bin105to106"),
-            (104, f"{channel}_ggh_bin107to109"),
-            (105, f"{channel}_ggh_bin110to116"),
+            (100, f"{channel}_vbf_bin201to210"),
+            (101, f"{channel}_ggh_bin101to104"),
+            (102, f"{channel}_ggh_bin105to106"),
+            (103, f"{channel}_ggh_bin107to109"),
+            (104, f"{channel}_ggh_bin110to116"),
         ]
         logger.info(f"Using STXS stage 1p2 syst categorization with signal categories: {signal_categories}")
         return signal_categories + background_categories
+
+    elif categorization == "stxs_stage1p2_syst_bkg_only":
+        logger.info(f"Using STXS stage 1p2 syst background-only categorization with background categories: {background_categories}")
+        return background_categories
 
     else:
         raise ValueError(f"Unknown categorization: {categorization}")

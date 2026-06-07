@@ -9,7 +9,7 @@ cmssw_base = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../.
 if os.path.exists(cmssw_python := os.path.join(cmssw_base, "python")) and cmssw_python not in sys.path:
     sys.path.insert(0, cmssw_python)
 
-for p in[os.path.dirname(os.path.abspath(__file__)), os.getcwd(), '']:
+for p in [os.path.dirname(os.path.abspath(__file__)), os.getcwd(), '']:
     while p in sys.path:
         sys.path.remove(p)
 
@@ -86,7 +86,7 @@ logger.info(f"Starting datacard generation with arguments: {args}")
 
 if __name__ == "__main__":
     cb = ch.CombineHarvester()
-    
+
     channels, era, masses = args.channels.split(','), str(args.era), ["125"]
 
     for channel in channels:
@@ -102,8 +102,8 @@ if __name__ == "__main__":
 
         logger.info(f"Initializing channel {channel} with {len(categories)} categories: {categories}")
         cb.AddObservations(["*"], ["htt"], [era], [channel], categories)
-        cb.AddProcesses(["*"], ["htt"], [era],[channel], bkgs, categories, False)
-        cb.AddProcesses(masses, ["htt"],[era], [channel], sigs, categories, True)
+        cb.AddProcesses(["*"], ["htt"], [era], [channel], bkgs, categories, False)
+        cb.AddProcesses(masses, ["htt"], [era], [channel], sigs, categories, True)
 
     input_folders = {
         "mt": args.input_folder_mt,
@@ -118,7 +118,7 @@ if __name__ == "__main__":
         root_file = os.path.join(base_path, input_folder, f"htt_{channel}.inputs-sm-Run{era}{args.postfix}.root")
         root_files[channel] = root_file
         logger.info(f"Extracting shapes for {channel} from {root_file}")
-        
+
         cb.cp().channel([channel]).backgrounds().ExtractShapes(root_file, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC")
         cb.cp().channel([channel]).signals().ExtractShapes(root_file, "$BIN/$PROCESS$MASS", "$BIN/$PROCESS$MASS_$SYSTEMATIC")
 
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     if not args.real_data:
         replace_with_asimov(cb)
 
-    logger.info(f"Adding Systematics...")
+    logger.info("Adding Systematics...")
     add_systematics(
         cb,
         era=int(era),
@@ -149,7 +149,7 @@ if __name__ == "__main__":
 
     if args.categories != "gof" and args.rebinning_strategy != "none":
         if args.rebinning_strategy == "combine":
-            logger.info(f"Applying rebinning using Combine's Rebin method...")
+            logger.info("Applying rebinning using Combine's Rebin method...")
             rebinner = (
                 ch.AutoRebin()
                 .SetBinThreshold(args.rebinning_threshold)
@@ -158,7 +158,7 @@ if __name__ == "__main__":
                 .SetPerformRebin(True)
                 .SetVerbosity(1)
             )
-            rebinner.Rebin(cb,cb)
+            rebinner.Rebin(cb, cb)
         else:
             apply_nn_rebinning(cb, strategy=args.rebinning_strategy, threshold=args.rebinning_threshold)
 
@@ -168,13 +168,13 @@ if __name__ == "__main__":
     output_dir = args.output_folder
     logger.info(f"Writing datacards to {output_dir}")
     os.makedirs(output_dir, exist_ok=True)
-    
+
     ch.SetStandardBinNames(cb, "$ANALYSIS_$CHANNEL_$BINID_$ERA")
 
     if args.bbb:
-        logger.info(f"Adding AutoMCStats...")
+        logger.info("Adding AutoMCStats...")
         cb.SetAutoMCStats(cb, 0.0)
-    
+
     writer = ch.CardWriter(
         os.path.join(output_dir, "$TAG/$MASS/$BIN.txt"),
         os.path.join(output_dir, f"$TAG/common/htt_input_{era}.root")
@@ -190,5 +190,5 @@ if __name__ == "__main__":
             lines.append(" * autoMCStats 0.0\n")
             with open(card, "w", encoding="utf-8") as handle:
                 handle.writelines(lines)
-        
-    logger.info(f"Done!")
+
+    logger.info("Done!")

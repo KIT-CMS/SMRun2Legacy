@@ -508,6 +508,10 @@ namespace {
                 "ff_WjetsStat",
                 "ff_ttbarStat",
                 // ---
+                "ff_QCDNormalization",
+                "ff_WjetsNormalization",
+                "ff_ttbarNormalization",
+                // ---
                 "fractions_QCD",
                 "fractions_Wjets",
                 "fractions_ttbar",

@@ -32,6 +32,7 @@ class Channels:
     def __repr__(self) -> str:
         return self.__str__()
 
+
 class Processes:
     def __init__(self) -> None:
         self.ggH = [
@@ -102,10 +103,16 @@ class Processes:
             "qqH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25_htt",
             "qqH_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25_htt",
             "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
-            "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt"
+            "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
             # STXS stage 1.2 syst
+            "qqH125-vbf_htautau_bin201to210_selection",  # inclusive
             "qqH125-vbf_htautau_bin201to202_selection",
             "qqH125-vbf_htautau_bin203to210_selection",
+            "qqH125-vbf_htautau_bin201to202_selection",
+            "qqH125-vbf_htautau_bin203to210_selection",
+            "qqH125-vbf_htautau_bin201to210_selection125",  # inclusive
+            "qqH125-vbf_htautau_bin201to202_selection125",
+            "qqH125-vbf_htautau_bin203to210_selection125",
             "qqH125-vbf_htautau_bin201to202_selection125",
             "qqH125-vbf_htautau_bin203to210_selection125",
         ]
@@ -226,44 +233,44 @@ def add_systematics(
 
         logger.debug(f"Adding systematic {name} of type {syst_type} to processes {processes} in channels {channels} with value/map {value}")
         cb.cp().process(processes).channel(channels).AddSyst(cb, name, syst_type, syst_map)
-    
+
     # Lumi
     lumi_unc = {2016: 1.012, 2017: 1.0082, 2018: 1.0084}
     lumi_unc_corr = {2016: 1.006, 2017: 1.009, 2018: 1.020}
     lumi_unc_1718 = {2016: 1.0, 2017: 1.006, 2018: 1.002}
-    
+
     # lumi
-    add_syst(f"lumi_13TeV_Run$ERA", "lnN", processes.mc, channels.all, lumi_unc.get(era, 1.0))
+    add_syst("lumi_13TeV_Run$ERA", "lnN", processes.mc, channels.all, lumi_unc.get(era, 1.0))
     add_syst("lumi_13TeV_correlated", "lnN", processes.mc, channels.all, lumi_unc_corr.get(era, 1.0))
     add_syst("lumi_13TeV_1718", "lnN", processes.mc, channels.all, lumi_unc_1718.get(era, 1.0))
-    
+
     # Prefiring "https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe", Note: assumed uncorrelated accross years
     if era != 2018:
         add_syst("CMS_prefiring", "shape", processes.mc, channels.all)
 
     # Trigger
-    add_syst(f"CMS_eff_trigger_et_Run$ERA", "shape", processes.mc, channels.et)
-    add_syst(f"CMS_eff_trigger_mt_Run$ERA", "shape", processes.mc, channels.mt)
-    add_syst(f"CMS_eff_trigger_em_Run$ERA", "lnN", processes.mc, channels.em, 1.02)
+    add_syst("CMS_eff_trigger_et_Run$ERA", "shape", processes.mc, channels.et)
+    add_syst("CMS_eff_trigger_mt_Run$ERA", "shape", processes.mc, channels.mt)
+    add_syst("CMS_eff_trigger_em_Run$ERA", "lnN", processes.mc, channels.em, 1.02)
 
     if embedding:
-        add_syst(f"CMS_eff_trigger_emb_et_Run$ERA", "shape", processes.emb, channels.et)
-        add_syst(f"CMS_eff_trigger_emb_mt_Run$ERA", "shape", processes.emb, channels.mt)
-        add_syst(f"CMS_eff_trigger_emb_em_Run$ERA", "lnN", processes.emb, channels.em, 1.02)
+        add_syst("CMS_eff_trigger_emb_et_Run$ERA", "shape", processes.emb, channels.et)
+        add_syst("CMS_eff_trigger_emb_mt_Run$ERA", "shape", processes.emb, channels.mt)
+        add_syst("CMS_eff_trigger_emb_em_Run$ERA", "lnN", processes.emb, channels.em, 1.02)
 
     # TODO: adjust those to the new naming scheme
     for df in tau_decaymodes:
         add_syst(f"CMS_eff_trigger_tt_dm_{df}_Run$ERA", "shape", processes.mc, channels.tt)
         add_syst(f"CMS_eff_trigger_tt_dm_{df}_Run$ERA", "shape", processes.emb, channels.tt, 0.5)
         add_syst(f"CMS_eff_trigger_emb_tt_dm_{df}_Run$ERA", "shape", processes.emb, channels.tt, 0.866)
-    
+
     # 3% in Tau ID SF with different anti-l fake WP
     if correlate_emb:
-        add_syst(f"CMS_eff_t_wp_Run$ERA", "lnN", processes.htt + processes.emb + processes.real_tau_bkg_mc, channels.mt_tt, 1.03)
+        add_syst("CMS_eff_t_wp_Run$ERA", "lnN", processes.htt + processes.emb + processes.real_tau_bkg_mc, channels.mt_tt, 1.03)
     else:
         # Decorrelated: MC gets the standard name, EMB gets an emb-specific name
-        add_syst(f"CMS_eff_t_wp_Run$ERA", "lnN", processes.htt + processes.real_tau_bkg_mc, channels.mt_tt, 1.03)
-        add_syst(f"CMS_eff_t_emb_wp_Run$ERA", "lnN", processes.emb, channels.mt_tt, 1.03)
+        add_syst("CMS_eff_t_wp_Run$ERA", "lnN", processes.htt + processes.real_tau_bkg_mc, channels.mt_tt, 1.03)
+        add_syst("CMS_eff_t_emb_wp_Run$ERA", "lnN", processes.emb, channels.mt_tt, 1.03)
 
     # Lepton ID
     add_syst("CMS_eff_e", "lnN", processes.mc, channels.em_et, 1.02)
@@ -306,17 +313,17 @@ def add_systematics(
 
     for _dm in tau_decaymodes:
         add_syst(f"CMS_eff_t_dm_{_dm}_Run$ERA", "shape", processes.real_taus_mc, channels.tt)
-    add_syst(f"CMS_eff_t_$CHANNEL_Run$ERA", "lnN", processes.real_taus_mc, channels.tt, 1.014)
+    add_syst("CMS_eff_t_$CHANNEL_Run$ERA", "lnN", processes.real_taus_mc, channels.tt, 1.014)
 
     for _dm in tau_decaymodes:
         # add_syst("CMS_eff_t_emb_dm"s + _dm + "_Run$ERA", "shape", processes.emb, channels.lt, 0.866) // add when available
         add_syst(f"CMS_eff_t_dm_{_dm}_Run$ERA", "shape", processes.emb, channels.tt, 0.5)
 
-    add_syst(f"CMS_eff_t_emb_$CHANNEL_Run$ERA", "lnN", processes.emb, channels.tt, 1.012)
-    add_syst(f"CMS_eff_t_$CHANNEL_Run$ERA", "lnN", processes.emb, channels.tt, 1.007)
+    add_syst("CMS_eff_t_emb_$CHANNEL_Run$ERA", "lnN", processes.emb, channels.tt, 1.012)
+    add_syst("CMS_eff_t_$CHANNEL_Run$ERA", "lnN", processes.emb, channels.tt, 1.007)
 
-    add_syst(f"CMS_eff_t_Run$ERA", "lnN", {"W", "ZJ", "TTJ", "VVJ"}, channels.tt, 1.06)
-    add_syst(f"CMS_eff_t_$CHANNEL_Run$ERA", "lnN", {"W", "ZJ", "TTJ", "VVJ"}, channels.tt, 1.02)
+    add_syst("CMS_eff_t_Run$ERA", "lnN", {"W", "ZJ", "TTJ", "VVJ"}, channels.tt, 1.06)
+    add_syst("CMS_eff_t_$CHANNEL_Run$ERA", "lnN", {"W", "ZJ", "TTJ", "VVJ"}, channels.tt, 1.02)
 
     # btag uncertainties
     for src in {"btag_b_HF", "btag_c_CFerr1", "btag_c_CFerr2", "btag_j_LF"}:
@@ -335,24 +342,23 @@ def add_systematics(
         for src in {"Absolute", "BBEC1", "EC2", "HF"}:
             add_syst(f"CMS_scale_j_{src}", "shape", processes.mc, channels.all)
             add_syst(f"CMS_scale_j_{src}_Run$ERA", "shape", processes.mc, channels.all)
-        add_syst(f"CMS_scale_j_RelativeSample_Run$ERA", "shape", processes.mc, channels.all)
+        add_syst("CMS_scale_j_RelativeSample_Run$ERA", "shape", processes.mc, channels.all)
         add_syst("CMS_scale_j_FlavorQCD", "shape", processes.mc, channels.all)
         add_syst("CMS_scale_j_RelativeBal", "shape", processes.mc, channels.all)
     else:
-        add_syst(f"CMS_scale_j_Run$ERA", "shape", processes.mc, channels.all, 0.71)
+        add_syst("CMS_scale_j_Run$ERA", "shape", processes.mc, channels.all, 0.71)
         add_syst("CMS_scale_j", "shape", processes.mc, channels.all, 0.71)
 
-    add_syst(f"CMS_res_j_Run$ERA", "shape", processes.mc, channels.all)
+    add_syst("CMS_res_j_Run$ERA", "shape", processes.mc, channels.all)
 
     if era == 2018:
-        add_syst(f"CMS_scale_j_HEMIssue_Run$ERA", "shape", processes.mc, channels.all)
+        add_syst("CMS_scale_j_HEMIssue_Run$ERA", "shape", processes.mc, channels.all)
 
     # met energy scale and recoil
     # Z and W processes are only included due to the EWK fraction. Make sure that there is no contribution to the shift from the DY or Wjets samples.
-    add_syst(f"CMS_scale_met_unclustered_Run$ERA", "shape", processes.htt + processes.hww + processes.z + processes.ttbar + processes.w + processes.vv, channels.all)
-    add_syst(f"CMS_htt_boson_scale_met_Run$ERA", "shape", processes.htt + processes.hww + processes.z + processes.w, channels.all)
-    add_syst(f"CMS_htt_boson_res_met_Run$ERA", "shape", processes.htt + processes.hww + processes.z + processes.w, channels.all)
-    
+    add_syst("CMS_scale_met_unclustered_Run$ERA", "shape", processes.htt + processes.hww + processes.z + processes.ttbar + processes.w + processes.vv, channels.all)
+    add_syst("CMS_htt_boson_scale_met_Run$ERA", "shape", processes.htt + processes.hww + processes.z + processes.w, channels.all)
+    add_syst("CMS_htt_boson_res_met_Run$ERA", "shape", processes.htt + processes.hww + processes.z + processes.w, channels.all)
 
     # Uncertainties: Background normalizations
     # Notes:
@@ -368,18 +374,18 @@ def add_systematics(
     add_syst("CMS_htt_wjXsec", "lnN", processes.w, channels.all, 1.04)
     add_syst("CMS_htt_zjXsec", "lnN", processes.z, channels.all, 1.02)
 
-    add_syst(f"CMS_ExtrapSSOS_$CHANNEL_Run$ERA", "lnN", processes.qcd, channels.et, 1.05)
-    add_syst(f"CMS_ExtrapSSOS_$CHANNEL_Run$ERA", "lnN", processes.qcd, channels.mt, 1.03)
-    add_syst(f"CMS_ExtrapABCD_$CHANNEL_Run$ERA", "lnN", processes.qcd, channels.tt, 1.03)
-    
+    add_syst("CMS_ExtrapSSOS_$CHANNEL_Run$ERA", "lnN", processes.qcd, channels.et, 1.05)
+    add_syst("CMS_ExtrapSSOS_$CHANNEL_Run$ERA", "lnN", processes.qcd, channels.mt, 1.03)
+    add_syst("CMS_ExtrapABCD_$CHANNEL_Run$ERA", "lnN", processes.qcd, channels.tt, 1.03)
+
     for src in {"0jet", "1jet", "2jet"}:
         for src2 in {"rate", "shape", "shape2"}:
             add_syst(f"CMS_htt_qcd_{src}_{src2}_Run$ERA", "shape", processes.qcd, channels.em)
     add_syst("CMS_htt_qcd_iso", "shape", processes.qcd, channels.em)
-    
+
     # Uncertainty: Drell-Yan LO->NLO reweighting
     if era == 2016:
-        add_syst(f"CMS_htt_dyShape_Run$ERA", "shape", processes.z, channels.all, 0.10)
+        add_syst("CMS_htt_dyShape_Run$ERA", "shape", processes.z, channels.all, 0.10)
     else:
         add_syst("CMS_htt_dyShape", "shape", processes.z, channels.all, 0.10)
 
@@ -392,8 +398,8 @@ def add_systematics(
     for i in range(1, 6):
         add_syst(f"CMS_fake_m_WH{i}_Run$ERA", "shape", {"ZL"}, channels.mt)
 
-    add_syst(f"CMS_fake_e_BA_Run$ERA", "shape", {"ZL"}, channels.et)
-    add_syst(f"CMS_fake_e_EC_Run$ERA", "shape", {"ZL"}, channels.et)
+    add_syst("CMS_fake_e_BA_Run$ERA", "shape", {"ZL"}, channels.et)
+    add_syst("CMS_fake_e_EC_Run$ERA", "shape", {"ZL"}, channels.et)
 
     # TODO: Add corresponding fake_m_{BA,EC} ?
 
@@ -401,14 +407,14 @@ def add_systematics(
     add_syst("CMS_PileUp", "shape", processes.mc, channels.all)
 
     # Uncertainty: Jet to tau fakes
-    add_syst(f"CMS_htt_fake_j_Run$ERA", "shape", processes.jetFakes_bkg_mc, channels.lt_tt)
+    add_syst("CMS_htt_fake_j_Run$ERA", "shape", processes.jetFakes_bkg_mc, channels.lt_tt)
 
     # Uncertainty: Embedded events
     # Embedded Normalization: No Lumi, Zjxsec information used, instead derived from data using dimuon selection efficiency
     # TTbar contamination in embedded events: 10% shape uncertainty of assumed ttbar->tautau event shape
-    add_syst(f"CMS_htt_doublemutrg_Run$ERA", "lnN", processes.emb, channels.all, 1.04)
-    add_syst(f"CMS_htt_emb_ttbar_Run$ERA", "shape", processes.emb, channels.all)
-  
+    add_syst("CMS_htt_doublemutrg_Run$ERA", "lnN", processes.emb, channels.all, 1.04)
+    add_syst("CMS_htt_emb_ttbar_Run$ERA", "shape", processes.emb, channels.all)
+
     # jetFakes uncertainties
     if jetfakes:
         if use_ml_ff_scheme:
@@ -417,12 +423,14 @@ def add_systematics(
                 *[f"ff_{p}Stat" for p in ["QCD", "Wjets", "ttbar"]],
                 *[f"fractions_{p}" for p in ["QCD", "Wjets", "ttbar"]],
                 *[f"fractions_{p}Stat" for p in ["QCD", "Wjets", "ttbar"]],
-                *[f"{p}_DR_SR_correction" for p in ["QCD"]], # Wjets, done on MC so no MC subtraction uncertainty here
+                *[f"{p}_DR_SR_correction" for p in ["QCD"]],  # Wjets, done on MC so no MC subtraction uncertainty here
                 *[f"{p}_DR_SR_correctionStat" for p in ["QCD", "Wjets"]],
                 *[f"{p}_non_closure_CorrStat1Sigma" for p in ["QCD", "Wjets", "ttbar"]],
                 *[f"{p}_non_closure_CorrSystBandAsym" for p in ["QCD", "Wjets", "ttbar"]],
                 *[f"{p}_non_closure_CorrSystMCShift" for p in ["QCD", "Wjets"]],  # ttbar, done on MC so no MC subtraction uncertainty here
-                "ff_total_sub_syst",
+                # --- total or per process
+                # "ff_total_sub_syst",
+                *[f"{p}Normalization" for p in ["ff_QCD", "ff_Wjets", "ff_ttbar"]],
             ]:
                 add_syst(f"CMS_{unc}_$CHANNEL_Run$ERA", "shape", processes.jetFakes, channels.lt)
         else:
@@ -453,7 +461,6 @@ def add_systematics(
             add_syst(f"THU_ggH_{src}", "shape", processes.ggH, channels.all)
     else:
         add_syst("QCDScale_ggH", "lnN", processes.ggH + processes.ggHToWW, channels.all, 1.039)
-
 
     if qqh_wg1:
         for src in {"TOT", "PTH200", "Mjj60", "Mjj120", "Mjj350", "Mjj700", "Mjj1000", "Mjj1500", "25", "JET01"}:

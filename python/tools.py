@@ -11,8 +11,10 @@ from CombineHarvester.SMRun2Legacy.custom_logging import setup_logging
 
 logger = setup_logging(logger=logging.getLogger(__name__))
 
+
 def filter_zero_yield_processes(cb: ch.CombineHarvester) -> None:
-    logger.info(f"Filtering processes with null yield...")
+    logger.info("Filtering processes with null yield...")
+
     def filter_proc(p):
         if (null_yield := not (p.rate() > 0.0)):
             logger.warning(f"Removing process {p.process()} in bin {p.bin()} with null yield")
@@ -23,7 +25,8 @@ def filter_zero_yield_processes(cb: ch.CombineHarvester) -> None:
 
 
 def fix_negative_bins(cb: ch.CombineHarvester) -> None:
-    logger.info(f"Fixing negative bins to zero...")
+    logger.info("Fixing negative bins to zero...")
+
     def zero_negative_bins_th1(hist):
         if not hist:
             return False
@@ -41,12 +44,13 @@ def fix_negative_bins(cb: ch.CombineHarvester) -> None:
             zero_negative_bins_th1(hist_up)
         if (s.type() == "shape") and (hist_down := s.shape_d()):
             zero_negative_bins_th1(hist_down)
-                
+
     cb.ForEachSyst(fix_syst)
 
 
 def filter_zero_yield_systs(cb: ch.CombineHarvester) -> None:
-    logger.info(f"Filtering shape systematics with null yield...")
+    logger.info("Filtering shape systematics with null yield...")
+
     def hist_integral(hist):
         if not hist:
             return None
@@ -121,18 +125,18 @@ def convert_shapes_to_lnN(cb: ch.CombineHarvester) -> None:
         ):
             count["all_considered"] += 1
             shape_u, shape_d = s.shape_u(), s.shape_d()
-            
+
             if not shape_u or not shape_d:
                 return
-                
+
             nbins = shape_u.GetNbinsX()
             err_u_ref, err_d_ref = ctypes.c_double(0.0), ctypes.c_double(0.0)
-            
+
             yield_u = shape_u.IntegralAndError(1, nbins, err_u_ref)
             yield_d = shape_d.IntegralAndError(1, nbins, err_d_ref)
-            
+
             err_u, err_d = err_u_ref.value, err_d_ref.value
-            
+
             if yield_u <= 0.0 or yield_d <= 0.0:
                 return
 
@@ -145,7 +149,7 @@ def convert_shapes_to_lnN(cb: ch.CombineHarvester) -> None:
 
                 s.set_type("lnN")
                 up_is_larger = (value_u > value_d)
-                
+
                 if value_u < 1.0:
                     value_u = 1.0 / value_u
                 if value_d < 1.0:
@@ -157,7 +161,7 @@ def convert_shapes_to_lnN(cb: ch.CombineHarvester) -> None:
                 else:
                     value_d = math.sqrt(value_u * value_d)
                     value_u = 1.0 / value_d
-                    
+
                 s.set_value_u(value_u)
                 s.set_value_d(value_d)
 
@@ -166,7 +170,7 @@ def convert_shapes_to_lnN(cb: ch.CombineHarvester) -> None:
 
 
 def replace_with_asimov(cb: ch.CombineHarvester) -> None:
-    logger.info(f"Replacing observation with Asimov dataset...")
+    logger.info("Replacing observation with Asimov dataset...")
 
     def is_empty_shape(hist) -> bool:
         return not hist or (hist.GetNbinsX() == 1 and hist.Integral() == 0.0)
@@ -197,7 +201,7 @@ def replace_with_asimov(cb: ch.CombineHarvester) -> None:
         else:
             logger.warning(f"No signal available in bin {category}")
 
-        category_bin.ForEachObs(lambda obs: obs.set_shape(asimov_shape, True))
+        category_bin.ForEachObs(lambda obs: obs.set_shape(asimov_shape.Clone(), True))
 
 
 def apply_nn_rebinning(
@@ -212,13 +216,13 @@ def apply_nn_rebinning(
         category_bin, bkg_shapes = cb.cp().bin([category]), []
 
         if strategy == "total_bkg":
-            bkg_shapes.append(category_bin.backgrounds().GetShape())
+            bkg_shapes.append(category_bin.cp().backgrounds().GetShape())
 
             def is_valid(yields):
                 return yields[0] >= threshold
 
         elif strategy == "per_process":
-            for p_name in category_bin.backgrounds().process_set():
+            for p_name in category_bin.cp().backgrounds().process_set():
                 bkg_shapes.append(category_bin.cp().process([p_name]).GetShape())
 
             def is_valid(yields):
@@ -233,7 +237,7 @@ def apply_nn_rebinning(
         elif strategy == "total_bkg__per_process":
             if secondary_threshold is None:
                 raise ValueError("secondary_threshold required for 'total_bkg__per_process'")
-            for p_name in category_bin.backgrounds().process_set():
+            for p_name in category_bin.cp().backgrounds().process_set():
                 shape = category_bin.cp().process([p_name]).GetShape()
                 if shape.Integral() >= secondary_threshold:
                     bkg_shapes.append(shape)
@@ -270,7 +274,7 @@ def apply_nn_rebinning(
 
             if is_valid(current_yields):
                 edges.add(ref_shape.GetBinLowEdge(i + 1))
-                current_yields = [0.0] * len(bkg_shapes) # Reset yields for next bin
+                current_yields = [0.0] * len(bkg_shapes)  # Reset yields for next bin
 
         current_yields = [0.0] * len(bkg_shapes)  # 1.0 (nbins) to peak (peak_bin + 1)
         for i in range(nbins, peak_bin, -1):
@@ -279,7 +283,7 @@ def apply_nn_rebinning(
 
             if is_valid(current_yields):
                 edges.add(ref_shape.GetBinLowEdge(i))
-                current_yields = [0.0] * len(bkg_shapes) # Reset yields for next bin
+                current_yields = [0.0] * len(bkg_shapes)  # Reset yields for next bin
 
         final_edges = sorted(list(edges))
         cb.cp().bin([category]).VariableRebin(final_edges)  # leftovers absorbed by the peak since no internal edge was placed
