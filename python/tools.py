@@ -1,7 +1,7 @@
 import ctypes
 import logging
 import math
-from typing import Literal, Tuple, Optional
+from typing import Literal, Tuple, Optional, Dict, List
 
 import ROOT
 
@@ -118,7 +118,7 @@ def convert_shapes_to_lnN(cb: ch.CombineHarvester) -> None:
         if any(
             substring in name for substring in [
                 "scale",
-                "CMS_htt_boson_reso_met",
+                "CMS_htt_boson_res_met",
                 "res_j",
                 "res_e",
             ]
@@ -209,10 +209,17 @@ def apply_nn_rebinning(
     strategy: Literal["total_bkg", "per_process", "total_bkg__per_process"] = "total_bkg",
     threshold: float = 10.0,
     secondary_threshold: Optional[float] = 1.0,
+    custom_binnings: Optional[Dict[str, List[float]]] = None,
 ) -> None:
     # Merges from left (0 -> peak) and right (1 -> peak) until conditions are met.
 
+    custom_binnings = custom_binnings or {}
     for category in cb.cp().bin_set():
+        if category in custom_binnings:
+            logger.info(f"Overruling category {category} with dedicated custom binning: {custom_binnings[category]}")
+            cb.cp().bin([category]).VariableRebin(custom_binnings[category])
+            continue
+
         category_bin, bkg_shapes = cb.cp().bin([category]), []
 
         if strategy == "total_bkg":

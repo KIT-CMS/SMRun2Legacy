@@ -1,8 +1,9 @@
-import os
-import sys
 import argparse
 import glob
+import json
 import logging
+import os
+import sys
 
 cmssw_base = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))  # CMSSW_BASE/src/CombineHarvester/SMRun2Legacy/scripts
 
@@ -14,20 +15,18 @@ for p in [os.path.dirname(os.path.abspath(__file__)), os.getcwd(), '']:
         sys.path.remove(p)
 
 import CombineHarvester.CombineTools.ch as ch
-
-from CombineHarvester.SMRun2Legacy.processes import get_backgrounds, get_signals
 from CombineHarvester.SMRun2Legacy.categories import get_categories
-from CombineHarvester.SMRun2Legacy.systematics import add_systematics
-from CombineHarvester.SMRun2Legacy.tools import (
-    filter_zero_yield_processes,
-    filter_zero_yield_systs,
-    fix_negative_bins,
-    convert_shapes_to_lnN,
-    apply_nn_rebinning,
-    replace_with_asimov,
-    load_systematic_shapes,
-)
 from CombineHarvester.SMRun2Legacy.custom_logging import setup_logging
+from CombineHarvester.SMRun2Legacy.processes import (get_backgrounds,
+                                                     get_signals)
+from CombineHarvester.SMRun2Legacy.systematics import add_systematics
+from CombineHarvester.SMRun2Legacy.tools import (apply_nn_rebinning,
+                                                 convert_shapes_to_lnN,
+                                                 filter_zero_yield_processes,
+                                                 filter_zero_yield_systs,
+                                                 fix_negative_bins,
+                                                 load_systematic_shapes,
+                                                 replace_with_asimov)
 
 
 def str2bool(v):
@@ -67,8 +66,10 @@ parser.add_argument("--rebinning-threshold", type=float, default=10.0)
 
 parser.add_argument("--rebinning-using-combine", type=str2bool, default=False)
 parser.add_argument("--rebinning-using-combine-threshold", type=float, default=10.0)
-parser.add_argument("--rebinning-using-combine-uncert-fraction", type=float, default=0.9)
+parser.add_argument("--rebinning-using-combine-uncert-fraction", type=float, default=0.1)
 parser.add_argument("--rebinning-using-combine-mode", type=int, default=1)
+
+parser.add_argument("--custom-binning-file", type=str, default=None, help="Path to JSON file containing custom binning definitions")
 
 parser.add_argument("--base-path", type=str, default=os.path.join(cmssw_base, "src/CombineHarvester/SMRun2Legacy/shapes"))
 parser.add_argument("--input-folder-mt", type=str, default="shapes")
@@ -147,20 +148,49 @@ if __name__ == "__main__":
 
     filter_zero_yield_systs(cb)
 
-    if args.categories != "gof" and args.rebinning_strategy != "none":
-        if args.rebinning_strategy == "combine":
-            logger.info("Applying rebinning using Combine's Rebin method...")
-            rebinner = (
-                ch.AutoRebin()
-                .SetBinThreshold(args.rebinning_threshold)
-                .SetBinUncertFraction(args.rebinning_using_combine_uncert_fraction)
-                .SetRebinMode(args.rebinning_using_combine_mode)
-                .SetPerformRebin(True)
-                .SetVerbosity(1)
-            )
-            rebinner.Rebin(cb, cb)
+    ch.SetStandardBinNames(cb, "$ANALYSIS_$CHANNEL_$BINID_$ERA")
+
+    custom_binnings = None
+    if args.custom_binning_file:
+        with open(args.custom_binning_file, "r") as f:
+            custom_binnings = json.load(f)
+
+    if args.categories != "gof":
+        if args.rebinning_strategy == "none" and custom_binnings is not None:
+            for category, edges in custom_binnings.items():
+                if category in cb.cp().bin_set():
+                    logger.info(f"Applying dedicated custom binning to {category}: {edges}")
+                    cb.cp().bin([category]).VariableRebin(edges)
+
+        elif args.rebinning_strategy in {"total_bkg", "per_process", "total_bkg__per_process", "combine"}:
+            if args.rebinning_strategy == "combine":
+                logger.info("Applying rebinning using Combine's Rebin method with custom overrules...")
+                rebinner = (
+                    ch.AutoRebin()
+                    .SetBinThreshold(args.rebinning_threshold)
+                    .SetBinUncertFraction(args.rebinning_using_combine_uncert_fraction)
+                    .SetRebinMode(args.rebinning_using_combine_mode)
+                    .SetPerformRebin(True)
+                    .SetVerbosity(1)
+                )
+                
+                # Apply per-category: overrule or run Combine's AutoRebin
+                for category in cb.cp().bin_set():
+                    if custom_binnings is not None and category in custom_binnings:
+                        logger.info(f"Overruling category {category} with dedicated custom binning: {custom_binnings[category]}")
+                        cb.cp().bin([category]).VariableRebin(custom_binnings[category])
+                    else:
+                        category_cb = cb.cp().bin([category])
+                        rebinner.Rebin(category_cb, cb)
+            else:
+                apply_nn_rebinning(
+                    cb,
+                    strategy=args.rebinning_strategy,
+                    threshold=args.rebinning_threshold,
+                    custom_binnings=custom_binnings,
+                )
         else:
-            apply_nn_rebinning(cb, strategy=args.rebinning_strategy, threshold=args.rebinning_threshold)
+            raise ValueError(f"Invalid rebinning strategy: {args.rebinning_strategy}")
 
     if args.convert_shapes_to_lnN:
         convert_shapes_to_lnN(cb)
@@ -168,8 +198,6 @@ if __name__ == "__main__":
     output_dir = args.output_folder
     logger.info(f"Writing datacards to {output_dir}")
     os.makedirs(output_dir, exist_ok=True)
-
-    ch.SetStandardBinNames(cb, "$ANALYSIS_$CHANNEL_$BINID_$ERA")
 
     if args.bbb:
         logger.info("Adding AutoMCStats...")
