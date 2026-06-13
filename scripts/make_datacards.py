@@ -79,6 +79,10 @@ parser.add_argument("--input-folder-em", type=str, default="shapes")
 parser.add_argument("--output-folder", type=str, default="output_cards")
 parser.add_argument("--postfix", type=str, default="-ML")
 
+# Experimental user workflows
+parser.add_argument("--nn-output-gof-bkg-only", type=str2bool, default=False, help="Enable Goodness-of-Fit background-only workflow using real data")
+parser.add_argument("--bias-test", type=str2bool, default=False, help="Enable Bias test workflow using all NN classes (replaces data with Asimov)")
+
 parser.add_argument("--log-level", type=str, default="INFO")
 
 args = parser.parse_args()
@@ -86,6 +90,18 @@ logger = setup_logging(logger=logging.getLogger(__name__), level=getattr(logging
 logger.info(f"Starting datacard generation with arguments: {args}")
 
 if __name__ == "__main__":
+    if args.nn_output_gof_bkg_only and args.bias_test:
+        raise ValueError("Cannot enable both --nn-output-gof-bkg-only and --bias-test simultaneously.")
+
+    if args.nn_output_gof_bkg_only:
+        logger.info("Executing GoF on background-only classes. Overriding categories, real_data, and output_folder.")
+        args.categories = "stxs_stage1p2_syst_bkg_only"
+        args.real_data = True
+
+    if args.bias_test:
+        logger.info("Executing Bias test setup. Overriding real_data, setting output_folder.")
+        args.real_data = False
+
     cb = ch.CombineHarvester()
 
     channels, era, masses = args.channels.split(','), str(args.era), ["125"]
