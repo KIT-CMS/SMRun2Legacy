@@ -105,16 +105,16 @@ class Processes:
             "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25_htt",
             "qqH_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25_htt",
             # STXS stage 1.2 syst
-            "qqH125-vbf_htautau_bin201to210_selection",  # inclusive
-            "qqH125-vbf_htautau_bin201to202_selection",
-            "qqH125-vbf_htautau_bin203to210_selection",
-            "qqH125-vbf_htautau_bin201to202_selection",
-            "qqH125-vbf_htautau_bin203to210_selection",
-            "qqH125-vbf_htautau_bin201to210_selection125",  # inclusive
-            "qqH125-vbf_htautau_bin201to202_selection125",
-            "qqH125-vbf_htautau_bin203to210_selection125",
-            "qqH125-vbf_htautau_bin201to202_selection125",
-            "qqH125-vbf_htautau_bin203to210_selection125",
+            "qqH125-qqh_htautau_bin201to210_selection",  # inclusive
+            "qqH125-qqh_htautau_bin201to202_selection",
+            "qqH125-qqh_htautau_bin203to210_selection",
+            "qqH125-qqh_htautau_bin201to202_selection",
+            "qqH125-qqh_htautau_bin203to210_selection",
+            "qqH125-qqh_htautau_bin201to210_selection125",  # inclusive
+            "qqH125-qqh_htautau_bin201to202_selection125",
+            "qqH125-qqh_htautau_bin203to210_selection125",
+            "qqH125-qqh_htautau_bin201to202_selection125",
+            "qqH125-qqh_htautau_bin203to210_selection125",
         ]
         self.VH_had = [
             # STXS stage 0
@@ -208,7 +208,7 @@ tau_decaymodes = {"1prong0pizero", "1prong1pizero", "3prong0pizero", "3prong1piz
 
 def add_systematics(
     cb: ch.CombineHarvester,
-    era: int,
+    era: str,
     jetfakes: bool = True,
     embedding: bool = True,
     split_tau_id_and_es_by_pt: bool = True,
@@ -217,6 +217,7 @@ def add_systematics(
     regional_jec: bool = False,
     ggh_wg1: bool = True,
     qqh_wg1: bool = True,
+    shape_systematics: bool = True,
 ) -> None:
     logger.debug(f"calling add_systematics {locals()}")
 
@@ -226,6 +227,10 @@ def add_systematics(
     logger.debug(f"Defined processes: {processes}")
 
     def add_syst(name, syst_type, processes, channels, value=1.0):
+        if syst_type == "shape" and not shape_systematics:
+            logger.debug(f"Skipping shape systematic {name} (shape systematics disabled)")
+            return
+
         if isinstance(value, (float, int)):
             syst_map = ch.SystMap()(float(value))
         else:
@@ -235,17 +240,41 @@ def add_systematics(
         cb.cp().process(processes).channel(channels).AddSyst(cb, name, syst_type, syst_map)
 
     # Lumi
-    lumi_unc = {2016: 1.012, 2017: 1.0082, 2018: 1.0084}
-    lumi_unc_corr = {2016: 1.006, 2017: 1.009, 2018: 1.020}
-    lumi_unc_1718 = {2016: 1.0, 2017: 1.006, 2018: 1.002}
+    # TODO: Run3 entries below reuse the Run2 2018 value as a placeholder
+    # (https://twiki.cern.ch/twiki/bin/view/CMS/TWikiLUM requires CERN SSO and
+    # couldn't be fetched) -- replace with the official Run3 numbers once available.
+    lumi_unc = {
+        "2016": 1.012, "2016preVFP": 1.012, "2016postVFP": 1.012,
+        "2017": 1.0082,
+        "2018": 1.0084,
+        "2022preEE": 1.0084, "2022postEE": 1.0084,
+        "2023preBPix": 1.0084, "2023postBPix": 1.0084,
+        "2024": 1.0084, "2025": 1.0084,
+    }
+    lumi_unc_corr = {
+        "2016": 1.006, "2016preVFP": 1.006, "2016postVFP": 1.006,
+        "2017": 1.009,
+        "2018": 1.020,
+        "2022preEE": 1.020, "2022postEE": 1.020,
+        "2023preBPix": 1.020, "2023postBPix": 1.020,
+        "2024": 1.020, "2025": 1.020,
+    }
+    # lumi_13TeV_1718 models the partial correlation specific to the 2017/2018
+    # Run2 measurement and does not apply to other eras -- intentionally left
+    # Run2-only, so it stays a no-op (1.0) elsewhere.
+    lumi_unc_1718 = {"2016": 1.0,    "2017": 1.006,  "2018": 1.002}
 
     # lumi
-    add_syst("lumi_13TeV_Run$ERA", "lnN", processes.mc, channels.all, lumi_unc.get(era, 1.0))
-    add_syst("lumi_13TeV_correlated", "lnN", processes.mc, channels.all, lumi_unc_corr.get(era, 1.0))
-    add_syst("lumi_13TeV_1718", "lnN", processes.mc, channels.all, lumi_unc_1718.get(era, 1.0))
+    if int(era[:4]) < 2022:
+        add_syst("lumi_13TeV_Run$ERA", "lnN", processes.mc, channels.all, lumi_unc.get(era, 1.0))
+        add_syst("lumi_13TeV_correlated", "lnN", processes.mc, channels.all, lumi_unc_corr.get(era, 1.0))
+        add_syst("lumi_13TeV_1718", "lnN", processes.mc, channels.all, lumi_unc_1718.get(era, 1.0))
+    else:
+        add_syst("lumi_13.6TeV_Run$ERA", "lnN", processes.mc, channels.all, lumi_unc.get(era, 1.0))
+        add_syst("lumi_13.6TeV_correlated", "lnN", processes.mc, channels.all, lumi_unc_corr.get(era, 1.0))
 
     # Prefiring "https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe", Note: assumed uncorrelated accross years
-    if era != 2018:
+    if era != "2018":
         add_syst("CMS_prefiring", "shape", processes.mc, channels.all)
 
     # Trigger
@@ -351,7 +380,7 @@ def add_systematics(
 
     add_syst("CMS_res_j_Run$ERA", "shape", processes.mc, channels.all)
 
-    if era == 2018:
+    if era == "2018":
         add_syst("CMS_scale_j_HEMIssue_Run$ERA", "shape", processes.mc, channels.all)
 
     # met energy scale and recoil
@@ -384,7 +413,7 @@ def add_systematics(
     add_syst("CMS_htt_qcd_iso", "shape", processes.qcd, channels.em)
 
     # Uncertainty: Drell-Yan LO->NLO reweighting
-    if era == 2016:
+    if era == "2016":
         add_syst("CMS_htt_dyShape_Run$ERA", "shape", processes.z, channels.all, 0.10)
     else:
         add_syst("CMS_htt_dyShape", "shape", processes.z, channels.all, 0.10)
@@ -457,7 +486,7 @@ def add_systematics(
     add_syst("BR_hww_PU_alphas", "lnN", processes.hww, channels.all, 1.0063)
 
     if ggh_wg1:
-        for src in {"Mig01", "Mig12", "Mu", "PT60", "PT120", "Res", "VBF2j", "VBF3j", "qmtop"}:
+        for src in {"Mig01", "Mig12", "Mu", "PT60", "PT120", "Res", "qqh2j", "qqh3j", "qmtop"}:
             add_syst(f"THU_ggH_{src}", "shape", processes.ggH, channels.all)
     else:
         add_syst("QCDScale_ggH", "lnN", processes.ggH + processes.ggHToWW, channels.all, 1.039)
@@ -480,11 +509,11 @@ def add_systematics(
         add_syst(f"ggH_scale_1jet_lowpt_{src}", "shape", processes.ggH, channels.all)
         add_syst(f"ggH_scale_2jet_lowpt_{src}", "shape", processes.ggH, channels.all)
         add_syst(f"ggH_scale_highpt_{src}", "shape", processes.ggH, channels.all)
-        add_syst(f"ggH_scale_vbf_{src}", "shape", processes.ggH, channels.all)
+        add_syst(f"ggH_scale_qqh_{src}", "shape", processes.ggH, channels.all)
         add_syst(f"ggH_scale_very_highpt_{src}", "shape", processes.ggH, channels.all)
 
-        add_syst(f"vbf_scale_0jet_{src}", "shape", processes.qqH, channels.all)
-        add_syst(f"vbf_scale_1jet_{src}", "shape", processes.qqH, channels.all)
-        add_syst(f"vbf_scale_highmjj_highpt_{src}", "shape", processes.qqH, channels.all)
-        add_syst(f"vbf_scale_highmjj_lowpt_{src}", "shape", processes.qqH, channels.all)
-        add_syst(f"vbf_scale_lowmjj_{src}", "shape", processes.qqH, channels.all)
+        add_syst(f"qqh_scale_0jet_{src}", "shape", processes.qqH, channels.all)
+        add_syst(f"qqh_scale_1jet_{src}", "shape", processes.qqH, channels.all)
+        add_syst(f"qqh_scale_highmjj_highpt_{src}", "shape", processes.qqH, channels.all)
+        add_syst(f"qqh_scale_highmjj_lowpt_{src}", "shape", processes.qqH, channels.all)
+        add_syst(f"qqh_scale_lowmjj_{src}", "shape", processes.qqH, channels.all)

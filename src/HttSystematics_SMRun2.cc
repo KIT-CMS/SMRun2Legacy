@@ -604,7 +604,7 @@ namespace {
     }
 
     if (ggh_wg1) {
-        const std::vector<std::string> thu_ggh = {"Mig01", "Mig12", "Mu", "PT60", "PT120", "Res", "VBF2j", "VBF3j", "qmtop"};
+        const std::vector<std::string> thu_ggh = {"Mig01", "Mig12", "Mu", "PT60", "PT120", "Res", "qqh2j", "qqh3j", "qmtop"};
         for(const auto& src : thu_ggh){
             builder.AddSyst("THU_ggH_" + src, "shape", processes::ggH, channels::all);
         }
@@ -629,14 +629,14 @@ namespace {
         builder.AddSyst("ggH_scale_1jet_lowpt_"s + src, "shape", processes::ggH, channels::all);
         builder.AddSyst("ggH_scale_2jet_lowpt_"s + src, "shape", processes::ggH, channels::all);
         builder.AddSyst("ggH_scale_highpt_"s + src, "shape", processes::ggH, channels::all);
-        builder.AddSyst("ggH_scale_vbf_"s + src, "shape", processes::ggH, channels::all);
+        builder.AddSyst("ggH_scale_qqh_"s + src, "shape", processes::ggH, channels::all);
         builder.AddSyst("ggH_scale_very_highpt_"s + src, "shape", processes::ggH, channels::all);
 
-        builder.AddSyst("vbf_scale_0jet_"s + src, "shape", processes::qqH, channels::all);
-        builder.AddSyst("vbf_scale_1jet_"s + src, "shape", processes::qqH, channels::all);
-        builder.AddSyst("vbf_scale_highmjj_highpt_"s + src, "shape", processes::qqH, channels::all);
-        builder.AddSyst("vbf_scale_highmjj_lowpt_"s + src, "shape", processes::qqH, channels::all);
-        builder.AddSyst("vbf_scale_lowmjj_"s + src, "shape", processes::qqH, channels::all);
+        builder.AddSyst("qqh_scale_0jet_"s + src, "shape", processes::qqH, channels::all);
+        builder.AddSyst("qqh_scale_1jet_"s + src, "shape", processes::qqH, channels::all);
+        builder.AddSyst("qqh_scale_highmjj_highpt_"s + src, "shape", processes::qqH, channels::all);
+        builder.AddSyst("qqh_scale_highmjj_lowpt_"s + src, "shape", processes::qqH, channels::all);
+        builder.AddSyst("qqh_scale_lowmjj_"s + src, "shape", processes::qqH, channels::all);
     }
 }
 } // namespace ch

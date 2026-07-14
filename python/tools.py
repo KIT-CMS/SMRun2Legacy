@@ -1,7 +1,7 @@
 import ctypes
 import logging
 import math
-from typing import Literal, Tuple, Optional, Dict, List
+from typing import Literal, Tuple, Optional, Dict, List, Union
 
 import ROOT
 
@@ -35,6 +35,13 @@ def fix_negative_bins(cb: ch.CombineHarvester) -> None:
             if hist.GetBinContent(i) < 0.0:
                 has_negative = True
                 hist.SetBinContent(i, 0.0)
+        # Process/Systematic shapes are stored unit-normalized (integral == 1),
+        # with the absolute normalization cached separately (rate_/value_u_/value_d_).
+        # Zeroing negative bins raises the integral above 1, so it must be rescaled
+        # back to unit integral to keep the cached normalization consistent with
+        # the shape that gets written out later.
+        if has_negative and hist.Integral() > 0.0:
+            hist.Scale(1.0 / hist.Integral())
         return has_negative
 
     cb.ForEachProc(lambda p: zero_negative_bins_th1(p.shape()))
@@ -75,31 +82,42 @@ def filter_zero_yield_systs(cb: ch.CombineHarvester) -> None:
     cb.FilterSysts(filter_syst)
 
 
-def load_systematic_shapes(cb: ch.CombineHarvester, root_file: str, channel: str) -> None:
-    logger.info(f"Loading shape systematics for {channel} from {root_file}")
-    tfile = ROOT.TFile.Open(root_file, "READ")
+def load_systematic_shapes(cb: ch.CombineHarvester, root_file: Union[str, Dict[str, str]], channel: str) -> None:
+    # root_file is either a single path shared by all bins of the channel, or a
+    # {bin_name: path} map when categories are split one-category-per-file
+    # (stxs_stage0_run3).
+    per_bin_files = root_file if isinstance(root_file, dict) else {None: root_file}
 
-    def has_shapes(s):
-        mass, process = s.mass(), s.process()
-        process = f"{process}{mass}" if mass and mass != "*" else process
-        base = f"{s.bin()}/{process}_{s.name()}"
-        return bool(tfile.Get(base + "Up")) and bool(tfile.Get(base + "Down"))
+    for bin_name, path in per_bin_files.items():
+        logger.info(f"Loading shape systematics for {channel}" + (f" bin {bin_name}" if bin_name else "") + f" from {path}")
+        tfile = ROOT.TFile.Open(path, "READ")
 
-    def filter_missing(s):
-        if s.channel() != channel:
+        def has_shapes(s):
+            mass, process = s.mass(), s.process()
+            process = f"{process}{mass}" if mass and mass != "*" else process
+            base = f"{s.bin()}/{process}_{s.name()}"
+            return bool(tfile.Get(base + "Up")) and bool(tfile.Get(base + "Down"))
+
+        def filter_missing(s):
+            if s.channel() != channel:
+                return False
+            if bin_name is not None and s.bin() != bin_name:
+                return False
+            if s.type() not in ("shape",):
+                return False
+            if not has_shapes(s):
+                logger.warning(f"Removing systematic {s.name()} on {s.process()} with missing shape")
+                return True
             return False
-        if s.type() not in ("shape",):
-            return False
-        if not has_shapes(s):
-            logger.warning(f"Removing systematic {s.name()} on {s.process()} with missing shape")
-            return True
-        return False
 
-    cb.FilterSysts(filter_missing)
-    tfile.Close()
+        cb.FilterSysts(filter_missing)
+        tfile.Close()
 
-    cb.cp().channel([channel]).backgrounds().ExtractShapes(root_file, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC")
-    cb.cp().channel([channel]).signals().ExtractShapes(root_file, "$BIN/$PROCESS$MASS", "$BIN/$PROCESS$MASS_$SYSTEMATIC")
+        scope = cb.cp().channel([channel])
+        if bin_name is not None:
+            scope = scope.cp().bin([bin_name])
+        scope.cp().backgrounds().ExtractShapes(path, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC")
+        scope.cp().signals().ExtractShapes(path, "$BIN/$PROCESS$MASS", "$BIN/$PROCESS$MASS_$SYSTEMATIC")
 
 
 def convert_shapes_to_lnN(cb: ch.CombineHarvester) -> None:
